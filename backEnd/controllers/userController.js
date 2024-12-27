@@ -145,7 +145,7 @@ export async function updateUser(req, res) {
     if (
       validUpdateData.email ||
       validUpdateData.phoneNumber ||
-      validUpdateData.adress ||
+      validUpdateData.address ||
       validUpdateData.postCode
     ) {
       req.session.user = {

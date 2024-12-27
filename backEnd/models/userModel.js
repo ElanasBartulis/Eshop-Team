@@ -19,7 +19,7 @@ const UserModel = sequelize.define('user', {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  adress: {
+  address: {
     type: DataTypes.STRING,
     allowNull: false,
   },

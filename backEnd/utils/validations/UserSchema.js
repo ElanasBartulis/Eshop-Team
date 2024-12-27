@@ -40,6 +40,8 @@ export const registrationSchema = z.object({
   phoneNumber: z.string().regex(/^\+?370\d{8}$/, {
     message: 'Phone number must be a valid phone number',
   }),
+
+  address: z.string(),
 });
 
 export const updateSchema = registrationSchema
