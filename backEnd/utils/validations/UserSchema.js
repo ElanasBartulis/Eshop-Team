@@ -37,9 +37,11 @@ export const registrationSchema = z.object({
     .min(5, { message: 'Post code should be minimum 5 digits' })
     .max(5, { message: 'Post code shoould be maximum 5 digits' })
     .regex(/^\d{5}$/, { message: 'Postal code should contain only digits' }),
-  phoneNumber: z
-    .string()
-    .regex(/^\+?370\d{8}$/, {
-      message: 'Phone number must be a valid phone number',
-    }),
+  phoneNumber: z.string().regex(/^\+?370\d{8}$/, {
+    message: 'Phone number must be a valid phone number',
+  }),
 });
+
+export const updateSchema = registrationSchema
+  .omit({ firstName: true, lastName: true })
+  .partial();
