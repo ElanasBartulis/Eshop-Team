@@ -14,7 +14,7 @@ const userHistoryModel = sequelize.define(
 );
 
 UserModel.hasMany(userHistoryModel, {
-  foreignKey: { allowNull: false, name: "scooterId" },
+  foreignKey: { allowNull: false, name: "userId" },
 });
 
 export default userHistoryModel;
