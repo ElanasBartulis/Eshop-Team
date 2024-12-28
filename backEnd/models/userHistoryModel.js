@@ -9,6 +9,9 @@ const userHistoryModel = sequelize.define(
       type: DataTypes.FLOAT,
       allowNull: false,
     },
+    productList: {
+      type: DataTypes.JSON,
+    },
   },
   { timestamps: true }
 );

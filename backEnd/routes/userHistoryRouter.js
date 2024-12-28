@@ -5,6 +5,6 @@ const router = express.Router();
 
 router.get("/", userHistoryController.getAllHistory);
 router.get("/:id", userHistoryController.getHistoryByUserId);
-// router.post("/", userHistoryController.createProduct);
+router.post("/", userHistoryController.createHistory);
 
 export default router;
