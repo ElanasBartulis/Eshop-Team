@@ -25,7 +25,7 @@ export async function register(req, res) {
     lastName,
     phoneNumber,
     postCode,
-    adress,
+    address,
   } = req.body;
 
   try {
@@ -43,7 +43,7 @@ export async function register(req, res) {
       firstName,
       lastName,
       phoneNumber,
-      adress,
+      address,
       postCode,
     });
 
@@ -52,7 +52,7 @@ export async function register(req, res) {
       firstName,
       lastName,
       phoneNumber,
-      adress,
+      address,
       postCode,
     };
     req.session.isLogged = true;
