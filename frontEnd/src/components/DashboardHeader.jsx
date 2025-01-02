@@ -1,7 +1,7 @@
-import Logo from "../assets/Public/logo.png";
-import userIcon from "../assets/Public/user-icon.svg";
-import shoppingCart from "../assets/Public/shopping-cart.svg";
-import boardGame from "../assets/Public/board-game.png";
+import Logo from '../assets/Public/logo.png';
+import userIcon from '../assets/Public/user-icon.svg';
+import shoppingCart from '../assets/Public/shopping-cart.svg';
+import boardGame from '../assets/Public/board-game.png';
 
 export default function DashboardHeader() {
   return (
@@ -9,7 +9,11 @@ export default function DashboardHeader() {
       <nav className="flex justify-between items-center pt-4">
         <div>
           <a>
-            <img src={Logo} alt="logo image" className="size-16" />
+            <img
+              src={Logo}
+              alt="logo image"
+              className="size-16"
+            />
           </a>
         </div>
 
@@ -26,8 +30,15 @@ export default function DashboardHeader() {
           </div>
 
           <div className="flex gap-2 items-center">
-            <img src={userIcon} alt="" className="size-4 hover:text-red-800" />
-            <a href="#" className="hover:text-red-800">
+            <img
+              src={userIcon}
+              alt=""
+              className="size-4 hover:text-red-800"
+            />
+            <a
+              href="#"
+              className="hover:text-red-800"
+            >
               Account
             </a>
           </div>
@@ -38,7 +49,10 @@ export default function DashboardHeader() {
               alt=""
               className="size-4 hover:text-red-800"
             />
-            <a href="#" className="hover:text-red-800">
+            <a
+              href="#"
+              className="hover:text-red-800"
+            >
               Cart
             </a>
           </div>
@@ -59,7 +73,11 @@ export default function DashboardHeader() {
         </div>
 
         <span className="pr-20">
-          <img src={boardGame} alt="board-game-image" className="size-80" />
+          <img
+            src={boardGame}
+            alt="board-game-image"
+            className="size-80"
+          />
         </span>
       </div>
     </header>

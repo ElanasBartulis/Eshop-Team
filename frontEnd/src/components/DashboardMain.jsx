@@ -1,5 +1,5 @@
-import ProductCard from "./ProductCard";
-import Sorting from "./Sorting";
+import ProductCard from './ProductCard';
+import Sorting from './Sorting';
 
 export default function DashboardMain() {
   return (
@@ -9,22 +9,22 @@ export default function DashboardMain() {
           Board games for you!
         </div>
         <div className="lg:place-items-end md:place-items-start">
-          <Sorting/>
+          <Sorting />
         </div>
       </div>
       <div className="grid xl:grid-cols-4 grid-rows-3 gap-6 lg:grid-cols-3 md:grid-cols-2">
-        <ProductCard/>
-        <ProductCard/>
-        <ProductCard/>
-        <ProductCard/>
-        <ProductCard/>
-        <ProductCard/>
-        <ProductCard/>
-        <ProductCard/>
-        <ProductCard/>
-        <ProductCard/>
-        <ProductCard/>
-        <ProductCard/>
+        <ProductCard />
+        <ProductCard />
+        <ProductCard />
+        <ProductCard />
+        <ProductCard />
+        <ProductCard />
+        <ProductCard />
+        <ProductCard />
+        <ProductCard />
+        <ProductCard />
+        <ProductCard />
+        <ProductCard />
       </div>
     </>
   );
