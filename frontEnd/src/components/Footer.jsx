@@ -1,16 +1,12 @@
-import Logo from '../assets/Public/logo.png';
+import Logo from "../assets/Public/logo.png";
 
 export default function Footer() {
   return (
     <>
       <footer className="bg-gray-900">
         <div className="mx-auto max-w-5xl px-4 py-1 sm:px-6 lg:px-8 ">
-          <div className="flex justify-center text-teal-600 dark:text-teal-300">
-            <img
-              src={Logo}
-              alt="Logo"
-              className="h-20 w-auto mx-20"
-            />
+          <div className="flex justify-center text-teal-600 dark:text-teal-300 mt-5">
+            <img src={Logo} alt="Logo" className="h-20 w-auto mx-20" />
           </div>
 
           <p className="mx-auto mt-6 max-w-md text-center leading-relaxed text-gray-50">
