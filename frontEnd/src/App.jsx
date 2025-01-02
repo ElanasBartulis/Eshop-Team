@@ -1,10 +1,14 @@
 import { useState } from "react";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router";
+import Dashboard from "./pages/Dashboard";
 
 function App() {
   return (
-    <>
-      <h1>Hello</h1>
-    </>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Dashboard />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
