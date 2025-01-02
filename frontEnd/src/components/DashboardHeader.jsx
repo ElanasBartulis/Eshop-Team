@@ -8,7 +8,7 @@ export default function DashboardHeader() {
       <div className=" w-full bg-gray-900 size-px min-h-96 mt-4 mb-8 flex justify-between px-20 items-center">
         <div className="max-w-screen-md min-h-full flex flex-col justify-center items-center pl-20">
           <h2 className="text-gray-50 text-5xl font-semibold pb-14">
-            Holiday sale up to 50% off!
+            Holiday sale up to 50% off
           </h2>
 
           <a href="#">
