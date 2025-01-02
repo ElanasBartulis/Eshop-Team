@@ -1,9 +1,9 @@
-import ProductCard from './ProductCard';
-import Sorting from './Sorting';
+import ProductCard from "./ProductCard";
+import Sorting from "./Sorting";
 
 export default function DashboardMain() {
   return (
-    <>
+    <div className="mb-20 mt-16">
       <div className="grid lg:grid-cols-2 lg:grid-rows-1 md:grid-cols-1 md:grid-rows-2 gap-4 my-6">
         <div className="self-end text-3xl font-semibold text-gray-900">
           Board games for you!
@@ -26,6 +26,6 @@ export default function DashboardMain() {
         <ProductCard />
         <ProductCard />
       </div>
-    </>
+    </div>
   );
 }
