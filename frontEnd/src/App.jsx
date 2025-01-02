@@ -1,7 +1,6 @@
-import { useState } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router';
+import { BrowserRouter, Routes, Route } from 'react-router';
 import Dashboard from './pages/Dashboard';
-import UserPanel from './pages/UsuerPanel';
+import Admin from './pages/Admin';
 
 function App() {
   return (
@@ -14,6 +13,12 @@ function App() {
         <Route
           path="/user"
           element={<UserPanel />}
+        />
+      </Routes>
+      <Routes>
+        <Route
+          path="/admin"
+          element={<Admin />}
         />
       </Routes>
     </BrowserRouter>

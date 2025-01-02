@@ -36,7 +36,7 @@ export default function DashboardHeader() {
               className="size-4 hover:text-red-800"
             />
             <a
-              href="/user"
+              href="#"
               className="hover:text-red-800"
             >
               Account
