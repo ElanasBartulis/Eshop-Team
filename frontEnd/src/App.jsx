@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router';
 import Dashboard from './pages/Dashboard';
 import Admin from './pages/Admin';
+import UserPanel from './pages/UsuerPanel';
 
 function App() {
   return (
