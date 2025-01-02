@@ -5,6 +5,7 @@ import userHistoryRouter from "./userHistoryRouter.js";
 import userRouter from "./userRouter.js";
 const router = express.Router();
 
+// http://localhost/server/api/
 router.use("/admin", adminRouter);
 router.use("/users", userRouter);
 router.use("/product", productRouter);
