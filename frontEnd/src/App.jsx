@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router';
 import Dashboard from './pages/Dashboard';
 import Admin from './pages/Admin';
-import UserPanel from './pages/UsuerPanel';
+import UserPanel from './pages/UserPanel';
 
 function App() {
   return (
