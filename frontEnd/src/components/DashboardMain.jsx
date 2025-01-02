@@ -6,7 +6,7 @@ export default function DashboardMain() {
     <>
       <div className="grid lg:grid-cols-2 lg:grid-rows-1 md:grid-cols-1 md:grid-rows-2 gap-4 my-6">
         <div className="self-end text-3xl font-semibold text-gray-900">
-          Board games for you!
+          Board games for you!!!!!
         </div>
         <div className="lg:place-items-end md:place-items-start">
           <Sorting />
