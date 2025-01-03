@@ -208,7 +208,7 @@ export default function ProductList() {
               mt: 2,
               backgroundColor: "#111827",
               "&:hover": {
-                backgroundColor: "#991b1b", // Optional: Define hover color
+                backgroundColor: "#991b1b",
               },
             }}
           >
