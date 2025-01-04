@@ -2,20 +2,20 @@ import {
   generateSalt,
   hashPassword,
   isValidCredentials,
-} from "../utils/encription.js";
+} from '../utils/encription.js';
 
-import UserModel from "../models/userModel.js";
+import UserModel from '../models/userModel.js';
 
 import {
   registrationSchema,
   updateSchema,
-} from "../utils/validations/UserSchema.js";
+} from '../utils/validations/UserSchema.js';
 
 //REGISTRATION CONTROLLER (user registration)
 export async function register(req, res) {
   if (req.session.isLogged)
     return res.status(403).json({
-      message: "You are already logged in. Log out to create new User",
+      message: 'You are already logged in. Log out to create new User',
     });
 
   const {
@@ -55,33 +55,34 @@ export async function register(req, res) {
       address,
       postCode,
     };
+    req.session.userId = user.id;
     req.session.isLogged = true;
 
     res
       .status(201)
-      .json({ message: "Registration was successful", session: req.session });
+      .json({ message: 'Registration was successful', session: req.session });
   } catch (err) {
     if (err?.original && err.original.errno === 1062) {
       return res
         .status(400)
-        .json({ message: "username or email field was not unique" });
+        .json({ message: 'username or email field was not unique' });
     }
     res
       .status(500)
-      .json({ message: "internal server error", err: err.message });
+      .json({ message: 'internal server error', err: err.message });
   }
 }
 // LOGIN CONTROLLER (user Log in)
 export async function login(req, res) {
   if (req.session.isLogged)
-    return res.status(403).json({ message: "You already logged in" });
+    return res.status(403).json({ message: 'You already logged in' });
 
   const { password, email } = req.body;
   try {
     const existingUser = await UserModel.findOne({ where: { email } });
 
     if (!existingUser)
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({ message: 'User not found' });
 
     if (
       !isValidCredentials(
@@ -90,20 +91,24 @@ export async function login(req, res) {
         existingUser.hashedPassword
       )
     )
-      return res.status(400).json({ message: "Invalid credentials" });
+      return res.status(400).json({ message: 'Invalid credentials' });
 
     req.session.user = {
       email: existingUser.email,
       firstName: existingUser.firstName,
       lastName: existingUser.lastName,
+      phoneNumber: existingUser.phoneNumber,
+      address: existingUser.address,
+      postCode: existingUser.postCode,
     };
     req.session.isLogged = true;
+    req.session.userId = existingUser.id;
 
     return res
       .status(200)
-      .json({ message: "Logged in successfully", session: req.session });
+      .json({ message: 'Logged in successfully', session: req.session });
   } catch (err) {
-    res.status(500).json({ message: "Internal server error" });
+    res.status(500).json({ message: 'Internal server error' });
   }
 }
 
@@ -111,9 +116,9 @@ export async function login(req, res) {
 
 export async function logout(req, res) {
   if (!req.session.isLogged)
-    return res.status(403).json({ message: "You are already logged out" });
+    return res.status(403).json({ message: 'You are already logged out' });
   req.session.destroy();
-  res.status(200).json({ message: "You logged out successfully" });
+  res.status(200).json({ message: 'You logged out successfully' });
 }
 
 // USER LOGOUT CONTROLLER
@@ -121,7 +126,7 @@ export async function updateUser(req, res) {
   if (!req.session.isLogged)
     return res
       .status(403)
-      .json({ message: "You must be logged in to update your profile" });
+      .json({ message: 'You must be logged in to update your profile' });
   const userEmail = req.session.user.email;
   const updateData = req.body;
   try {
@@ -155,8 +160,21 @@ export async function updateUser(req, res) {
     }
     return res
       .status(200)
-      .json({ message: "User updated", updatedFields: validUpdateData });
+      .json({ message: 'User updated', updatedFields: validUpdateData });
   } catch (err) {
-    return res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: 'Internal server error' });
   }
+}
+
+///SESIJOS GAVIMAS
+export async function getSessionData(req, res) {
+  if (!req.session.isLogged) {
+    return res.status(401).json({ message: 'Not logged in' });
+  }
+  const { user, userId } = req.session;
+  res.status(200).json({
+    message: 'User session data retrieved',
+    user: { id: userId, ...user },
+    isLogged: true,
+  });
 }

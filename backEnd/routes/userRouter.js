@@ -6,4 +6,5 @@ router.post('/register', userController.register);
 router.post('/login', userController.login);
 router.get('/log-out', userController.logout);
 router.put('/update', userController.updateUser);
+router.get('/session', userController.getSessionData);
 export default router;

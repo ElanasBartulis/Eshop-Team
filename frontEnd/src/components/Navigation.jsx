@@ -1,13 +1,17 @@
-import Logo from "../assets/Public/logo.png";
-import userIcon from "../assets/Public/user-icon.svg";
-import shoppingCart from "../assets/Public/shopping-cart.svg";
+import Logo from '../assets/Public/logo.png';
+import userIcon from '../assets/Public/user-icon.svg';
+import shoppingCart from '../assets/Public/shopping-cart.svg';
 
 export default function Nav() {
   return (
     <nav className="flex justify-between items-center pt-4">
       <div>
         <a>
-          <img src={Logo} alt="logo image" className="size-16" />
+          <img
+            src={Logo}
+            alt="logo image"
+            className="size-16"
+          />
         </a>
       </div>
 
@@ -24,8 +28,15 @@ export default function Nav() {
         </div>
 
         <div className="flex gap-2 items-center">
-          <img src={userIcon} alt="" className="size-4 hover:text-red-800" />
-          <a href="#" className="hover:text-red-800">
+          <img
+            src={userIcon}
+            alt=""
+            className="size-4 hover:text-red-800"
+          />
+          <a
+            href="/user"
+            className="hover:text-red-800"
+          >
             Account
           </a>
         </div>
@@ -36,7 +47,10 @@ export default function Nav() {
             alt=""
             className="size-4 hover:text-red-800"
           />
-          <a href="#" className="hover:text-red-800">
+          <a
+            href="#"
+            className="hover:text-red-800"
+          >
             Cart
           </a>
         </div>
