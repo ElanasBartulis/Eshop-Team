@@ -4,10 +4,10 @@ import { DataTypes } from "sequelize";
 const adminModel = sequelize.define(
   "admin",
   {
-    userName: {
+    email: {
       type: DataTypes.STRING,
-      unique: true,
       allowNull: false,
+      unique: true,
     }, //sukurimo metu neprideti
     hashedPassword: {
       type: DataTypes.STRING,
@@ -16,6 +16,10 @@ const adminModel = sequelize.define(
     salt: {
       type: DataTypes.STRING,
       allowNull: false,
+    },
+    role: {
+      type: DataTypes.STRING,
+      defaultValue: "admin",
     },
   },
   { timestamps: false }

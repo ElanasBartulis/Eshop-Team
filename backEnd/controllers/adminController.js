@@ -7,7 +7,7 @@ import { adminRegistrationSchema } from "../utils/validations/adminSchema.js";
 import adminModel from "../models/adminModel.js";
 
 export async function register(req, res) {
-  const { password, userName } = req.body;
+  const { password, email } = req.body;
 
   try {
     const validationResult = adminRegistrationSchema.safeParse(req.body);
@@ -18,13 +18,13 @@ export async function register(req, res) {
     const hashedPassword = hashPassword(password, salt);
 
     const admin = await adminModel.create({
-      userName,
+      email,
       hashedPassword,
       salt,
     });
 
     req.session.user = {
-      userName,
+      email,
     };
     req.session.isLogged = true;
 
@@ -33,9 +33,7 @@ export async function register(req, res) {
       .json({ message: "Registration was successful", session: req.session });
   } catch (err) {
     if (err?.original && err.original.errno === 1062) {
-      return res
-        .status(400)
-        .json({ message: "username or email field was not unique" });
+      return res.status(400).json({ message: "email field was not unique" });
     }
     res
       .status(500)
@@ -49,12 +47,12 @@ export async function login(req, res) {
       message: "You are already logged in",
     });
 
-  const { password, userName } = req.body;
+  const { password, email } = req.body;
 
   try {
     const existingAdmin = await adminModel.findOne({
       where: {
-        userName,
+        email,
       },
     });
 
@@ -71,7 +69,8 @@ export async function login(req, res) {
       return res.status(400).json({ message: "Invalid credentials" });
 
     req.session.user = {
-      userName: existingAdmin.userName,
+      email: existingAdmin.email,
+      isLogged: true,
     };
     req.session.isLogged = true;
 

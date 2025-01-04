@@ -1,6 +1,7 @@
 import Logo from "../assets/Public/logo.png";
 import userIcon from "../assets/Public/user-icon.svg";
 import shoppingCart from "../assets/Public/shopping-cart.svg";
+import ModalLogin from "./ModalLogin";
 
 export default function Nav() {
   return (
@@ -25,9 +26,7 @@ export default function Nav() {
 
         <div className="flex gap-2 items-center">
           <img src={userIcon} alt="" className="size-4 hover:text-red-800" />
-          <a href="#" className="hover:text-red-800">
-            Account
-          </a>
+          <ModalLogin/>
         </div>
 
         <div className="flex gap-2 items-center">
