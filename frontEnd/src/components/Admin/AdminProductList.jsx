@@ -9,6 +9,7 @@ import {
 import { DataGrid } from "@mui/x-data-grid";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import Textarea from "@mui/joy/Textarea";
 import { useState } from "react";
 
 // PVZ
@@ -116,22 +117,31 @@ const columns = (handleEdit, handleDelete) => [
     field: "actions",
     headerName: "Actions",
     width: 130,
-    renderCell: (param) => (
+
+    // HOW TABLE DATA IS FETCHED
+    renderCell: (params) => (
       <>
         <EditIcon
           sx={{ cursor: "pointer" }}
-          onClick={() => handleEdit(param.row.id)}
+          onClick={() => {
+            const product = rows.find((row) => row.id === params.id);
+            console.log(product);
+            handleEdit(product);
+          }}
         />
         <DeleteForeverIcon
           sx={{ cursor: "pointer", color: "red" }}
-          onClick={() => handleDelete(param.row.id)}
+          onClick={() => {
+            const product = rows.find((row) => row.id === params.id);
+            handleDelete(product);
+          }}
         />
       </>
     ),
   },
 ];
 
-// Map threw every product
+// Map every product
 const rows = products.map((product) => ({
   id: product.id,
   productName: product.name,
@@ -150,7 +160,6 @@ export default function ProductList() {
   function handleEdit(id) {
     setSelectedProduct(id);
     setOpen(true);
-    console.log(id);
   }
   function handleDelete(id) {
     console.log(id);
@@ -161,6 +170,7 @@ export default function ProductList() {
   }
   return (
     <>
+      {/* TABLE */}
       <Paper sx={{ minHeight: 400, width: "100%" }}>
         <DataGrid
           rows={rows}
@@ -170,6 +180,8 @@ export default function ProductList() {
           sx={{ border: 0 }}
         />
       </Paper>
+
+      {/* MODULE SETUP START */}
       <Modal
         open={open}
         onClose={handleClose}
@@ -189,18 +201,68 @@ export default function ProductList() {
             borderRadius: 2,
           }}
         >
-          <Typography variant="h6">Edit Product</Typography>
+          {/* MODULE */}
+          <Typography variant="h6" sx={{ mb: 4 }}>
+            Edit Product
+          </Typography>
 
-          {/* Reikia pagriebti esamas lenteles value cia, turbut naudosiu .map  */}
-          <div>
+          {/* PRODUCT NAME */}
+          <div className="flex flex-col gap-4">
             <TextField
               type="text"
               variant="standard"
               label="Product Name"
               name="productName"
+              value={selectedProduct ? selectedProduct.productName : ""}
+            />
+
+            {/* PRODUCT PRICE */}
+            <TextField
+              type="text"
+              variant="standard"
+              label="Price"
+              name="Price"
+              value={selectedProduct ? selectedProduct.price : ""}
+            />
+
+            {/* PRODUCT DISCOUNT */}
+            <TextField
+              type="text"
+              variant="standard"
+              label="Discount"
+              name="discount"
+              value={selectedProduct ? selectedProduct.discount : ""}
+            />
+
+            {/* PRODUCT DESCRIPTION */}
+            <div className="flex flex-col gap-2">
+              <Typography
+                level="body-md"
+                sx={{ fontSize: "12px", color: "#666666" }}
+              >
+                Description
+              </Typography>
+              <Textarea
+                type="text"
+                variant="standard"
+                label="Description"
+                name="description"
+                value={selectedProduct ? selectedProduct.description : ""}
+              />
+            </div>
+
+            {/* PRODUCT RATING */}
+            <TextField
+              type="text"
+              variant="standard"
+              label="Rating"
+              name="rating"
+              value={selectedProduct ? selectedProduct.rating : ""}
+              disabled
             />
           </div>
 
+          {/* INSIDE MODULE BUTTONS */}
           <Button
             variant="contained"
             onClick={handleClose}
@@ -208,17 +270,24 @@ export default function ProductList() {
               mt: 2,
               backgroundColor: "#111827",
               "&:hover": {
-                backgroundColor: "#991b1b",
+                backgroundColor: "#16a34a",
               },
             }}
           >
             Save Changes
           </Button>
           <Button
-            variant="outlined"
-            color="error"
+            variant="contained"
             onClick={handleClose}
-            sx={{ mt: 2, ml: 1 }}
+            sx={{
+              mt: 2,
+              ml: 1,
+              color: "white",
+              backgroundColor: "#111827",
+              "&:hover": {
+                backgroundColor: "#991b1b",
+              },
+            }}
           >
             Cancel
           </Button>
