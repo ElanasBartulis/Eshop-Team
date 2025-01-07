@@ -7,9 +7,9 @@ import { useState } from "react";
 
 function App() {
   const [ sessionState, setSessionState ] = useState({ isLogged: false });
-  const [ adminData, setAdminData ] = useState({email: '', firstName: null, lastName: null, admin: '' });
+  const [ adminData, setAdminData ] = useState({ });
   console.log("Sesija", sessionState.isLogged);
-  console.log("Adminas", adminData.admin);
+  console.log("Adminas", adminData);
   return (
     <SessionContext.Provider value={{sessionState, setSessionState, adminData, setAdminData}}>
       <BrowserRouter>
@@ -24,7 +24,7 @@ function App() {
         />
         <Route
           path="/admin"
-          element={ adminData.admin ? <Admin /> : <Navigate to="/" />}
+          element={ adminData.admin && sessionState.isLogged ?  <Admin />:  <Dashboard/> }
         />
       </Routes>
       </BrowserRouter>

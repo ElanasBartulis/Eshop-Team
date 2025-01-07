@@ -11,7 +11,10 @@ export default function useLogin() {
       const response = await promise.json();
       if (promise.ok && response.isLogged) {
         setSessionState({ isLogged: true });
-        setAdminData(response.user);
+        setAdminData({
+          ...response.user,
+          admin: response.user.admin,
+        });
         console.log(response.user);
       }
     }
@@ -39,6 +42,11 @@ export default function useLogin() {
       if (response.ok) {
         const data = await response.json();
         setSessionState({ isLogged: true });
+        setAdminData({
+          ...data.session.admin,
+          admin: data.session.admin,
+        });
+        console.log("Data", data.session);
         alert("Login successful!");
       } else {
         const errorText = await response.text();
