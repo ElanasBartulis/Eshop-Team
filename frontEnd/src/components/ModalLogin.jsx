@@ -4,6 +4,7 @@ import { Button, Modal, Box } from "@mui/material";
 import Logo from "../assets/Public/logo.png"; 
 import useLogin from "../custom-hooks/useLogin";
 import SessionContext from "../context2/SessionContext.js";
+import useRegister from "../custom-hooks/useRegister.js";
 
 
 const style = {
@@ -21,7 +22,8 @@ export default function ModalSwitcher() {
   const [open, setOpen] = useState(false); 
 
   const { sessionState } = useContext(SessionContext);
-  const { onSubmit } = useLogin();
+  const { onLogin } = useLogin();
+  const { onRegister } = useRegister();
   
 
   const handleOpen = () => setOpen(true);
@@ -35,10 +37,17 @@ export default function ModalSwitcher() {
     setOpen(true); 
   };
   
-  const handleSubmit = (event) => {
-    onSubmit(event); 
-  
-    if(sessionState) 
+  const handleLogin = (event) => {
+    onLogin(event); 
+    
+    if(sessionState.isLogged) 
+      return handleClose();
+  };
+
+  const handleRegister = (event) => {
+    onRegister(event); 
+    
+    if(sessionState.isLogged) 
       return handleClose();
   };
 
@@ -75,7 +84,7 @@ export default function ModalSwitcher() {
                     <h1 className="mt-6 text-2xl font-bold text-gray-900 sm:text-3xl md:text-4xl">
                       Welcome Back! Login
                     </h1>
-                    <form className="mt-8 grid grid-cols-6 gap-6" onSubmit={handleSubmit}>
+                    <form className="mt-8 grid grid-cols-6 gap-6" onSubmit={handleLogin}>
                       <div className="col-span-6">
                         <label
                           htmlFor="Email"
@@ -158,7 +167,7 @@ export default function ModalSwitcher() {
                     New to Board Games? Register
                     </h1>
 
-                    <form action="#" className="mt-8 grid grid-cols-6 gap-6">
+                    <form action="#" className="mt-8 grid grid-cols-6 gap-6" onSubmit={handleRegister}>
                       <div className="col-span-6 sm:col-span-3">
                           <label htmlFor="FirstName" className="block text-sm font-medium text-gray-700">
                           First Name
@@ -167,7 +176,7 @@ export default function ModalSwitcher() {
                           <input
                           type="text"
                           id="FirstName"
-                          name="first_name"
+                          name="firstName"
                           className="mt-1 w-full border border-gray-900 bg-white text-sm text-gray-700 shadow-sm h-8 px-1"
                           />
                       </div>
@@ -180,7 +189,7 @@ export default function ModalSwitcher() {
                           <input
                           type="text"
                           id="LastName"
-                          name="last_name"
+                          name="lastName"
                           className="mt-1 w-full border border-gray-900 bg-white text-sm text-gray-700 shadow-sm h-8 px-1"
                           />
                       </div>
@@ -215,7 +224,7 @@ export default function ModalSwitcher() {
                           <input
                           type="password"
                           id="PasswordConfirmation"
-                          name="password_confirmation"
+                          name="passwordConfirmation"
                           className="mt-1 w-full border border-gray-900 bg-white text-sm text-gray-700 shadow-sm h-8 px-1"
                           />
                       </div>

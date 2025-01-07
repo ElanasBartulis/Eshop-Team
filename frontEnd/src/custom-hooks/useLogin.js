@@ -2,24 +2,23 @@ import { useContext, useEffect, useState } from "react";
 import SessionContext from "../context2/SessionContext.js";
 
 export default function useLogin() {
-  const { setSessionState, sessionState } = useContext(SessionContext);
-  const [adminData, setAdminData] = useState(null);
+  const { setSessionState, sessionState, setAdminData } =
+    useContext(SessionContext);
 
   useEffect(() => {
     async function checkSession() {
-      const promise = await fetch(
-        "http://localhost/server/api/admin/check-session"
-      );
+      const promise = await fetch("http://localhost/server/api/users/session");
       const response = await promise.json();
       if (promise.ok && response.isLogged) {
-        setSessionState(true);
+        setSessionState({ isLogged: true });
         setAdminData(response.user);
+        console.log(response.user);
       }
     }
     checkSession();
   }, []);
 
-  async function onSubmit(e) {
+  async function onLogin(e) {
     e.preventDefault();
     const formData = new FormData(e.target);
 
@@ -29,7 +28,7 @@ export default function useLogin() {
     };
 
     try {
-      const response = await fetch("http://localhost/server/api/admin/login", {
+      const response = await fetch("http://localhost/server/api/users/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -39,7 +38,7 @@ export default function useLogin() {
 
       if (response.ok) {
         const data = await response.json();
-        setSessionState(true);
+        setSessionState({ isLogged: true });
         alert("Login successful!");
       } else {
         const errorText = await response.text();
@@ -54,5 +53,5 @@ export default function useLogin() {
     }
   }
 
-  return { onSubmit };
+  return { onLogin };
 }
