@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import SessionContext from "../context2/SessionContext.js";
+import SessionContext from "../context/SessionContext.js";
 
 export default function useRegister() {
   const { setOpen, setUserData, setSessionState } = useContext(SessionContext);

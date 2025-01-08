@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router";
 import Dashboard from "./pages/Dashboard";
 import Admin from "./pages/Admin.jsx";
 import UserPanel from "./pages/UserPanel";
-import SessionContext from "./context2/SessionContext.js";
+import SessionContext from "./context/SessionContext.js";
 import { useState } from "react";
 
 function App() {

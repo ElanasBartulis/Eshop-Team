@@ -1,5 +1,5 @@
 import { useContext, useEffect } from "react";
-import SessionContext from "../context2/SessionContext.js";
+import SessionContext from "../context/SessionContext.js";
 
 export default function useLogin() {
   const { sessionState, setSessionState, setUserData, setOpen } =

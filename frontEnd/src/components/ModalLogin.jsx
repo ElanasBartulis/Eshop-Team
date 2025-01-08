@@ -3,7 +3,7 @@ import { useContext } from "react";
 import { Button, Modal, Box } from "@mui/material";
 import Logo from "../assets/Public/logo.png";
 import useLogin from "../custom-hooks/useLogin";
-import SessionContext from "../context2/SessionContext.js";
+import SessionContext from "../context/SessionContext.js";
 import useRegister from "../custom-hooks/useRegister.js";
 
 const style = {
