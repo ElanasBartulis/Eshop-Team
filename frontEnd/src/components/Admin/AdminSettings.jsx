@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import AdminSettingsContext from "../../contextt/AdminSettingsContext";
+import AdminSettingsContext from "../../context/AdminSettingsContext";
 
 export default function AdminSettings() {
   const { isActive, setIsActive } = useContext(AdminSettingsContext);

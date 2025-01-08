@@ -1,7 +1,7 @@
 import AdminContainer from "../components/Admin/AdminContainer";
 import Settings from "../components/Admin/AdminSettings";
 import Nav from "../components/Navigation";
-import AdminSettingsContext from "../contextt/AdminSettingsContext";
+import AdminSettingsContext from "../context/AdminSettingsContext";
 import { useState } from "react";
 
 export default function Admin() {

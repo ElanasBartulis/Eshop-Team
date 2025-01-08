@@ -2,7 +2,7 @@ import AdminContainerPassword from "./AdminContainerPassword";
 import ProductList from "./AdminProductList";
 import UserList from "./AdminUserList";
 import NewProduct from "./AdminNewProduct";
-import AdminSettingsContext from "../../contextt/AdminSettingsContext";
+import AdminSettingsContext from "../../context/AdminSettingsContext";
 import { useContext } from "react";
 
 export default function AdminContainer() {
