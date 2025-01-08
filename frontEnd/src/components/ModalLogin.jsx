@@ -24,7 +24,7 @@ export default function ModalSwitcher() {
   const { onRegister } = useRegister();
 
   const handleOpen = () => setOpen(true);
-
+  console.log("ModalLogin", userData);
   const handleClose = () => {
     setOpen(false);
     setActiveModal("login");
@@ -148,7 +148,7 @@ export default function ModalSwitcher() {
 
                 <main className="flex items-center justify-center px-8 py-8 sm:px-12 lg:col-span-7 lg:px-16 lg:py-12 xl:col-span-6">
                   <div className="max-w-xl lg:max-w-3xl">
-                    <a className="block text-blue-600" href="#">
+                    <a className="block text-blue-600" href="/">
                       <span className="sr-only">Home</span>
                       <img src={Logo} alt="Logo" className="h-20 w-auto" />
                     </a>
