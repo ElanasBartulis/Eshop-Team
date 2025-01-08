@@ -26,7 +26,8 @@ export default function Nav() {
 
         <div className="flex gap-2 items-center">
           <img src={userIcon} alt="" className="size-4 hover:text-red-800" />
-          <ModalLogin/>
+          {/* Ar prisijunges? <ZilvinoAccountSettings/> : <ModalLogin/> */}
+          <ModalLogin />
         </div>
 
         <div className="flex gap-2 items-center">

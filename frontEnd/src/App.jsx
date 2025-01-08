@@ -7,12 +7,19 @@ import { useState } from "react";
 
 function App() {
   const [sessionState, setSessionState] = useState({ isLogged: false });
-  const [adminData, setAdminData] = useState({});
-  console.log("Sesija", sessionState.isLogged);
-  console.log("Adminas", adminData);
+  const [userData, setUserData] = useState({});
+  const [open, setOpen] = useState(false);
+
   return (
     <SessionContext.Provider
-      value={{ sessionState, setSessionState, adminData, setAdminData }}
+      value={{
+        sessionState,
+        setSessionState,
+        userData,
+        setUserData,
+        open,
+        setOpen,
+      }}
     >
       <BrowserRouter>
         <Routes>
@@ -21,7 +28,7 @@ function App() {
           <Route
             path="/admin"
             element={
-              adminData.admin && sessionState.isLogged ? (
+              userData?.admin && sessionState.isLogged ? (
                 <Admin />
               ) : (
                 <Dashboard />

@@ -1,8 +1,9 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import SessionContext from "../context2/SessionContext.js";
 
 export default function useLogin() {
-  const { setSessionState, setAdminData } = useContext(SessionContext);
+  const { sessionState, setSessionState, setUserData, setOpen } =
+    useContext(SessionContext);
 
   useEffect(() => {
     async function checkSession() {
@@ -10,15 +11,11 @@ export default function useLogin() {
       const response = await promise.json();
       if (promise.ok && response.isLogged) {
         setSessionState({ isLogged: true });
-        setAdminData({
-          ...response.user,
-          admin: response.user.admin,
-        });
-        console.log(response.user);
+        setUserData(response.user);
       }
     }
     checkSession();
-  }, [setSessionState, setAdminData]);
+  }, []);
 
   async function onLogin(e) {
     e.preventDefault();
@@ -30,7 +27,7 @@ export default function useLogin() {
     };
 
     try {
-      const response = await fetch("http://localhost/server/api/users/login", {
+      const promise = await fetch("http://localhost/server/api/users/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -38,24 +35,24 @@ export default function useLogin() {
         body: JSON.stringify(loginData),
       });
 
-      if (response.ok) {
-        const data = await response.json();
+      console.log("Siaip: ", sessionState.isLogged);
+
+      const response = await promise.json();
+
+      if (promise.ok) {
+        setUserData(response.session.user);
         setSessionState({ isLogged: true });
-        setAdminData({
-          ...data.session.admin,
-          admin: data.session.admin,
-        });
-        console.log("Data", data.session);
+        // pakeisti
         alert("Login successful!");
+        setOpen(false);
       } else {
-        const errorText = await response.text();
-        const error = errorText
-          ? JSON.parse(errorText)
-          : { message: "An error occurred" };
+        const error = response ? response : { message: "An error occurred" };
+        //pakeisti
         alert(error.message);
       }
     } catch (error) {
       console.error("Error during login:", error);
+      //pakeisti
       alert("An error occurred. Please try again.");
     }
   }

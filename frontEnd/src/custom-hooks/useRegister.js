@@ -1,7 +1,8 @@
-import { useContext, useEffect, useState } from "react";
-// import SessionContext from "../context2/SessionContext.js";
+import { useContext } from "react";
+import SessionContext from "../context2/SessionContext.js";
 
 export default function useRegister() {
+  const { setOpen, setUserData, setSessionState } = useContext(SessionContext);
   async function onRegister(e) {
     e.preventDefault();
     const formData = new FormData(e.target);
@@ -18,7 +19,7 @@ export default function useRegister() {
     };
 
     try {
-      const response = await fetch(
+      const promise = await fetch(
         "http://localhost/server/api/users/register",
         {
           method: "POST",
@@ -29,17 +30,22 @@ export default function useRegister() {
         }
       );
 
-      if (response.ok) {
+      const response = await promise.json();
+
+      if (promise.ok) {
+        setUserData(response.session.user);
+        setSessionState({ isLogged: true });
+        // keisti
         alert("Register successful!");
+        setOpen(false);
       } else {
-        const errorText = await response.text();
-        const error = errorText
-          ? JSON.parse(errorText)
-          : { message: "An error occurred" };
+        const error = response ? response : { message: "An error occurred" };
+        // keisti
         alert(error.message);
       }
     } catch (error) {
       console.error("Error during login:", error);
+      //keisti
       alert("An error occurred. Please try again.");
     }
   }
