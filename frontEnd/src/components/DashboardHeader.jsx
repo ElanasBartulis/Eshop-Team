@@ -1,5 +1,5 @@
-import boardGame from "../assets/Public/board-game.png";
-import Nav from "../components/Navigation";
+import boardGame from '../assets/Public/board-game.png';
+import Nav from '../components/Navigation';
 
 export default function DashboardHeader() {
   return (
@@ -19,7 +19,11 @@ export default function DashboardHeader() {
         </div>
 
         <span className="pr-20">
-          <img src={boardGame} alt="board-game-image" className="size-80" />
+          <img
+            src={boardGame}
+            alt="board-game-image"
+            className="size-80"
+          />
         </span>
       </div>
     </header>
