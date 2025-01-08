@@ -1,14 +1,12 @@
-import sequelize from '../config/sequelize.js';
-import { DataTypes } from 'sequelize';
+import sequelize from "../config/sequelize.js";
+import { DataTypes } from "sequelize";
 
-const UserModel = sequelize.define('user', {
+const UserModel = sequelize.define("user", {
   firstName: {
     type: DataTypes.STRING,
-    allowNull: false,
   },
   lastName: {
     type: DataTypes.STRING,
-    allowNull: false,
   },
   email: {
     type: DataTypes.STRING,
@@ -17,17 +15,13 @@ const UserModel = sequelize.define('user', {
   },
   phoneNumber: {
     type: DataTypes.STRING,
-    allowNull: false,
   },
   address: {
     type: DataTypes.STRING,
-    allowNull: false,
   },
   postCode: {
     type: DataTypes.STRING,
-    allowNull: false,
   },
-
   hashedPassword: {
     type: DataTypes.STRING,
     allowNull: false,
@@ -35,6 +29,10 @@ const UserModel = sequelize.define('user', {
   salt: {
     type: DataTypes.STRING,
     allowNull: false,
+  },
+  admin: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
   },
 });
 export default UserModel;

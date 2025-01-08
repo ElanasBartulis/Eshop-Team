@@ -5,6 +5,7 @@ import {
 } from "../utils/encription.js";
 
 import UserModel from "../models/userModel.js";
+import { adminRegistrationSchema } from "../utils/validations/adminSchema.js";
 
 import {
   registrationSchema,
@@ -29,7 +30,7 @@ export async function register(req, res) {
   } = req.body;
 
   try {
-    const validationResult = registrationSchema.safeParse(req.body);
+    const validationResult = updateSchema.safeParse(req.body);
     if (!validationResult.success)
       return res.status(400).json({ error: validationResult.error.issues });
 
@@ -98,6 +99,7 @@ export async function login(req, res) {
       lastName: existingUser.lastName,
     };
     req.session.isLogged = true;
+    req.session.admin = existingUser.admin;
 
     return res
       .status(200)
@@ -158,5 +160,54 @@ export async function updateUser(req, res) {
       .json({ message: "User updated", updatedFields: validUpdateData });
   } catch (err) {
     return res.status(500).json({ message: "Internal server error" });
+  }
+}
+
+export async function getSessionData(req, res) {
+  if (!req.session.isLogged) {
+    return res.status(401).json({ message: "Not logged in" });
+  }
+  const { user, userId, admin } = req.session;
+  res.status(200).json({
+    message: "User session data retrieved",
+    user: { id: userId, ...user, admin },
+    isLogged: true,
+  });
+}
+
+export async function registerAdmin(req, res) {
+  const { password, email } = req.body;
+
+  try {
+    const validationResult = adminRegistrationSchema.safeParse(req.body);
+    if (!validationResult.success)
+      return res.status(400).json({ error: validationResult.error.issues });
+
+    const salt = generateSalt();
+    const hashedPassword = hashPassword(password, salt);
+
+    const admin = await UserModel.create({
+      email,
+      hashedPassword,
+      salt,
+      admin: true,
+    });
+
+    req.session.user = {
+      email,
+      admin,
+    };
+    req.session.isLogged = true;
+
+    res
+      .status(201)
+      .json({ message: "Registration was successful", session: req.session });
+  } catch (err) {
+    if (err?.original && err.original.errno === 1062) {
+      return res.status(400).json({ message: "email field was not unique" });
+    }
+    res
+      .status(500)
+      .json({ message: "internal server error", err: err.message });
   }
 }
