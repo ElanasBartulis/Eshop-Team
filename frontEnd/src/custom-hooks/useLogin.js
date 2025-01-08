@@ -2,8 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import SessionContext from "../context2/SessionContext.js";
 
 export default function useLogin() {
-  const { setSessionState, sessionState, setAdminData } =
-    useContext(SessionContext);
+  const { setSessionState, setAdminData } = useContext(SessionContext);
 
   useEffect(() => {
     async function checkSession() {
@@ -16,7 +15,7 @@ export default function useLogin() {
       }
     }
     checkSession();
-  }, []);
+  }, [setSessionState, setAdminData]);
 
   async function onLogin(e) {
     e.preventDefault();
