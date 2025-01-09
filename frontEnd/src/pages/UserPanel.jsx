@@ -6,7 +6,7 @@ import Menu from '../components/userComponents/Menu';
 import Greeting from '../components/userComponents/Greeting';
 import EditProfile from '../components/userComponents/EditProfile';
 import ChangePassword from '../components/userComponents/ChangePassword';
-// import Dash from '../components/userComponents/UserDashboard';
+import UserDashboard from '../components/userComponents/UserDashboard';
 
 export default function UserPanel() {
   const [activeSection, setActiveSection] = useState('dashboard');
@@ -32,7 +32,7 @@ export default function UserPanel() {
             <Greeting />
 
             <div className="col-span-3 row-span-4 col-start-3 row-start-2 bg-white p-6 rounded shadow">
-              {/* <Dash activeSection={activeSection} /> */}
+              <UserDashboard activeSection={activeSection} />
 
               <EditProfile activeSection={activeSection} />
               <ChangePassword activeSection={activeSection} />
