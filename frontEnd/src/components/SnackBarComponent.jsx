@@ -1,6 +1,6 @@
-import { useContext } from "react";
-import { Alert, Snackbar } from "@mui/material";
-import SessionContext from "../context/SessionContext.js";
+import { useContext } from 'react';
+import { Alert, Snackbar } from '@mui/material';
+import SessionContext from '../context/SessionContext.js';
 
 export default function SnackbarComponent() {
   const { isSnackbarOpen, setSnackbarOpen, snackbarMessage, errorMessage } =
@@ -14,8 +14,8 @@ export default function SnackbarComponent() {
       >
         <Alert
           variant="filled"
-          sx={{ width: "100%" }}
-          color={errorMessage ? "success" : "error"}
+          sx={{ width: '100%' }}
+          color={errorMessage ? 'success' : 'error'}
           severity="error"
         >
           {snackbarMessage}
