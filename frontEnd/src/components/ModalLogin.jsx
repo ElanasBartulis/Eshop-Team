@@ -5,6 +5,7 @@ import Logo from "../assets/Public/logo.png";
 import useLogin from "../custom-hooks/useLogin";
 import SessionContext from "../context/SessionContext.js";
 import useRegister from "../custom-hooks/useRegister.js";
+import { useNavigate } from 'react-router-dom';
 
 const style = {
   position: "absolute",
@@ -22,9 +23,20 @@ export default function ModalSwitcher() {
 
   const { onLogin } = useLogin();
   const { onRegister } = useRegister();
+  const navigate = useNavigate();
 
-  const handleOpen = () => setOpen(true);
-
+  const handleOpen = () => {
+    if (sessionState.isLogged) {
+      if (userData.admin) {
+        navigate('/admin');
+      } else {
+        navigate('/user');
+      }
+    } else {
+      setOpen(true);
+    }
+  };
+  
   const handleClose = () => {
     setOpen(false);
     setActiveModal("login");
