@@ -24,7 +24,7 @@ export default function ModalSwitcher() {
   const { onRegister } = useRegister();
 
   const handleOpen = () => setOpen(true);
-  console.log("ModalLogin", userData);
+
   const handleClose = () => {
     setOpen(false);
     setActiveModal("login");
