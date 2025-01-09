@@ -2,18 +2,21 @@ import Logo from '../assets/Public/logo.png';
 import userIcon from '../assets/Public/user-icon.svg';
 import shoppingCart from '../assets/Public/shopping-cart.svg';
 import ModalLogin from './ModalLogin';
+import { Link } from 'react-router-dom';
+import Logout from './Logout';
 
 export default function Nav() {
   return (
     <nav className="flex justify-between items-center pt-4">
       <div>
-        <a>
+        <Link to="/">
           <img
             src={Logo}
             alt="logo image"
             className="size-16"
+            style={{ cursor: 'pointer' }}
           />
-        </a>
+        </Link>
       </div>
 
       <div className="flex justify-evenly gap-8">
@@ -37,6 +40,8 @@ export default function Nav() {
           {/* Ar prisijunges? <ZilvinoAccountSettings/> : <ModalLogin/> */}
           <ModalLogin />
         </div>
+
+        <Logout />
 
         <div className="flex gap-2 items-center">
           <img
