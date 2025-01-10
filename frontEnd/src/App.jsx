@@ -9,9 +9,11 @@ function App() {
   const [sessionState, setSessionState] = useState({ isLogged: false });
   const [userData, setUserData] = useState({});
   const [open, setOpen] = useState(false);
-  const [isSnackbarOpen, setSnackbarOpen] = useState(false);
-  const [errorMessage, setErrorMessage] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [errorHandler, setErrorHandler] = useState({
+    isSnackbarOpen: false,
+    snackbarMessage: "",
+    alertColor: "error",
+  });
 
   return (
     <SessionContext.Provider
@@ -22,12 +24,8 @@ function App() {
         setUserData,
         open,
         setOpen,
-        isSnackbarOpen,
-        setSnackbarOpen,
-        snackbarMessage,
-        setSnackbarMessage,
-        errorMessage,
-        setErrorMessage,
+        errorHandler,
+        setErrorHandler,
       }}
     >
       <BrowserRouter>

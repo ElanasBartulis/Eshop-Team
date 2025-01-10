@@ -5,12 +5,13 @@ import SnackbarComponent from "../SnackBarComponent";
 import { registrationSchema } from "../../../../backEnd/utils/validations/UserSchema";
 
 export default function Password() {
-  // setSnackbarOpen (atidaryti snackbar ar ne. Default = false)
-  // setSnackbarMessage (Kokia zinute parasyti i snackbar. Default = "")
-  // setErrorMessage (Kokios spalvos error'as, true = zalia spalva, false = raudona spalva. Default = false)
+  // setErrorHandler({
+  //   isSnackbarOpen: true,
+  //   snackbarMessage: "Password don't match",
+  //   alertColor: "error",
+  // });
 
-  const { setSnackbarOpen, setSnackbarMessage, setErrorMessage } =
-    useContext(SessionContext);
+  const { setErrorHandler } = useContext(SessionContext);
 
   async function handleChangePw(e) {
     e.preventDefault();
@@ -18,8 +19,11 @@ export default function Password() {
 
     // patikrina as repeat pw toks pats
     if (fromData.get("password") !== fromData.get("repeatPassword")) {
-      setSnackbarOpen(true);
-      setSnackbarMessage("Password don't match");
+      setErrorHandler({
+        isSnackbarOpen: true,
+        snackbarMessage: "Password don't match",
+        alertColor: "error",
+      });
       return;
     }
 
@@ -41,19 +45,27 @@ export default function Password() {
 
       // jeigu viskas ok
       if (promise.ok) {
-        setSnackbarOpen(true);
-        setErrorMessage(true);
-        setSnackbarMessage("Password changed successfully");
+        setErrorHandler({
+          isSnackbarOpen: true,
+          snackbarMessage: "Password changed successfully",
+          alertColor: "success",
+        });
         e.target.reset();
         // jeigu ne
       } else {
-        setSnackbarOpen(true);
-        setSnackbarMessage(validatedErrorMessage);
+        setErrorHandler({
+          isSnackbarOpen: true,
+          snackbarMessage: validatedErrorMessage,
+          alertColor: "error",
+        });
       }
     } catch (error) {
       console.error("Error during login:", error);
-      setSnackbarOpen(true);
-      setSnackbarMessage("An error occurred. Please try again.");
+      setErrorHandler({
+        isSnackbarOpen: true,
+        snackbarMessage: "An error occurred. Please try again.",
+        alertColor: "error",
+      });
     }
   }
   return (

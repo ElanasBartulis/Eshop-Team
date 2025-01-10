@@ -3,22 +3,28 @@ import { Alert, Snackbar } from "@mui/material";
 import SessionContext from "../context/SessionContext.js";
 
 export default function SnackbarComponent() {
-  const { isSnackbarOpen, setSnackbarOpen, snackbarMessage, errorMessage } =
-    useContext(SessionContext);
+  //   const [errorHandler, seterrorHandler] = useState({
+  //   isSnackbarOpen: false,
+  //   snackbarMessage: "",
+  //   alertColor: "error",
+  // });
+  const { errorHandler, setErrorHandler } = useContext(SessionContext);
+
   return (
     <div>
       <Snackbar
-        open={isSnackbarOpen}
-        autoHideDuration={6000}
-        onClose={() => setSnackbarOpen(false)}
+        open={errorHandler.isSnackbarOpen}
+        autoHideDuration={3000}
+        onClose={() =>
+          setErrorHandler((c) => ({ ...c, isSnackbarOpen: false }))
+        }
       >
         <Alert
           variant="filled"
           sx={{ width: "100%" }}
-          color={errorMessage ? "success" : "error"}
-          severity="error"
+          color={errorHandler.alertColor}
         >
-          {snackbarMessage}
+          {errorHandler.snackbarMessage}
         </Alert>
       </Snackbar>
     </div>
