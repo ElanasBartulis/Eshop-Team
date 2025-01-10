@@ -5,12 +5,6 @@ import SnackbarComponent from "../SnackBarComponent";
 import { registrationSchema } from "../../../../backEnd/utils/validations/UserSchema";
 
 export default function Password() {
-  // setErrorHandler({
-  //   isSnackbarOpen: true,
-  //   snackbarMessage: "Password don't match",
-  //   alertColor: "error",
-  // });
-
   const { setErrorHandler } = useContext(SessionContext);
 
   async function handleChangePw(e) {
