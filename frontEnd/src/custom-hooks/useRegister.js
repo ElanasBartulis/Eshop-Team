@@ -2,13 +2,18 @@ import { useContext } from "react";
 import SessionContext from "../context/SessionContext.js";
 
 export default function useRegister() {
-  const { setOpen, setUserData, setSessionState } = useContext(SessionContext);
+  const { setOpen, setUserData, setSessionState, setErrorHandler } =
+    useContext(SessionContext);
   async function onRegister(e) {
     e.preventDefault();
     const formData = new FormData(e.target);
 
     if (!(formData.get("password") === formData.get("passwordConfirmation"))) {
-      return alert("Passwords must match");
+      return setErrorHandler({
+        isSnackbarOpen: true,
+        snackbarMessage: "Passwords must match",
+        alertColor: "error",
+      });
     }
 
     const registerData = {
@@ -35,18 +40,27 @@ export default function useRegister() {
       if (promise.ok) {
         setUserData(response.session.user);
         setSessionState({ isLogged: true });
-        // keisti
-        alert("Register successful!");
+        setErrorHandler({
+          isSnackbarOpen: true,
+          snackbarMessage: "Registration successful!",
+          alertColor: "success",
+        });
         setOpen(false);
       } else {
         const error = response ? response : { message: "An error occurred" };
-        // keisti
-        alert(error.message);
+        setErrorHandler({
+          isSnackbarOpen: true,
+          snackbarMessage: error.message,
+          alertColor: "error",
+        });
       }
     } catch (error) {
       console.error("Error during login:", error);
-      //keisti
-      alert("An error occurred. Please try again.");
+      setErrorHandler({
+        isSnackbarOpen: true,
+        snackbarMessage: "An error occurred. Please try again.",
+        alertColor: "error",
+      });
     }
   }
 

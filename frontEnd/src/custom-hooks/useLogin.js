@@ -2,8 +2,13 @@ import { useContext, useEffect } from "react";
 import SessionContext from "../context/SessionContext.js";
 
 export default function useLogin() {
-  const { sessionState, setSessionState, setUserData, setOpen } =
-    useContext(SessionContext);
+  const {
+    sessionState,
+    setSessionState,
+    setUserData,
+    setOpen,
+    setErrorHandler,
+  } = useContext(SessionContext);
 
   useEffect(() => {
     async function checkSession() {
@@ -35,25 +40,31 @@ export default function useLogin() {
         body: JSON.stringify(loginData),
       });
 
-      console.log("Siaip: ", sessionState.isLogged);
-
       const response = await promise.json();
-
+      // console.log("Is useLogin", response.session.user);
       if (promise.ok) {
         setUserData(response.session.user);
         setSessionState({ isLogged: true });
-        // pakeisti
-        alert("Login successful!");
+        setErrorHandler({
+          isSnackbarOpen: true,
+          snackbarMessage: "Logged in successful!",
+          alertColor: "success",
+        });
         setOpen(false);
       } else {
         const error = response ? response : { message: "An error occurred" };
-        //pakeisti
-        alert(error.message);
+        setErrorHandler({
+          isSnackbarOpen: true,
+          snackbarMessage: error.message,
+          alertColor: "error",
+        });
       }
     } catch (error) {
-      console.error("Error during login:", error);
-      //pakeisti
-      alert("An error occurred. Please try again.");
+      setErrorHandler({
+        isSnackbarOpen: true,
+        snackbarMessage: "An error occurred. Please try again.",
+        alertColor: "error",
+      });
     }
   }
 

@@ -4,7 +4,7 @@ import SessionContext from '../context/SessionContext';
 import { LogOut } from 'lucide-react';
 
 export default function LogoutButton() {
-    const { sessionState, setSessionState, setUserData } = useContext(SessionContext);
+  const { sessionState, setSessionState, setUserData, setErrorHandler } = useContext(SessionContext);
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -20,7 +20,11 @@ export default function LogoutButton() {
         setSessionState({ isLogged: false });
         setUserData({});
         navigate('/');
-        alert("You logged out successfully");
+        setErrorHandler({
+          isSnackbarOpen: true,
+          snackbarMessage: "Logged out successfully!",
+          alertColor: "success",
+        });
       } else {
         console.error('Logout failed');
       }

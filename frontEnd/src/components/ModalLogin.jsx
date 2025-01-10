@@ -6,6 +6,7 @@ import useLogin from "../custom-hooks/useLogin";
 import SessionContext from "../context/SessionContext.js";
 import useRegister from "../custom-hooks/useRegister.js";
 import { useNavigate } from 'react-router-dom';
+import SnackbarComponent from "../components/SnackBarComponent.jsx";
 
 const style = {
   position: "absolute",
@@ -19,7 +20,7 @@ const style = {
 export default function ModalSwitcher() {
   const [activeModal, setActiveModal] = useState("login");
 
-  const { sessionState, open, setOpen, userData } = useContext(SessionContext);
+  const { sessionState, open, setOpen, userData, setErrorHandler } = useContext(SessionContext);
 
   const { onLogin } = useLogin();
   const { onRegister } = useRegister();
@@ -309,6 +310,7 @@ export default function ModalSwitcher() {
           </Box>
         </Modal>
       )}
+      <SnackbarComponent />
     </div>
   );
 }
