@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
 import Admin from "./pages/Admin.jsx";
 import UserPanel from "./pages/UserPanel";
@@ -12,6 +12,7 @@ function App() {
   const [isSnackbarOpen, setSnackbarOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
+ 
 
   return (
     <SessionContext.Provider
@@ -32,15 +33,24 @@ function App() {
     >
       <BrowserRouter>
         <Routes>
-          <Route path="/user" element={<UserPanel />} />
+          <Route 
+            path="/user" 
+            element={
+              sessionState.isLogged ? (
+                userData?.admin ? <Navigate to="/admin" replace /> : <UserPanel />
+              ) : (
+                <Navigate to="/" replace />
+              )
+            } 
+          />
           <Route path="/" element={<Dashboard />} />
           <Route
             path="/admin"
             element={
-              userData?.admin && sessionState.isLogged ? (
-                <Admin />
+              sessionState.isLogged ? (
+                userData?.admin ? <Admin /> : <Navigate to="/user" replace />
               ) : (
-                <Dashboard />
+                <Navigate to="/" replace />
               )
             }
           />
