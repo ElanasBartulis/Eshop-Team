@@ -4,22 +4,28 @@ import SessionContext from '../../context/SessionContext';
 import SnackbarComponent from '../SnackBarComponent';
 import { registrationSchema } from '../../../../backEnd/utils/validations/UserSchema';
 export default function EditProfile({ activeSection }) {
-  const {
-    setSnackbarOpen,
-    setSnackbarMessage,
-    setErrorMessage,
-    updateUserData,
-    userData,
-  } = useContext(SessionContext);
-
-  //Steitas sekti formos duomenis del keitimu
+  const { setErrorHandler, updateUserData, userData } =
+    useContext(SessionContext);
+  //----------- normaliam erroru atvaizdavimui skirta consta// naudojama ant textfieldu kartu su snackbaru
+  const fieldLabels = {
+    email: 'Email',
+    phoneNumber: 'Phone Number',
+    address: 'Address',
+    postCode: 'Post Code',
+  };
+  //-----------------------------------------------------------
+  //Steitas sekti formos duomenis del pakeitimu, palei
   const [formValues, setFormValues] = useState({
     email: '',
     phoneNumber: '',
     address: '',
     postCode: '',
   });
-
+  //-----------------------------------------------------------------
+  // Steitas skirtas sekti kurie laukeliai buvo pakeisti, kurie buvo nepaliesti, palei tai siunciami i backa tik tie laukeliai kurie buvo editinti-pakeisti
+  const [changedFields, setChangedFields] = useState({});
+  //--------------------------------------------
+  //----------------- useEffect'as skirtas uzpildyti inputu laukus, pasikeitus useData'ai// pakitus userData'ai useEffect'as atnaujina inputu value
   useEffect(() => {
     setFormValues({
       email: userData.email || '',
@@ -28,23 +34,19 @@ export default function EditProfile({ activeSection }) {
       postCode: userData.postCode || '',
     });
   }, [userData]);
-  // Steitas reikalingas siusti tik tuos laukus i backa kurie buvo editinti
-  const [changedFields, setChangedFields] = useState({});
-  // Lablai normaliam erroru atvaizdavimui
-  const fieldLabels = {
-    email: 'Email',
-    phoneNumber: 'Phone Number',
-    address: 'Address',
-    postCode: 'Post Code',
-  };
-
+  //-------------------------------------------------------------
+  //---------------Funkcija skirta nauju ivesciu reiksmems nustatyti. Dirba kartu su setFormValues, ir setChangedFields
+  //-----DETALESNIS PAAISKINIMAS: inpute onChange={handleInputChange("email")} paleidziam sia funkcija. Passinam inputo name siuo atveju email
+  //---setformvalues pame buvusia reiksme, isspredina ir prideda nauja reiksme(kuri buvo ivesta inpute) [field] yra inputo name, šiuo atveju "key'us"
   const handleInputChange = (field) => (e) => {
     const newValue = e.target.value;
     setFormValues((prev) => ({ ...prev, [field]: newValue }));
 
     setChangedFields((prev) => ({ ...prev, [field]: true }));
   };
+  //-------------------------------------------------------
 
+  //---------FORMOS FUNKCIJA
   async function editProfile(e) {
     e.preventDefault();
 
@@ -53,24 +55,39 @@ export default function EditProfile({ activeSection }) {
       (key) => formValues[key] === userData[key]
     );
     if (noChanges) {
-      setSnackbarOpen(true);
-      setSnackbarMessage('Cant change into same');
-    }
+      setErrorHandler({
+        isSnackbarOpen: true,
+        snackbarMessage: 'Cant change field into same value.',
+        alertColor: 'error',
+      });
 
+      return;
+    }
+    //-------------------------
+
+    //-------Funkcija skirta sukurti objektui kuris bus siunciamas i backend'a
+    //---Detalesnis paaiskinimas::: --- acc(akumuliatorius) sudaro objekta is [key] : true/false - jeigu [key]: false. inputo dabartine reiksme nera pakitusi vadinasi
+    // objektas netures to laukelio kuri siustu i backend. pvz phoneNumber: false, vadinasi phone number nebuvo pakeistas , tai reiskia jis nebus siunciamas i backend.
+    //taip ife tikrinam ar keisti laukai yra true. jei true suformuojamas objektas kuris bus siunciamas i back'a
     const updatingData = Object.keys(changedFields).reduce((acc, key) => {
       if (changedFields[key]) {
         acc[key] = formValues[key];
       }
       return acc;
     }, {});
-
+    //--------------------------------------\
+    //---Tikrinimas ar nors vienas laukelis buvo editinamas
     if (Object.keys(updatingData).length === 0) {
-      setErrorMessage(false);
-      setSnackbarOpen(true);
-      setSnackbarMessage('Please edit atleast one field, to make changes.');
-      return; // Prevent further execution
-    }
+      setErrorHandler({
+        isSnackbarOpen: true,
+        snackbarMessage: 'Please edit atleast one field, to make changes.',
+        alertColor: 'error',
+      });
 
+      return;
+    }
+    //---------------------------
+    //---------ZOD VALIDACIJOS-------------
     const validation = registrationSchema
       .pick({
         email: true,
@@ -82,14 +99,16 @@ export default function EditProfile({ activeSection }) {
 
     const validatedData = validation.safeParse(updatingData);
     const errMessage = validatedData.error?.issues[0].message;
-
+    //--- PAPILDOMAS TIKRINIMAS PRIEš SIUNČIANT (OPTIONAL)---------
     if (validatedData.error) {
-      setErrorMessage(false);
-      setSnackbarOpen(true);
-      setSnackbarMessage(errMessage);
+      setErrorHandler({
+        isSnackbarOpen: true,
+        snackbarMessage: errMessage,
+        alertColor: 'error',
+      });
       return;
     }
-
+    //--------------------------------------------
     try {
       const promise = await fetch('http://localhost/server/api/users/update', {
         method: 'PUT',
@@ -104,29 +123,35 @@ export default function EditProfile({ activeSection }) {
 
         const updatedFields = response.updatedFields;
 
+        // SITA FUNKCIJA RANDASI APP.JSX ji skirta atnaujinti iškarto informacijai po submito
         updateUserData(updatedFields);
-
+        //Kartu atnaujinami input fieldai
         setFormValues((prev) => ({
           ...prev,
           ...updatedFields,
         }));
         setChangedFields({});
-        setErrorMessage(true);
-        setSnackbarOpen(true);
-        setSnackbarMessage(
-          Object.keys(updatingData)
+        setErrorHandler({
+          isSnackbarOpen: true,
+          snackbarMessage: Object.keys(updatingData)
             .map((field) => `${fieldLabels[field]} was updated!`)
-            .join('. ')
-        );
+            .join('. '),
+          alertColor: 'success',
+        });
       } else {
-        setErrorMessage(false);
-        setSnackbarOpen(true);
-        setSnackbarMessage(errMessage);
+        setErrorHandler({
+          isSnackbarOpen: true,
+          snackbarMessage: errMessage,
+          alertColor: 'error',
+        });
       }
     } catch (error) {
       console.error('Error during login:', error);
-      setErrorMessage(false);
-      setSnackbarOpen(true);
+      setErrorHandler({
+        isSnackbarOpen: true,
+        snackbarMessage: 'An error occurred. Please try again.',
+        alertColor: 'error',
+      });
       setSnackbarMessage('An error occurred. Please try again.');
     }
   }
