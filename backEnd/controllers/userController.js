@@ -116,7 +116,6 @@ export async function login(req, res) {
 }
 
 //USER LOGOUT CONTROLLER
-
 export async function logout(req, res) {
   if (!req.session.isLogged)
     return res.status(403).json({ message: 'You are already logged out' });
@@ -131,7 +130,6 @@ export async function logout(req, res) {
   });
 }
 
-// USER LOGOUT CONTROLLER
 export async function updateUser(req, res) {
   if (!req.session.isLogged)
     return res
@@ -173,6 +171,22 @@ export async function updateUser(req, res) {
       .json({ message: 'User updated', updatedFields: validUpdateData });
   } catch (err) {
     return res.status(500).json({ message: 'Internal server error' });
+  }
+}
+
+export async function updateUserById(req, res) {
+  const { id } = req.params;
+  const updateData = req.body;
+  try {
+    const [updated] = await UserModel.update(updateData, { where: { id } });
+    if (!updated) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.status(200).json({ message: "User updated successfully" });
+  } catch (err) {
+    res
+      .status(500)
+      .json({ message: "Internal server error", error: err.message });
   }
 }
 
@@ -222,5 +236,42 @@ export async function registerAdmin(req, res) {
     res
       .status(500)
       .json({ message: 'internal server error', err: err.message });
+  }
+}
+
+export async function getAllUsers(req, res) {
+  try {
+    const users = await UserModel.findAll({
+      attributes: [
+        "id",
+        "firstName",
+        "lastName",
+        "email",
+        "phoneNumber",
+        "address",
+        "postCode",
+        "admin",
+      ],
+    });
+    res.status(200).json(users);
+  } catch (err) {
+    res
+      .status(500)
+      .json({ message: "Internal server error", error: err.message });
+  }
+}
+
+export async function deleteUser(req, res) {
+  const { id } = req.params;
+  try {
+    const deleted = await UserModel.destroy({ where: { id } });
+    if (!deleted) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.status(200).json({ message: "User deleted successfully" });
+  } catch (err) {
+    res
+      .status(500)
+      .json({ message: "Internal server error", error: err.message });
   }
 }

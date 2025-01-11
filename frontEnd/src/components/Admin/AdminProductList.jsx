@@ -1,6 +1,8 @@
 import {
+  Backdrop,
   Box,
   Button,
+  CircularProgress,
   Modal,
   Paper,
   TextField,
@@ -10,168 +12,205 @@ import { DataGrid } from "@mui/x-data-grid";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import Textarea from "@mui/joy/Textarea";
-import { useState } from "react";
-
-// PVZ
-const products = [
-  {
-    id: 1,
-    name: "Xbox 360",
-    price: 299,
-    discount: 15,
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer tincidunt porta lacinia. Curabitur sed arcu et orci ornare volutpat. Morbi",
-    rating: 4.5,
-  },
-  {
-    id: 2,
-    name: "PlayStation 4",
-    price: 349,
-    discount: 10,
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer tincidunt porta lacinia. Curabitur sed arcu et orci ornare volutpat. Morbi",
-    rating: 4.7,
-  },
-  {
-    id: 3,
-    name: "Nintendo Switch",
-    price: 299,
-    discount: 5,
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer tincidunt porta lacinia. Curabitur sed arcu et orci ornare volutpat. Morbi",
-    rating: 4.8,
-  },
-  {
-    id: 4,
-    name: "Samsung Galaxy S21",
-    price: 799,
-    discount: 20,
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer tincidunt porta lacinia. Curabitur sed arcu et orci ornare volutpat. Morbi",
-    rating: 4.6,
-  },
-  {
-    id: 5,
-    name: "Apple MacBook Air",
-    price: 999,
-    discount: 10,
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer tincidunt porta lacinia. Curabitur sed arcu et orci ornare volutpat. Morbi",
-    rating: 4.9,
-  },
-  {
-    id: 6,
-    name: "Google Pixel 6",
-    price: 599,
-    discount: 12,
-    description:
-      "High-performance phone with an advanced camera and long-lasting battery for everyday use.",
-    rating: 4.7,
-  },
-  {
-    id: 7,
-    name: "Dell XPS 13",
-    price: 1199,
-    discount: 18,
-    description:
-      "A premium ultrabook with a stunning display and exceptional build quality for professionals.",
-    rating: 4.8,
-  },
-  {
-    id: 8,
-    name: "Sony WH-1000XM5",
-    price: 349,
-    discount: 8,
-    description:
-      "Industry-leading noise-canceling headphones with superb sound quality and comfortable design.",
-    rating: 4.9,
-  },
-  {
-    id: 9,
-    name: "GoPro HERO 10",
-    price: 399,
-    discount: 25,
-    description:
-      "A compact action camera capable of shooting 5.3K video with incredible stabilization.",
-    rating: 4.6,
-  },
-  {
-    id: 10,
-    name: "Kindle Paperwhite",
-    price: 129,
-    discount: 5,
-    description:
-      "A waterproof e-reader with a high-resolution display and adjustable warm light.",
-    rating: 4.8,
-  },
-];
-
-const columns = (handleEdit, handleDelete) => [
-  { field: "id", headerName: "ID", width: 70 },
-  { field: "productName", headerName: "Product Name", width: 250 },
-  { field: "price", headerName: "Price", width: 130 },
-  { field: "discount", headerName: "Discount", width: 130 },
-  { field: "description", headerName: "Description", flex: 1 },
-  { field: "rating", headerName: "Rating", width: 70 },
-  {
-    field: "actions",
-    headerName: "Actions",
-    width: 130,
-
-    // HOW TABLE DATA IS FETCHED
-    renderCell: (params) => (
-      <>
-        <EditIcon
-          sx={{ cursor: "pointer" }}
-          onClick={() => {
-            const product = rows.find((row) => row.id === params.id);
-            console.log(product);
-            handleEdit(product);
-          }}
-        />
-        <DeleteForeverIcon
-          sx={{ cursor: "pointer", color: "red" }}
-          onClick={() => {
-            const product = rows.find((row) => row.id === params.id);
-            handleDelete(product);
-          }}
-        />
-      </>
-    ),
-  },
-];
-
-// Map every product
-const rows = products.map((product) => ({
-  id: product.id,
-  productName: product.name,
-  price: product.price,
-  discount: product.discount,
-  description: product.description,
-  rating: product.rating,
-}));
-
-const paginationModel = { page: 0, pageSize: 10 };
+import { useContext, useEffect, useState } from "react";
+import SnackbarComponent from "../SnackBarComponent";
+import SessionContext from "../../context/SessionContext";
 
 export default function ProductList() {
+  const { setErrorHandler } = useContext(SessionContext);
+
   const [open, setOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [data, setData] = useState();
+  const [loading, setLoading] = useState(true);
+
+  // fetch data
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const promise = await fetch("http://localhost/server/api/product/");
+        const response = await promise.json();
+        setData(response);
+        setLoading(false);
+      } catch (error) {
+        setErrorHandler({
+          isSnackbarOpen: true,
+          snackbarMessage: error,
+          alertColor: "error",
+        });
+        setLoading(false);
+      }
+    }
+    console.log("Fetch updated");
+    fetchData();
+  }, []);
+
+  const columns = (handleEdit, handleDelete) => [
+    { field: "id", headerName: "ID", width: 70 },
+    { field: "productName", headerName: "Product Name", width: 250 },
+    { field: "price", headerName: "Price", width: 130 },
+    { field: "discount", headerName: "Discount", width: 130 },
+    { field: "description", headerName: "Description", flex: 1 },
+    { field: "rating", headerName: "Rating", width: 70 },
+    {
+      field: "actions",
+      headerName: "Actions",
+      width: 130,
+
+      // HOW TABLE DATA IS FETCHED
+      renderCell: (params) => (
+        <>
+          <EditIcon
+            sx={{ cursor: "pointer" }}
+            onClick={() => {
+              const product = data.find((row) => row.id === params.id);
+              handleEdit(product);
+            }}
+          />
+          <DeleteForeverIcon
+            sx={{ cursor: "pointer", color: "red" }}
+            onClick={() => {
+              const product = data.find((row) => row.id === params.id);
+              handleDelete(product);
+            }}
+          />
+        </>
+      ),
+    },
+  ];
+
+  const paginationModel = { page: 0, pageSize: 10 };
+
+  // Map every product
+  const rows = data?.map((product) => ({
+    id: product.id,
+    productName: product.name,
+    price: product.price,
+    discount: product.discount,
+    description: product.description,
+    rating: product.rating,
+  }));
 
   function handleEdit(id) {
     setSelectedProduct(id);
     setOpen(true);
   }
-  function handleDelete(id) {
-    console.log(id);
+  async function handleDelete(selectedProduct) {
+    try {
+      const promise = await fetch(
+        `http://localhost/server/api/product/${selectedProduct.id}`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      if (promise.ok) {
+        setData((prevData) =>
+          prevData.filter((product) => product.id !== selectedProduct.id)
+        );
+
+        setErrorHandler({
+          isSnackbarOpen: true,
+          snackbarMessage: "Product deleted",
+          alertColor: "success",
+        });
+      } else {
+        setErrorHandler({
+          isSnackbarOpen: true,
+          snackbarMessage: "Something went wrong",
+          alertColor: "error",
+        });
+      }
+    } catch (error) {
+      setErrorHandler({
+        isSnackbarOpen: true,
+        snackbarMessage: error.message || "An unknown error occurred",
+        alertColor: "error",
+      });
+    }
+
+    handleClose();
   }
   function handleClose() {
     setOpen(false);
     setSelectedProduct(null);
   }
+  async function handleSaveChanges(event) {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+
+    const editedData = {
+      name: formData?.get("productName"),
+      price: +formData?.get("Price"),
+      discount: +formData?.get("discount"),
+      description: formData?.get("description"),
+    };
+
+    // Jeigu changes nebuvo padaryti.
+    const noChanges = Object.keys(editedData).every(
+      (key) => editedData[key] === selectedProduct[key]
+    );
+
+    if (noChanges) {
+      handleClose();
+      return;
+    }
+
+    try {
+      const promise = await fetch(
+        `http://localhost/server/api/product/${selectedProduct.id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(editedData),
+        }
+      );
+      const response = await promise.json();
+      if (promise.ok) {
+        setData((prevData) =>
+          prevData.map((product) =>
+            product.id === selectedProduct.id
+              ? { ...product, ...editedData }
+              : product
+          )
+        );
+        setErrorHandler({
+          isSnackbarOpen: true,
+          snackbarMessage: response,
+          alertColor: "success",
+        });
+      } else {
+        setErrorHandler({
+          isSnackbarOpen: true,
+          snackbarMessage: response,
+          alertColor: "error",
+        });
+      }
+    } catch (error) {
+      setErrorHandler({
+        isSnackbarOpen: true,
+        snackbarMessage: error,
+        alertColor: "error",
+      });
+    }
+
+    handleClose();
+  }
   return (
     <>
-      {/* TABLE */}
-      <Paper sx={{ minHeight: 400, width: "100%" }}>
+      {/* jeigu ilgai krauna sukimosi icon per visa ekrana suksis */}
+      <Backdrop
+        sx={(theme) => ({ color: "#fff", zIndex: theme.zIndex.drawer + 1 })}
+        open={loading}
+        onClick={handleClose}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
+      {/* -------------------- */}
+
+      <Paper sx={{ minHeight: 400, width: "100%", marginTop: "2.25rem" }}>
         <DataGrid
           rows={rows}
           columns={columns(handleEdit, handleDelete)}
@@ -180,7 +219,6 @@ export default function ProductList() {
           sx={{ border: 0 }}
         />
       </Paper>
-
       {/* MODULE SETUP START */}
       <Modal
         open={open}
@@ -207,13 +245,13 @@ export default function ProductList() {
           </Typography>
 
           {/* PRODUCT NAME */}
-          <div className="flex flex-col gap-4">
+          <form onSubmit={handleSaveChanges} className="flex flex-col gap-4">
             <TextField
               type="text"
               variant="standard"
               label="Product Name"
               name="productName"
-              value={selectedProduct ? selectedProduct.productName : ""}
+              defaultValue={selectedProduct?.name}
             />
 
             {/* PRODUCT PRICE */}
@@ -222,7 +260,7 @@ export default function ProductList() {
               variant="standard"
               label="Price"
               name="Price"
-              value={selectedProduct ? selectedProduct.price : ""}
+              defaultValue={selectedProduct?.price}
             />
 
             {/* PRODUCT DISCOUNT */}
@@ -231,7 +269,7 @@ export default function ProductList() {
               variant="standard"
               label="Discount"
               name="discount"
-              value={selectedProduct ? selectedProduct.discount : ""}
+              defaultValue={selectedProduct?.discount}
             />
 
             {/* PRODUCT DESCRIPTION */}
@@ -247,7 +285,7 @@ export default function ProductList() {
                 variant="standard"
                 label="Description"
                 name="description"
-                value={selectedProduct ? selectedProduct.description : ""}
+                defaultValue={selectedProduct?.description}
               />
             </div>
 
@@ -257,42 +295,44 @@ export default function ProductList() {
               variant="standard"
               label="Rating"
               name="rating"
-              value={selectedProduct ? selectedProduct.rating : ""}
+              defaultValue={selectedProduct?.rating}
               disabled
             />
-          </div>
-
-          {/* INSIDE MODULE BUTTONS */}
-          <Button
-            variant="contained"
-            onClick={handleClose}
-            sx={{
-              mt: 2,
-              backgroundColor: "#111827",
-              "&:hover": {
-                backgroundColor: "#16a34a",
-              },
-            }}
-          >
-            Save Changes
-          </Button>
-          <Button
-            variant="contained"
-            onClick={handleClose}
-            sx={{
-              mt: 2,
-              ml: 1,
-              color: "white",
-              backgroundColor: "#111827",
-              "&:hover": {
-                backgroundColor: "#991b1b",
-              },
-            }}
-          >
-            Cancel
-          </Button>
+            <div>
+              <Button
+                variant="contained"
+                sx={{
+                  mt: 2,
+                  backgroundColor: "#111827",
+                  "&:hover": {
+                    backgroundColor: "#16a34a",
+                  },
+                }}
+                type="submit"
+              >
+                Save Changes
+              </Button>
+              <Button
+                variant="contained"
+                onClick={handleClose}
+                sx={{
+                  mt: 2,
+                  ml: 1,
+                  color: "white",
+                  backgroundColor: "#111827",
+                  "&:hover": {
+                    backgroundColor: "#991b1b",
+                  },
+                }}
+              >
+                Cancel
+              </Button>
+            </div>
+            {/* INSIDE MODULE BUTTONS */}
+          </form>
         </Box>
       </Modal>
+      <SnackbarComponent />
     </>
   );
 }
