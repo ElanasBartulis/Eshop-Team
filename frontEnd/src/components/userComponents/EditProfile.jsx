@@ -6,6 +6,7 @@ import { registrationSchema } from '../../../../backEnd/utils/validations/UserSc
 export default function EditProfile({ activeSection }) {
   const { setErrorHandler, updateUserData, userData } =
     useContext(SessionContext);
+
   //----------- normaliam erroru atvaizdavimui skirta consta// naudojama ant textfieldu kartu su snackbaru
   const fieldLabels = {
     email: 'Email',
