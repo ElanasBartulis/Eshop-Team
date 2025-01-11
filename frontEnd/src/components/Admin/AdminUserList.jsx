@@ -3,6 +3,7 @@ import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper
 import SnackbarComponent from "../SnackBarComponent";
 import { useContext } from "react";
 import SessionContext from '../../context/SessionContext';
+import { registrationSchema } from '../../utils/validations/UserSchema'
 
 export default function UserList() {
   const [users, setUsers] = useState([]);
@@ -70,6 +71,25 @@ export default function UserList() {
 
   const handleUpdate = async () => {
     try {
+      // Validate the data before sending to API
+      const validationResult = registrationSchema.safeParse({
+        firstName: editUser.firstName,
+        lastName: editUser.lastName,
+        email: editUser.email,
+        phoneNumber: editUser.phoneNumber,
+        address: editUser.address,
+        postCode: editUser.postCode
+      });
+
+      if (!validationResult.success) {
+        setErrorHandler({
+          isSnackbarOpen: true,
+          snackbarMessage: validationResult.error.issues[0].message,
+          alertColor: "error",
+        });
+        return; 
+      }
+
       const response = await fetch(`http://localhost/server/api/users/users/${editUser.id}`, {
         method: "PUT",
         headers: {
@@ -77,25 +97,26 @@ export default function UserList() {
         },
         body: JSON.stringify(editUser),
       });
+
       if (!response.ok) {
         setErrorHandler({
           isSnackbarOpen: true,
           snackbarMessage: "Failed to update user",
           alertColor: "error",
         });
-      } else {
-        setErrorHandler({
-          isSnackbarOpen: true,
-          snackbarMessage: "Successfully updated data",
-          alertColor: "success",
-        });
+        return;
       }
-      console.log("fetchinu");
+
       const updatedUsers = users.map((user) =>
         user.id === editUser.id ? editUser : user
       );
       setUsers(updatedUsers);
       setEditUser(null);
+      setErrorHandler({
+        isSnackbarOpen: true,
+        snackbarMessage: "User updated successfully",
+        alertColor: "success",
+      });
     } catch (err) {
       setErrorHandler({
         isSnackbarOpen: true,
@@ -103,7 +124,7 @@ export default function UserList() {
         alertColor: "error",
       });
     }
-  };
+};
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
