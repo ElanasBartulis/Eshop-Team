@@ -1,7 +1,8 @@
 import Textarea from "@mui/joy/Textarea";
-import { TextField } from "@mui/material";
+import { Button, styled, TextField } from "@mui/material";
 import { useContext, useState } from "react";
 import SessionContext from "../../context/SessionContext";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 
 export default function NewProduct() {
   const { setErrorHandler } = useContext(SessionContext);
@@ -27,6 +28,21 @@ export default function NewProduct() {
       description: formData?.get("description"),
       rating: 0,
     };
+
+    // Jei ne visi fieldai uzpildyti, nesiusti formos.
+    if (
+      !productData.name ||
+      !productData.price ||
+      !productData.discount ||
+      !productData.description
+    ) {
+      setErrorHandler({
+        isSnackbarOpen: true,
+        snackbarMessage: "Please fill in all the fields before submitting.",
+        alertColor: "error",
+      });
+      return;
+    }
 
     try {
       const promise = await fetch(`http://localhost/server/api/product`, {
@@ -60,6 +76,18 @@ export default function NewProduct() {
     }
   }
 
+  const VisuallyHiddenInput = styled("input")({
+    clip: "rect(0 0 0 0)",
+    clipPath: "inset(50%)",
+    height: 1,
+    overflow: "hidden",
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    whiteSpace: "nowrap",
+    width: 1,
+  });
+
   return (
     <>
       <div>
@@ -69,7 +97,7 @@ export default function NewProduct() {
             variant="outlined"
             type="text"
             fullWidth
-            required
+            // required
             label="Product name"
             name="productName"
             sx={{
@@ -86,9 +114,9 @@ export default function NewProduct() {
             variant="outlined"
             type="number"
             fullWidth
-            required
             label="Price"
             name="price"
+            // required
             value={minMaxPriceInput}
             onChange={(event) =>
               handleNumberChange(0, 1000000, event, setMinMaxPriceInput)
@@ -109,6 +137,7 @@ export default function NewProduct() {
             fullWidth
             label="Discount"
             name="discount"
+            // required
             value={minMaxDiscountInput}
             onChange={(event) =>
               handleNumberChange(0, 99, event, setMinMaxDiscountInput)
@@ -130,6 +159,7 @@ export default function NewProduct() {
               name="description"
               placeholder="Description"
               fullWidth
+              // required
               sx={{
                 "& .MuiOutlinedInput-root": {
                   "&.Mui-focused fieldset": {
@@ -143,11 +173,34 @@ export default function NewProduct() {
               }}
             />
           </div>
+          <Button
+            component="label"
+            role={undefined}
+            variant="contained"
+            tabIndex={-1}
+            startIcon={<CloudUploadIcon />}
+            sx={{
+              height: "3.25rem",
+              backgroundColor: "#111827",
+              "&:hover": {
+                transition: "all 0.15s ease-in-out",
+                color: "#white",
+                background: "#991b1b",
+              },
+            }}
+          >
+            Upload Photo
+            <VisuallyHiddenInput
+              type="file"
+              onChange={(event) => console.log(event.target.files)}
+              multiple
+            />
+          </Button>
           <button
             type="submit"
             className="block w-full rounded bg-gray-900 p-4 text-gray-50 text-sm font-medium transition hover:scale-105 hover:text-red-800"
           >
-            Save changes!
+            Add new product
           </button>
         </form>
       </div>
