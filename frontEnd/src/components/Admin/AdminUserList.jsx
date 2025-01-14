@@ -4,6 +4,7 @@ import SnackbarComponent from "../SnackBarComponent";
 import { useContext } from "react";
 import SessionContext from '../../context/SessionContext';
 import { registrationSchema } from '../../utils/validations/UserSchema'
+import DeleteConfirmation from "../DeleteConfirm";
 
 export default function UserList() {
   const [users, setUsers] = useState([]);
@@ -13,6 +14,11 @@ export default function UserList() {
   const { setErrorHandler } = useContext(SessionContext);
   const [page, setPage] = useState(0); 
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [deleteConfirmation, setDeleteConfirmation] = useState({
+    open: false,
+    userId: null,
+    userName: null
+  });
 
   useEffect(() => {
     fetchUsers();
@@ -37,11 +43,28 @@ export default function UserList() {
     }
   };
 
-  const handleDelete = async (id) => {
+  const handleDeleteClick = (user) => {
+    setDeleteConfirmation({
+      open: true,
+      userId: user.id,
+      userName: `${user.firstName} ${user.lastName}`
+    });
+  };
+
+  const handleCancelDelete = () => {
+    setDeleteConfirmation({
+      open: false,
+      userId: null,
+      userName: null
+    });
+  };
+
+  const handleConfirmDelete = async () => {
     try {
-      const response = await fetch(`http://localhost/server/api/users/users/${id}`, {
+      const response = await fetch(`http://localhost/server/api/users/users/${deleteConfirmation.userId}`, {
         method: "DELETE",
       });
+      
       if (!response.ok) {
         setErrorHandler({
           isSnackbarOpen: true,
@@ -49,7 +72,7 @@ export default function UserList() {
           alertColor: "error",
         });
       } else {
-        setUsers(users.filter((user) => user.id !== id));
+        setUsers(users.filter((user) => user.id !== deleteConfirmation.userId));
         setErrorHandler({
           isSnackbarOpen: true,
           snackbarMessage: "User deleted successfully",
@@ -62,6 +85,8 @@ export default function UserList() {
         snackbarMessage: err.message,
         alertColor: "error",
       });
+    } finally {
+      setDeleteConfirmation({ open: false, userId: null, userName: null });
     }
   };
 
@@ -189,7 +214,7 @@ export default function UserList() {
                       bgcolor: "#991B1B",
                       alignSelf: "flex-start",
                     }}
-                    onClick={() => handleDelete(user.id)}
+                    onClick={() => handleDeleteClick(user)}
                   >
                     Delete
                   </Button>
@@ -200,6 +225,13 @@ export default function UserList() {
         </Table>
       </TableContainer>
     
+      <DeleteConfirmation 
+        open={deleteConfirmation.open}
+        message={`Are you sure you want to delete user ${deleteConfirmation.userName}? This action cannot be undone.`}
+        onClose={handleCancelDelete}
+        onConfirm={handleConfirmDelete}
+      />
+
       <TablePagination
         rowsPerPageOptions={[5, 10, 25]}
         component="div"
