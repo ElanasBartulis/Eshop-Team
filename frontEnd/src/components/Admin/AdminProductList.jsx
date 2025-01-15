@@ -15,6 +15,7 @@ import Textarea from "@mui/joy/Textarea";
 import { useContext, useEffect, useState } from "react";
 import SnackbarComponent from "../SnackBarComponent";
 import SessionContext from "../../context/SessionContext";
+import DeleteConfirmation from "../DeleteConfirm";
 
 export default function ProductList() {
   const { setErrorHandler } = useContext(SessionContext);
@@ -23,6 +24,10 @@ export default function ProductList() {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [data, setData] = useState();
   const [loading, setLoading] = useState(true);
+  const [deleteConfirmation, setDeleteConfirmation] = useState({
+    open: false,
+    product: null,
+  });
 
   // fetch data
   useEffect(() => {
@@ -95,10 +100,24 @@ export default function ProductList() {
     setSelectedProduct(id);
     setOpen(true);
   }
-  async function handleDelete(selectedProduct) {
+  function handleDelete(product) {
+    setDeleteConfirmation({
+      open: true,
+      product,
+    });
+  }
+
+  function handleCancelDelete() {
+    setDeleteConfirmation({
+      open: false,
+      product: null,
+    });
+  }
+
+  async function handleConfirmDelete() {
     try {
       const promise = await fetch(
-        `http://localhost/server/api/product/${selectedProduct.id}`,
+        `http://localhost/server/api/product/${deleteConfirmation.product.id}`,
         {
           method: "DELETE",
         }
@@ -106,7 +125,7 @@ export default function ProductList() {
 
       if (promise.ok) {
         setData((prevData) =>
-          prevData.filter((product) => product.id !== selectedProduct.id)
+          prevData.filter((product) => product.id !== deleteConfirmation.product.id)
         );
 
         setErrorHandler({
@@ -129,7 +148,10 @@ export default function ProductList() {
       });
     }
 
-    handleClose();
+    setDeleteConfirmation({
+      open: false,
+      product: null,
+    });
   }
   function handleClose() {
     setOpen(false);
@@ -333,6 +355,12 @@ export default function ProductList() {
         </Box>
       </Modal>
       <SnackbarComponent />
+      <DeleteConfirmation 
+        open={deleteConfirmation.open}
+        message={`Are you sure you want to delete this product? This action cannot be undone.`}
+        onClose={handleCancelDelete}
+        onConfirm={handleConfirmDelete}
+      />
     </>
   );
 }
