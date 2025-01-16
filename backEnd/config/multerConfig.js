@@ -1,0 +1,38 @@
+import multer from "multer";
+import { fileURLToPath } from "url";
+import path from "path";
+
+const root = path.join(path.dirname(fileURLToPath(import.meta.url)), "..");
+const assetsFolder = path.join(root, "assets");
+const privateFolder = path.join(assetsFolder, "Private");
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, privateFolder);
+  },
+  filename: (req, file, cb) => {
+    const timeStamp = Date.now() % 10000;
+    cb(null, timeStamp + "-" + file.originalname);
+  },
+});
+
+function fileFilter(req, file, cb) {
+  const allowedTypes = ["image/jpeg", "image/png"];
+  if (allowedTypes.includes(file.mimetype)) {
+    cb(null, true);
+  } else {
+    cb(
+      new Error("Invalid file type. Only JPEG and PNG files are allowed."),
+      false
+    );
+  }
+}
+
+const uploadMw = multer({
+  storage,
+  fileFilter,
+  limits: {
+    fileSize: 1024 * 1024 * 5,
+  },
+});
+export default uploadMw;
