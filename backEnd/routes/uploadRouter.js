@@ -4,7 +4,7 @@ import uploadMw from "../config/multerConfig.js";
 
 const router = express.Router();
 
-// http://localhost/server/api/uploadImage
+// http://localhost/server/api/image
 router.post(
   "/image",
   uploadMw.single("addProduct"),

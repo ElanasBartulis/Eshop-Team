@@ -1,8 +1,10 @@
 export async function uploadImage(req, res) {
   try {
     console.log("File uploaded:", req.file);
-    if (!req.file) {
-      return res.status(400).send("No file uploaded");
+    if (!req.file || req.file === undefined) {
+      return res
+        .status(400)
+        .send("File is too big or file format is not JPEG or PNG");
     }
     res.status(200).json({
       message: "File uploaded successfully",

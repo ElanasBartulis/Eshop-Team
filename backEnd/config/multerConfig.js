@@ -21,10 +21,7 @@ function fileFilter(req, file, cb) {
   if (allowedTypes.includes(file.mimetype)) {
     cb(null, true);
   } else {
-    cb(
-      new Error("Invalid file type. Only JPEG and PNG files are allowed."),
-      false
-    );
+    cb(null, false, "Invalid file type. Only JPEG and PNG files are allowed.");
   }
 }
 
