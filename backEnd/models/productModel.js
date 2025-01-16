@@ -21,6 +21,9 @@ const productModel = sequelize.define(
     rating: {
       type: DataTypes.FLOAT,
     },
+    image: {
+      type: DataTypes.STRING,
+    },
   },
   { timestamps: true }
 );
