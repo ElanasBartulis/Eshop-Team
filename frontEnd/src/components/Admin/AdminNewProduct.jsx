@@ -17,7 +17,22 @@ export default function NewProduct() {
   }
 
   function handleFileChange(e) {
-    setFileInput(e.target.files[0]);
+    const file = e.target.files[0];
+    if (file) {
+      const allowedTypes = ["image/jpeg", "image/png"];
+      if (!allowedTypes.includes(file.type)) {
+        setErrorHandler({
+          isSnackbarOpen: true,
+          snackbarMessage:
+            "Invalid file type. Only JPEG and PNG files are allowed.",
+          alertColor: "error",
+        });
+        e.target.value = "";
+        setFileInput(null);
+        return;
+      }
+      setFileInput(file);
+    }
   }
 
   async function handleSubmit(e) {
@@ -42,6 +57,8 @@ export default function NewProduct() {
 
       const imageUploadResponse = await imageUploadPromise.json();
 
+      console.log(imageUploadPromise);
+
       if (!imageUploadResponse.ok) {
         setErrorHandler({
           isSnackbarOpen: true,
@@ -65,15 +82,13 @@ export default function NewProduct() {
       if (
         !productData.name ||
         !productData.price ||
-        !productData.discount ||
-        productData.discount === 0 ||
+        productData.discount < 0 ||
         !productData.description ||
         !fileInput
       ) {
         setErrorHandler({
           isSnackbarOpen: true,
-          snackbarMessage:
-            "Please fill in all the fields & upload an image before submitting.",
+          snackbarMessage: "Please fill all the fields before submitting.",
           alertColor: "error",
         });
         return;
@@ -125,7 +140,7 @@ export default function NewProduct() {
             type="text"
             fullWidth
             // required
-            label="Product name"
+            label="Product name *"
             name="productName"
             sx={{
               "& .MuiOutlinedInput-root.Mui-focused fieldset": {
@@ -141,7 +156,7 @@ export default function NewProduct() {
             variant="outlined"
             type="number"
             fullWidth
-            label="Price"
+            label="Price *"
             name="price"
             // required
             value={minMaxPriceInput}
@@ -184,7 +199,7 @@ export default function NewProduct() {
               multiline
               variant="outlined"
               name="description"
-              placeholder="Description"
+              placeholder="Description *"
               fullWidth
               // required
               sx={{
@@ -201,7 +216,12 @@ export default function NewProduct() {
             />
           </div>
 
-          <input type="file" name="addProduct" onChange={handleFileChange} />
+          <input
+            type="file"
+            name="addProduct"
+            onChange={handleFileChange}
+            accept="image/jpeg,image/png"
+          />
 
           <button
             type="submit"
