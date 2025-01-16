@@ -4,6 +4,8 @@ import Admin from './pages/Admin.jsx';
 import UserPanel from './pages/UserPanel';
 import SessionContext from './context/SessionContext.js';
 import { useState } from 'react';
+import useSessionCheck from './custom-hooks/useSessionCheck.js';
+import { Backdrop, CircularProgress } from '@mui/material';
 
 function App() {
   const [sessionState, setSessionState] = useState({ isLogged: false });
@@ -14,13 +16,24 @@ function App() {
     snackbarMessage: '',
     alertColor: 'error',
   });
-
-  ///Zilvio funkcija del userData atnaujinimo perduodama kontekste
+  const [isCheckingSession, setIsCheckingSession] = useState(true);
+  ///Naujai informacijai, po updeito gauti skirta funkcija
   const updateUserData = (newData) => {
     setUserData((prev) => ({ ...prev, ...newData }));
   };
-  ////___________________________________
 
+  useSessionCheck({ setSessionState, setUserData, setIsCheckingSession });
+
+  if (isCheckingSession) {
+    return (
+      <Backdrop
+        sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}
+        open={true}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
+    );
+  }
   return (
     <SessionContext.Provider
       value={{

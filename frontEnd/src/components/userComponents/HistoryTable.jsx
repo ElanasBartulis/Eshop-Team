@@ -19,8 +19,6 @@ import {
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 
-// import rootShouldForwardProp from '@mui/material/styles/rootShouldForwardProp';
-
 export default function HistoryTable() {
   const [selectedHistoryId, setSelectedHistoryId] = useState(null);
   const [page, setPage] = useState(0); // dabartinis page 0
@@ -39,7 +37,7 @@ export default function HistoryTable() {
         );
         if (promise.ok) {
           const response = await promise.json();
-          console.log(response.totalHistoriesCount);
+
           setTotalHistoriesCount(+response.totalHistoriesCount);
           setUserHistories(response.user.userHistories);
         }
@@ -50,7 +48,7 @@ export default function HistoryTable() {
       }
     }
     getHistoryData();
-  }, [page, itemsPerPage]);
+  }, [page, itemsPerPage, userData.id]);
 
   function handleListChange(e, newPage) {
     setPage(newPage);
