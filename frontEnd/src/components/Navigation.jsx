@@ -4,8 +4,16 @@ import shoppingCart from '../assets/Public/shopping-cart.svg';
 import ModalLogin from './ModalLogin';
 import { Link } from 'react-router-dom';
 import Logout from './Logout';
+import ShoppingCartModal from './ShoppingCartModal';
+import { useState } from "react";
+import { Modal, Box } from "@mui/material";
 
 export default function Nav() {
+  const [open, setOpen] = useState(false);
+  
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
   return (
     <nav className="flex justify-between items-center pt-4">
       <div>
@@ -39,11 +47,31 @@ export default function Nav() {
           />
           {/* Ar prisijunges? <ZilvinoAccountSettings/> : <ModalLogin/> */}
           <ModalLogin />
+          <Modal
+            open={open}
+            onClose={handleClose}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+          >
+            <Box
+              sx={{
+                position: "absolute",
+                top: "10%",
+                right: "10%",
+                width: 450,
+                bgcolor: "background.paper",
+                p: 4,
+                borderRadius: 1,
+              }}
+            >
+              <ShoppingCartModal/>
+            </Box>
+          </Modal>
         </div>
 
         <Logout />
 
-        <div className="flex gap-2 items-center">
+        <div className="flex gap-2 items-center" onClick={handleOpen} >
           <img
             src={shoppingCart}
             alt=""
