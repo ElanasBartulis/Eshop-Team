@@ -1,22 +1,21 @@
-import { useState } from "react";
-import { Modal, Box } from "@mui/material";
-import Rating from "@mui/material/Rating";
-import ProductOverview from "./ProductOverview";
+import { useState } from 'react';
+import { Modal, Box } from '@mui/material';
+import Rating from '@mui/material/Rating';
+import ProductOverview from './ProductOverview';
 
-export default function ProductCard() {
+export default function ProductCard({ data }) {
   const [open, setOpen] = useState(false);
-
+  const { name, price, rating } = data;
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-    return (
-      <div>
-        <div
-        onClick={handleOpen} 
+
+  return (
+    <div>
+      <div
+        onClick={handleOpen}
         className="group relative block overflow-hidden cursor-pointer"
       >
-        <button
-          className="absolute end-4 top-4 z-10 rounded-full bg-white p-1.5 text-gray-900 transition hover:text-gray-900/75"
-        >
+        <button className="absolute end-4 top-4 z-10 rounded-full bg-white p-1.5 text-gray-900 transition hover:text-gray-900/75">
           <span className="sr-only">Wishlist</span>
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -45,22 +44,22 @@ export default function ProductCard() {
             New
           </span>
 
-          <h3 className="mt-4 text-lg font-medium text-gray-900">
-            Descent Board game
-          </h3>
+          <h3 className="mt-4 text-lg font-medium text-gray-900">{name}</h3>
 
-          <p className="mt-1.5 font-semibold text-sm text-gray-700">85.99€</p>
-          <Rating name="half-rating" defaultValue={2.5} precision={0.5} />
+          <p className="mt-1.5 font-semibold text-sm text-gray-700">{price}€</p>
+          <Rating
+            name="half-rating"
+            defaultValue={rating}
+            precision={1}
+          />
           <form className="mt-4">
-            <button
-              className="block w-full rounded bg-gray-900 p-4 text-gray-50 text-sm font-medium transition hover:scale-105 hover:text-red-800"
-            >
+            <button className="block w-full rounded bg-gray-900 p-4 text-gray-50 text-sm font-medium transition hover:scale-105 hover:text-red-800">
               Add to Cart
             </button>
           </form>
         </div>
       </div>
-        <Modal
+      <Modal
         open={open}
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
@@ -68,19 +67,19 @@ export default function ProductCard() {
       >
         <Box
           sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
             width: 900,
-            bgcolor: "background.paper",
+            bgcolor: 'background.paper',
             p: 4,
             borderRadius: 1,
           }}
         >
-          <ProductOverview/>
+          <ProductOverview data={data} />
         </Box>
       </Modal>
     </div>
-    );
-  }
+  );
+}
