@@ -1,22 +1,30 @@
-import { useState } from "react";
-import { Modal, Box } from "@mui/material";
-import Rating from "@mui/material/Rating";
-import ProductOverview from "./ProductOverview";
+import { useContext, useEffect, useState } from 'react';
+import { Modal, Box } from '@mui/material';
+import Rating from '@mui/material/Rating';
+import ProductOverview from './ProductOverview';
+import SessionContext from './../context/SessionContext';
+import { useProductRating } from '../custom-hooks/useProductRating';
 
-export default function ProductCard() {
+export default function ProductCard({ data, onRatingUpdate }) {
   const [open, setOpen] = useState(false);
-
+  const { name, price, rating, id } = data;
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-    return (
-      <div>
-        <div
-        onClick={handleOpen} 
-        className="group relative block overflow-hidden cursor-pointer"
-      >
-        <button
-          className="absolute end-4 top-4 z-10 rounded-full bg-white p-1.5 text-gray-900 transition hover:text-gray-900/75"
-        >
+  const {
+    rating: currentRating,
+    ratingCount,
+    handleRating,
+    getRatingCount,
+  } = useProductRating(id, rating, onRatingUpdate);
+
+  useEffect(() => {
+    getRatingCount();
+  }, []);
+
+  return (
+    <div>
+      <div className="group relative block overflow-hidden cursor-pointer">
+        <button className="absolute end-4 top-4 z-10 rounded-full bg-white p-1.5 text-gray-900 transition hover:text-gray-900/75">
           <span className="sr-only">Wishlist</span>
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -35,6 +43,7 @@ export default function ProductCard() {
         </button>
 
         <img
+          onClick={handleOpen}
           src="https://images.unsplash.com/photo-1549056572-75914d5d5fd4?q=80&w=1964&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
           alt=""
           className="h-64 w-full object-cover transition duration-500 group-hover:scale-105 sm:h-72"
@@ -45,16 +54,23 @@ export default function ProductCard() {
             New
           </span>
 
-          <h3 className="mt-4 text-lg font-medium text-gray-900">
-            Descent Board game
+          <h3
+            onClick={handleOpen}
+            className="mt-4 text-lg font-medium text-gray-900 hover:text-red-800"
+          >
+            {name}
           </h3>
 
-          <p className="mt-1.5 font-semibold text-sm text-gray-700">85.99€</p>
-          <Rating name="half-rating" defaultValue={2.5} precision={0.5} />
+          <p className="mt-1.5 font-semibold text-sm text-gray-700">{price}€</p>
+          <Rating
+            name={`rating-${id}`}
+            value={currentRating}
+            precision={0.5}
+            onChange={handleRating}
+          />
+          <p>{ratingCount}</p>
           <form className="mt-4">
-            <button
-              className="block w-full rounded bg-gray-900 p-4 text-gray-50 text-sm font-medium transition hover:scale-105 hover:text-red-800"
-            >
+            <button className="block w-full rounded bg-gray-900 p-4 text-gray-50 text-sm font-medium transition hover:scale-105 hover:text-red-800">
               Add to Cart
             </button>
           </form>
@@ -68,19 +84,22 @@ export default function ProductCard() {
       >
         <Box
           sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
             width: 900,
-            bgcolor: "background.paper",
+            bgcolor: 'background.paper',
             p: 4,
             borderRadius: 1,
           }}
         >
-          <ProductOverview/>
+          <ProductOverview
+            data={data}
+            onRatingUpdate={onRatingUpdate}
+          />
         </Box>
       </Modal>
     </div>
-    );
-  }
+  );
+}
