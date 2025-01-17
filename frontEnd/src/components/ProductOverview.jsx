@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Rating from '@mui/material/Rating';
 import { Input, IconButton, Typography } from '@material-tailwind/react';
 import Minus from '../assets/Public/minus.svg';
@@ -9,15 +9,28 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import { Navigation, Pagination } from 'swiper/modules';
+import { useProductRating } from '../custom-hooks/useProductRating';
 
-const ProductOverview = ({ data }) => {
+const ProductOverview = ({ data, onRatingUpdate }) => {
   const [value, setValue] = useState(0);
+  const { name, price, description, rating, id } = data;
   const images = [
     'https://images.unsplash.com/photo-1549056572-75914d5d5fd4?q=80&w=1964&auto=format&fit=crop',
     'https://images.unsplash.com/photo-1549056572-75914d5d5fd4?q=80&w=1964&auto=format&fit=crop',
     'https://images.unsplash.com/photo-1549056572-75914d5d5fd4?q=80&w=1964&auto=format&fit=crop',
   ];
-  const { name, price, description, rating } = data;
+
+  const {
+    rating: currentRating,
+    ratingCount,
+    handleRating,
+    getRatingCount,
+  } = useProductRating(id, rating, onRatingUpdate);
+
+  useEffect(() => {
+    getRatingCount();
+  }, []);
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex flex-col lg:flex-row gap-8">
@@ -46,9 +59,11 @@ const ProductOverview = ({ data }) => {
           <div className="flex items-center mb-4">
             <Rating
               name="half-rating"
-              defaultValue={rating}
-              precision={1}
+              value={currentRating}
+              precision={0.5}
+              onChange={handleRating}
             />
+            <p>{ratingCount}</p>
           </div>
 
           <p className="text-2xl font-semibold mb-4">{price}€</p>

@@ -1,24 +1,23 @@
 import { useEffect, useState } from 'react';
 import ProductCard from './ProductCard';
 import Sorting from './Sorting';
-
+import { rating } from '@material-tailwind/react';
+import { useProductList } from '../custom-hooks/useProductList';
+//tevinis elementas DASHBOARD
 export default function DashboardMain() {
-  const [products, setProducts] = useState([]);
+  const { getAllProducts, products } = useProductList();
 
   useEffect(() => {
-    async function getProductData() {
-      try {
-        const promise = await fetch('http://localhost/server/api/product');
-        if (promise.ok) {
-          const response = await promise.json();
-          setProducts(response);
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    }
-    getProductData();
+    getAllProducts();
   }, []);
+
+  //UPDEITINAM PRODUKTU REITINGA
+  function updateProductRating(productId, newRating) {
+    (prevProducts) =>
+      prevProducts.map((product) =>
+        product.id === productId ? { ...product, rating: newRating } : product
+      );
+  }
 
   return (
     <div className="mb-20 mt-16">
@@ -35,6 +34,7 @@ export default function DashboardMain() {
           <ProductCard
             data={data}
             key={data.id}
+            onRatingUpdate={updateProductRating}
           />
         ))}
       </div>
