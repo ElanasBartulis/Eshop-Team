@@ -7,8 +7,10 @@ import Logout from './Logout';
 import ShoppingCartModal from './ShoppingCartModal';
 import { useState } from "react";
 import { Modal, Box } from "@mui/material";
+import  SearchComponent  from '../components/SearchComponent';
+import SearchContext from '../context/SearchContext';
 
-export default function Nav() {
+export default function Nav({ children }) {
   const [open, setOpen] = useState(false);
   
   const handleOpen = () => setOpen(true);
@@ -28,7 +30,9 @@ export default function Nav() {
       </div>
 
       <div className="flex justify-evenly gap-8">
-        <div className="relative max-w-md mx-auto">
+        <SearchComponent />
+        {/* <div className="relative max-w-md mx-auto">
+          {children}
           <input
             type="text"
             placeholder="Search..."
@@ -37,7 +41,7 @@ export default function Nav() {
           <button className="absolute top-1/2 right-2 -translate-y-1/2 px-3 py-1 text-gray-50 bg-gray-900 rounded hover:bg-red-800 hover:text-gray-50">
             Go
           </button>
-        </div>
+        </div> */}
 
         <div className="flex gap-2 items-center">
           <img
