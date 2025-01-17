@@ -17,5 +17,5 @@ export function useProductList() {
     }
   }
 
-  return { getAllProducts, products };
+  return { getAllProducts, products, setProducts };
 }

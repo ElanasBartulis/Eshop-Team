@@ -6,15 +6,15 @@ export async function addRating(req, res) {
   const { userId, productId, ratings } = req.body;
   try {
     // /Tikrinam ar useris jau reitingavo produkta:
-    // const existingRating = await ratingModel.findOne({
-    //   where: { userId, productId },
-    // });
+    const existingRating = await ratingModel.findOne({
+      where: { userId, productId },
+    });
 
-    // if (existingRating) {
-    //   return res
-    //     .status(400)
-    //     .json({ message: 'You have already rated this product' });
-    // }
+    if (existingRating) {
+      return res
+        .status(400)
+        .json({ message: 'You have already rated this product' });
+    }
 
     // Addinam reitinga
     await ratingModel.create({ userId, productId, ratings });
@@ -54,11 +54,9 @@ export async function getProductRatingByProductId(req, res) {
     return res.status(404).json({ message: 'Product not found' });
   }
 
-  return res
-    .status(200)
-    .json({
-      rating: product.rating,
-      productId: product.id,
-      countOfRatings: allratings.length,
-    });
+  return res.status(200).json({
+    rating: product.rating,
+    productId: product.id,
+    countOfRatings: allratings.length,
+  });
 }

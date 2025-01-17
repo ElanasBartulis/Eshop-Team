@@ -56,14 +56,14 @@ const ProductOverview = ({ data, onRatingUpdate }) => {
         <div className="lg:w-1/2 relative">
           <h1 className="text-3xl font-bold mb-4">{name}</h1>
 
-          <div className="flex items-center mb-4">
+          <div className="flex items-center mb-4 gap-1">
             <Rating
               name="half-rating"
               value={currentRating}
               precision={0.5}
               onChange={handleRating}
             />
-            <p>{ratingCount}</p>
+            <p>({ratingCount})</p>
           </div>
 
           <p className="text-2xl font-semibold mb-4">{price}€</p>
@@ -87,7 +87,8 @@ const ProductOverview = ({ data, onRatingUpdate }) => {
               type="number"
               value={value}
               onChange={(e) => setValue(Number(e.target.value))}
-              className="!min-w-[90px] !h-12 !border-t-blue-gray-400 placeholder:text-blue-gray-400 placeholder:opacity-100  focus:!border-t-gray-900 appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none w-10 row-start-2 text-center mx-3"
+              className=" !border-t-blue-gray-400 placeholder:text-blue-gray-400 placeholder:opacity-100  focus:!border-t-gray-900 appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none w-10 row-start-2 text-center mx-3"
+              style={{ width: '70px', height: '50px' }}
               labelProps={{
                 className: 'before:content-none after:content-none',
               }}

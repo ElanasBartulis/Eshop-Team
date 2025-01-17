@@ -5,7 +5,7 @@ import { rating } from '@material-tailwind/react';
 import { useProductList } from '../custom-hooks/useProductList';
 //tevinis elementas DASHBOARD
 export default function DashboardMain() {
-  const { getAllProducts, products } = useProductList();
+  const { getAllProducts, products, setProducts } = useProductList();
 
   useEffect(() => {
     getAllProducts();
@@ -13,10 +13,11 @@ export default function DashboardMain() {
 
   //UPDEITINAM PRODUKTU REITINGA
   function updateProductRating(productId, newRating) {
-    (prevProducts) =>
+    setProducts((prevProducts) =>
       prevProducts.map((product) =>
         product.id === productId ? { ...product, rating: newRating } : product
-      );
+      )
+    );
   }
 
   return (

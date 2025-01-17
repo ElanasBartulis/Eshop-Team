@@ -7,7 +7,7 @@ import { useProductRating } from '../custom-hooks/useProductRating';
 
 export default function ProductCard({ data, onRatingUpdate }) {
   const [open, setOpen] = useState(false);
-  const { name, price, rating, id } = data;
+  const { name, price, rating, id, discount } = data;
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const {
@@ -49,10 +49,14 @@ export default function ProductCard({ data, onRatingUpdate }) {
           className="h-64 w-full object-cover transition duration-500 group-hover:scale-105 sm:h-72"
         />
 
-        <div className="relative border border-gray-100 bg-white p-6">
-          <span className="whitespace-nowrap bg-red-800 px-3 py-1.5 text-gray-50 text-xs font-medium">
-            New
-          </span>
+        <div className="  relative border border-gray-100 bg-white p-6">
+          {discount === null ? (
+            ''
+          ) : (
+            <span className="whitespace-nowrap bg-red-800 px-3 py-1.5 text-gray-50 text-xs font-medium">
+              {discount} %
+            </span>
+          )}
 
           <h3
             onClick={handleOpen}
@@ -62,13 +66,15 @@ export default function ProductCard({ data, onRatingUpdate }) {
           </h3>
 
           <p className="mt-1.5 font-semibold text-sm text-gray-700">{price}€</p>
-          <Rating
-            name={`rating-${id}`}
-            value={currentRating}
-            precision={0.5}
-            onChange={handleRating}
-          />
-          <p>{ratingCount}</p>
+          <div className="flex gap-1">
+            <Rating
+              name={`rating-${id}`}
+              value={currentRating}
+              precision={0.5}
+              onChange={handleRating}
+            />
+            <p>({ratingCount})</p>
+          </div>
           <form className="mt-4">
             <button className="block w-full rounded bg-gray-900 p-4 text-gray-50 text-sm font-medium transition hover:scale-105 hover:text-red-800">
               Add to Cart
