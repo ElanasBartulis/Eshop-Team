@@ -1,6 +1,12 @@
-
+import { useNavigate } from 'react-router-dom';
 
 export default function ShoppingCartModal() {
+    const navigate = useNavigate();
+
+    const handleClick = () => {
+        navigate('/checkout');
+    }
+
     return (
         <div
         className="relative border border-gray-600 bg-gray-100 px-4 py-8 sm:px-6 lg:px-8"
@@ -180,15 +186,10 @@ export default function ShoppingCartModal() {
             </ul>
 
             <div className="space-y-4 text-center">
-            <a
-                href="#"
-                className="block rounded border border-gray-600 px-5 py-3 text-sm text-gray-600 transition hover:ring-1 hover:ring-gray-400"
-            >
-                View my cart (2)
-            </a>
-
+            
             <button
               className="block w-full rounded bg-gray-900 p-4 text-gray-50 text-sm font-medium transition hover:scale-105 hover:text-red-800"
+              onClick={handleClick}
             >
               Checkout
             </button>

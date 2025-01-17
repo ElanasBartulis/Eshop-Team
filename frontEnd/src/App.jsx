@@ -6,6 +6,7 @@ import SessionContext from './context/SessionContext.js';
 import { useState } from 'react';
 import useSessionCheck from './custom-hooks/useSessionCheck.js';
 import { Backdrop, CircularProgress } from '@mui/material';
+import Checkout from './pages/Checkout.jsx';
 
 function App() {
   const [sessionState, setSessionState] = useState({ isLogged: false });
@@ -93,6 +94,10 @@ function App() {
                 />
               )
             }
+          />
+          <Route
+            path="/checkout"
+            element={ <Checkout />}
           />
         </Routes>
       </BrowserRouter>
