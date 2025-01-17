@@ -32,9 +32,9 @@ export default function Nav() {
           <input
             type="text"
             placeholder="Search..."
-            className="w-full px-4 py-2 pr-12 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-gray-900"
+            className="w-full px-4 py-2 pr-12 border rounded focus:outline-none focus:ring-2 focus:ring-gray-900"
           />
-          <button className="absolute top-1/2 right-2 -translate-y-1/2 px-3 py-1 text-gray-50 bg-gray-900 rounded-3xl hover:bg-red-800 hover:text-gray-50">
+          <button className="absolute top-1/2 right-2 -translate-y-1/2 px-3 py-1 text-gray-50 bg-gray-900 rounded hover:bg-red-800 hover:text-gray-50">
             Go
           </button>
         </div>
