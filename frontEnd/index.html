@@ -1,38 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0"
-    />
-    <title>ESHOP</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-  </head>
 
-  <body class="bg-gray-100">
-    <!-- Spineris loading -->
-    <div
-      id="preloader"
-      class="fixed inset-0 flex items-center justify-center bg-gray-300 z-[9999]"
-    >
-      <div
-        class="w-12 h-12 border-4 border-gray-300 border-t-gray-600 rounded-full animate-spin"
-      ></div>
-    </div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ESHOP</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
 
-    <div id="root"></div>
+<body class="bg-gray-100">
+  <!-- Spineris loading -->
+  <div id="preloader" class="fixed inset-0 flex items-center justify-center bg-gray-300 z-[9999]">
+    <div class="w-12 h-12 border-4 border-gray-300 border-t-gray-600 rounded-full animate-spin"></div>
+  </div>
 
-    <script type="module">
-      import '/src/main.jsx';
+  <div id="root"></div>
 
-      // Nuemamas loaderis kai reactas uzsimountina
-      window.addEventListener('load', () => {
-        const preloader = document.getElementById('preloader');
-        if (preloader) {
-          preloader.style.display = 'none';
-        }
-      });
-    </script>
-  </body>
+  <script type="module" src="./src/main.jsx"></script>
+  <script>
+    window.addEventListener('load', () => {
+      const preloader = document.getElementById('preloader');
+      if (preloader) {
+        preloader.style.display = 'none';
+      }
+    });
+  </script>
+</body>
+
 </html>
