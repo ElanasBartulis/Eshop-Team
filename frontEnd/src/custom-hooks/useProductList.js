@@ -10,13 +10,11 @@ export function useProductList() {
     try {
       const productPromise = await fetch('http://localhost/server/api/product');
       const productResponse = await productPromise.json();
-      if (productPromise.ok) {
-        setProducts(productResponse);
-        setFilteredProducts(productResponse);
 
         console.log('PRODUCT', productResponse);
         if (!arguments[0]?.includeRatings) {
           setProducts(productResponse);
+          setFilteredProducts(productResponse);
           return;
         }
 
@@ -30,7 +28,7 @@ export function useProductList() {
             ratingResponse[product.id]?.averageRating || product.ratings || 0,
         }));
         setProducts(productsWithRatings);
-      }
+      
     } catch (error) {
       console.log(error);
     }
