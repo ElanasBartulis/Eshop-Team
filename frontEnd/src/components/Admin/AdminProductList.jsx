@@ -93,7 +93,7 @@ export default function ProductList() {
     price: product.price,
     discount: product.discount,
     description: product.description,
-    rating: product.rating,
+    rating: +product.rating.toFixed(2),
   }));
 
   function handleEdit(id) {
@@ -157,6 +157,7 @@ export default function ProductList() {
     setOpen(false);
     setSelectedProduct(null);
   }
+  
   async function handleSaveChanges(event) {
     event.preventDefault();
     const formData = new FormData(event.target);
@@ -310,7 +311,7 @@ export default function ProductList() {
                 defaultValue={selectedProduct?.description}
               />
             </div>
-
+          
             {/* PRODUCT RATING */}
             <TextField
               type="text"
@@ -320,6 +321,7 @@ export default function ProductList() {
               defaultValue={selectedProduct?.rating}
               disabled
             />
+            
             <div>
               <Button
                 variant="contained"

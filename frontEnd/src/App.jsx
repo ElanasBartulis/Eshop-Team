@@ -7,6 +7,7 @@ import { useState } from 'react';
 import useSessionCheck from './custom-hooks/useSessionCheck.js';
 import { Backdrop, CircularProgress } from '@mui/material';
 import Checkout from './pages/Checkout.jsx';
+import SearchContext from './context/SearchContext';
 
 function App() {
   const [sessionState, setSessionState] = useState({ isLogged: false });
@@ -18,6 +19,8 @@ function App() {
     alertColor: 'error',
   });
   const [isCheckingSession, setIsCheckingSession] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filteredProducts, setFilteredProducts] = useState([]);
   ///Naujai informacijai, po updeito gauti skirta funkcija
   const updateUserData = (newData) => {
     setUserData((prev) => ({ ...prev, ...newData }));
@@ -49,6 +52,7 @@ function App() {
         updateUserData,
       }}
     >
+      <SearchContext.Provider value={{ searchTerm, setSearchTerm, filteredProducts, setFilteredProducts }}>
       <BrowserRouter>
         <Routes>
           <Route
@@ -101,6 +105,7 @@ function App() {
           />
         </Routes>
       </BrowserRouter>
+      </SearchContext.Provider>
     </SessionContext.Provider>
   );
 }
