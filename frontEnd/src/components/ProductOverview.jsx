@@ -13,7 +13,14 @@ import { useProductRating } from '../custom-hooks/useProductRating';
 
 const ProductOverview = ({ data, onRatingUpdate }) => {
   const [value, setValue] = useState(0);
-  const { name, price, description, rating, id } = data;
+  const {
+    name,
+    price,
+    rating: initialRating,
+    ratingCount: initialRatingCount,
+    id,
+    discription,
+  } = data;
   const images = [
     'https://images.unsplash.com/photo-1549056572-75914d5d5fd4?q=80&w=1964&auto=format&fit=crop',
     'https://images.unsplash.com/photo-1549056572-75914d5d5fd4?q=80&w=1964&auto=format&fit=crop',
@@ -24,12 +31,7 @@ const ProductOverview = ({ data, onRatingUpdate }) => {
     rating: currentRating,
     ratingCount,
     handleRating,
-    getRatingCount,
-  } = useProductRating(id, rating, onRatingUpdate);
-
-  useEffect(() => {
-    getRatingCount();
-  }, []);
+  } = useProductRating(id, initialRating, initialRatingCount, onRatingUpdate);
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -68,7 +70,7 @@ const ProductOverview = ({ data, onRatingUpdate }) => {
 
           <p className="text-2xl font-semibold mb-4">{price}€</p>
 
-          <p className="text-gray-600 mb-6">{description}</p>
+          <p className="text-gray-600 mb-6">{discription}</p>
 
           <div className="grid grid-cols-3 grid-rows-2 gap-4 mt-10 absolute inset-x-0 bottom-0">
             <Button

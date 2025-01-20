@@ -60,3 +60,32 @@ export async function getProductRatingByProductId(req, res) {
     countOfRatings: allratings.length,
   });
 }
+
+export async function getAllRatings(req, res) {
+  try {
+    const products = await productModel.findAll({
+      include: [{ model: ratingModel, attributes: ['ratings'] }],
+    });
+    const ratingsMap = {};
+
+    for (const product of products) {
+      const productRatings = product.ratings || [];
+      const countOfRatings = product.ratings.length;
+      const averageRating =
+        countOfRatings > 0
+          ? productRatings.reduce((sum, r) => sum + r.ratings, 0) /
+            countOfRatings
+          : 0;
+
+      // Store in our map with product ID as the key
+      ratingsMap[product.id] = {
+        averageRating,
+        countOfRatings,
+      };
+    }
+    res.status(200).json(ratingsMap);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+}

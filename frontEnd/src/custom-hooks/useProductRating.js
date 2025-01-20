@@ -1,34 +1,17 @@
 import { useState, useContext } from 'react';
 import SessionContext from '../context/SessionContext';
 
-export function useProductRating(productId, initialRating, onRatingUpdate) {
+export function useProductRating(
+  productId,
+  initialRating,
+  initialRatingCount,
+  onRatingUpdate
+) {
   const { userData, setErrorHandler, sessionState } =
     useContext(SessionContext);
-  console.log(userData);
 
   const [rating, setRating] = useState(initialRating);
-  const [ratingCount, setRatingCount] = useState(0);
-
-  async function getRatingCount() {
-    try {
-      const promise = await fetch(
-        `http://localhost/server/api/rating/${productId}`
-      );
-
-      if (!promise.ok) {
-        setErrorHandler({
-          isSnackbarOpen: true,
-          snackbarMessage: 'You already rated this product.',
-          alertColor: 'error',
-        });
-      }
-
-      const response = await promise.json();
-      setRatingCount(response.countOfRatings);
-    } catch (error) {
-      console.error('Error fetching data', error);
-    }
-  }
+  const [ratingCount, setRatingCount] = useState(initialRatingCount);
 
   async function handleRating(event, newValue) {
     if (!sessionState.isLogged) {
@@ -86,5 +69,5 @@ export function useProductRating(productId, initialRating, onRatingUpdate) {
     }
   }
 
-  return { rating, ratingCount, handleRating, getRatingCount };
+  return { rating, ratingCount, handleRating };
 }

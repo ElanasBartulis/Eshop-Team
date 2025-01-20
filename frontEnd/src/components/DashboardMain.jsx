@@ -8,7 +8,7 @@ export default function DashboardMain() {
   const { getAllProducts, products, setProducts } = useProductList();
 
   useEffect(() => {
-    getAllProducts();
+    getAllProducts({ includeRatings: true });
   }, []);
 
   //UPDEITINAM PRODUKTU REITINGA

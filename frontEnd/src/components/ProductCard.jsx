@@ -7,19 +7,21 @@ import { useProductRating } from '../custom-hooks/useProductRating';
 
 export default function ProductCard({ data, onRatingUpdate }) {
   const [open, setOpen] = useState(false);
-  const { name, price, rating, id, discount } = data;
+  const {
+    name,
+    price,
+    rating: initialRating,
+    ratingCount: initialRatingCount,
+    id,
+    discount,
+  } = data;
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const {
     rating: currentRating,
     ratingCount,
     handleRating,
-    getRatingCount,
-  } = useProductRating(id, rating, onRatingUpdate);
-
-  useEffect(() => {
-    getRatingCount();
-  }, []);
+  } = useProductRating(id, initialRating, initialRatingCount, onRatingUpdate);
 
   return (
     <div>
