@@ -5,25 +5,30 @@ import { rating } from '@material-tailwind/react';
 import { useProductList } from '../custom-hooks/useProductList';
 import SearchComponent from '../components/SearchComponent';
 import SearchContext from '../context/SearchContext';
-import frown from "../assets/Public/frown.svg"
+import frown from '../assets/Public/frown.svg';
 //tevinis elementas DASHBOARD
 export default function DashboardMain() {
-  const { getAllProducts, products } = useProductList();
+  const { getAllProducts, products, setProducts } = useProductList();
   const { setFilteredProducts } = useContext(SearchContext);
   const { searchTerm, filteredProducts } = useContext(SearchContext);
 
+  // useEffect(() => {
+  //   getAllProducts();
+  // }, [setFilteredProducts]);
+
   useEffect(() => {
-    getAllProducts();
+    getAllProducts({ includeRatings: true });
   }, [setFilteredProducts]);
 
   //UPDEITINAM PRODUKTU REITINGA
   function updateProductRating(productId, newRating) {
-    (prevProducts) =>
+    setProducts((prevProducts) =>
       prevProducts.map((product) =>
         product.id === productId ? { ...product, rating: newRating } : product
-      );
+      )
+    );
   }
-  
+
   const productsToDisplay = searchTerm ? filteredProducts : products;
 
   return (
@@ -46,13 +51,13 @@ export default function DashboardMain() {
             />
           ))
         ) : (
-          <div className='p-2'>
+          <div className="p-2">
             <img
               src={frown}
               alt="frown smile image"
               className="size-14"
             />
-            <h2 className='text-xl p-2'>No results matched...</h2>
+            <h2 className="text-xl p-2">No results matched...</h2>
           </div>
         )}
       </div>

@@ -13,7 +13,14 @@ import { useProductRating } from '../custom-hooks/useProductRating';
 
 const ProductOverview = ({ data, onRatingUpdate }) => {
   const [value, setValue] = useState(0);
-  const { name, price, description, rating, id } = data;
+  const {
+    name,
+    price,
+    rating: initialRating,
+    ratingCount: initialRatingCount,
+    id,
+    discription,
+  } = data;
   const images = [
     'https://images.unsplash.com/photo-1549056572-75914d5d5fd4?q=80&w=1964&auto=format&fit=crop',
     'https://images.unsplash.com/photo-1549056572-75914d5d5fd4?q=80&w=1964&auto=format&fit=crop',
@@ -24,12 +31,7 @@ const ProductOverview = ({ data, onRatingUpdate }) => {
     rating: currentRating,
     ratingCount,
     handleRating,
-    getRatingCount,
-  } = useProductRating(id, rating, onRatingUpdate);
-
-  useEffect(() => {
-    getRatingCount();
-  }, []);
+  } = useProductRating(id, initialRating, initialRatingCount, onRatingUpdate);
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -56,19 +58,19 @@ const ProductOverview = ({ data, onRatingUpdate }) => {
         <div className="lg:w-1/2 relative">
           <h1 className="text-3xl font-bold mb-4">{name}</h1>
 
-          <div className="flex items-center mb-4">
+          <div className="flex items-center mb-4 gap-1">
             <Rating
               name="half-rating"
               value={currentRating}
               precision={0.5}
               onChange={handleRating}
             />
-            <p>{ratingCount}</p>
+            <p>({ratingCount})</p>
           </div>
 
           <p className="text-2xl font-semibold mb-4">{price}€</p>
 
-          <p className="text-gray-600 mb-6">{description}</p>
+          <p className="text-gray-600 mb-6">{discription}</p>
 
           <div className="grid grid-cols-3 grid-rows-2 gap-4 mt-10 absolute inset-x-0 bottom-0">
             <Button
@@ -87,7 +89,8 @@ const ProductOverview = ({ data, onRatingUpdate }) => {
               type="number"
               value={value}
               onChange={(e) => setValue(Number(e.target.value))}
-              className="!min-w-[90px] !h-12 !border-t-blue-gray-400 placeholder:text-blue-gray-400 placeholder:opacity-100  focus:!border-t-gray-900 appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none w-10 row-start-2 text-center mx-3"
+              className=" !border-t-blue-gray-400 placeholder:text-blue-gray-400 placeholder:opacity-100  focus:!border-t-gray-900 appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none w-10 row-start-2 text-center mx-3"
+              style={{ width: '70px', height: '50px' }}
               labelProps={{
                 className: 'before:content-none after:content-none',
               }}

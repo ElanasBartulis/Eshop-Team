@@ -1,30 +1,34 @@
 import { useState, useContext } from 'react';
 import SessionContext from '../context/SessionContext';
 
-export function useProductRating(productId, initialRating, onRatingUpdate) {
-  const { userData } = useContext(SessionContext);
+export function useProductRating(
+  productId,
+  initialRating,
+  initialRatingCount,
+  onRatingUpdate
+) {
+  const { userData, setErrorHandler, sessionState } =
+    useContext(SessionContext);
 
   const [rating, setRating] = useState(initialRating);
-  const [ratingCount, setRatingCount] = useState(0);
-
-  async function getRatingCount() {
-    try {
-      const promise = await fetch(
-        `http://localhost/server/api/rating/${productId}`
-      );
-
-      if (!promise.ok) {
-        alert('product not found');
-      }
-
-      const response = await promise.json();
-      setRatingCount(response.countOfRatings);
-    } catch (error) {
-      console.error('Error fetching data', error);
-    }
-  }
+  const [ratingCount, setRatingCount] = useState(initialRatingCount);
 
   async function handleRating(event, newValue) {
+    if (!sessionState.isLogged) {
+      return setErrorHandler({
+        isSnackbarOpen: true,
+        snackbarMessage: 'Only registrated users can rate products',
+        alertColor: 'error',
+      });
+    }
+    if (userData.admin) {
+      return setErrorHandler({
+        isSnackbarOpen: true,
+        snackbarMessage: 'ADMIN is not able to rate products',
+        alertColor: 'error',
+      });
+    }
+
     try {
       const promise = await fetch('http://localhost/server/api/rating/create', {
         method: 'POST',
@@ -40,10 +44,18 @@ export function useProductRating(productId, initialRating, onRatingUpdate) {
       const response = await promise.json();
 
       if (!promise.ok) {
-        alert('already rated');
-
-        return;
+        return setErrorHandler({
+          isSnackbarOpen: true,
+          snackbarMessage: 'You already rated this product',
+          alertColor: 'error',
+        });
       }
+
+      setErrorHandler({
+        isSnackbarOpen: true,
+        snackbarMessage: 'Thanks for your rating!.',
+        alertColor: 'success',
+      });
 
       if (response.averageRating !== undefined) {
         setRating(response.averageRating);
@@ -57,5 +69,5 @@ export function useProductRating(productId, initialRating, onRatingUpdate) {
     }
   }
 
-  return { rating, ratingCount, handleRating, getRatingCount };
+  return { rating, ratingCount, handleRating };
 }
