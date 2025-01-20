@@ -10,9 +10,9 @@ export function useProductList() {
     try {
       const productPromise = await fetch('http://localhost/server/api/product');
       const productResponse = await productPromise.json();
-      if (promise.ok) {
-        setProducts(response);
-        setFilteredProducts(response);
+      if (productPromise.ok) {
+        setProducts(productResponse);
+        setFilteredProducts(productResponse);
 
         console.log('PRODUCT', productResponse);
         if (!arguments[0]?.includeRatings) {
@@ -34,7 +34,6 @@ export function useProductList() {
     } catch (error) {
       console.log(error);
     }
-
-    return { getAllProducts, products, setProducts };
   }
+  return { getAllProducts, products, setProducts };
 }

@@ -8,17 +8,13 @@ import SearchContext from '../context/SearchContext';
 import frown from '../assets/Public/frown.svg';
 //tevinis elementas DASHBOARD
 export default function DashboardMain() {
-  const { getAllProducts, products, setProducts } = useProductList();
+  const { products, setProducts, getAllProducts } = useProductList();
   const { setFilteredProducts } = useContext(SearchContext);
   const { searchTerm, filteredProducts } = useContext(SearchContext);
 
-  // useEffect(() => {
-  //   getAllProducts();
-  // }, [setFilteredProducts]);
-
   useEffect(() => {
     getAllProducts({ includeRatings: true });
-  }, [setFilteredProducts]);
+  }, []);
 
   //UPDEITINAM PRODUKTU REITINGA
   function updateProductRating(productId, newRating) {
