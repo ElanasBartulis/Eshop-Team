@@ -11,7 +11,6 @@ export function useProductList() {
       const productPromise = await fetch('http://localhost/server/api/product');
       const productResponse = await productPromise.json();
 
-        console.log('PRODUCT', productResponse);
         if (!arguments[0]?.includeRatings) {
           setProducts(productResponse);
           setFilteredProducts(productResponse);
