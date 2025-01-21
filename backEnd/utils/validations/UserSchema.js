@@ -45,5 +45,8 @@ export const registrationSchema = z.object({
 });
 
 export const updateSchema = registrationSchema
-  .omit({ firstName: true, lastName: true })
+  .omit({
+    firstName: true,
+    lastName: true,
+  })
   .partial();

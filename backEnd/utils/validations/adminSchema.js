@@ -1,10 +1,11 @@
 import { z } from "zod";
 
 export const adminRegistrationSchema = z.object({
-  userName: z
-    .string({ message: "Username should be a string" })
-    .min(3, { message: "Username should contain at least 3 symbols" })
-    .max(60, { message: "Username should be shorter than 60 symbols" }),
+  email: z
+    .string({ message: "Email should be a string" })
+    .email({ message: "Email should be valid format" })
+    .min(7, { message: "Email should contain atleast 7 simbols" })
+    .max(120, { message: "Email should not be longer then 120 symbols" }),
   password: z
     .string({ message: "Password should be a string" })
     .min(8, { message: "Password should contain at least 8 symbols" })
