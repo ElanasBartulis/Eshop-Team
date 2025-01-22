@@ -16,6 +16,8 @@ const dbConfig = {
   // socketPath: '/opt/lampp/var/mysql/mysql.sock'
 };
 
+console.log("test")
+
 const pool = mysql.createPool(dbConfig);
 
 const sessionStore = new MysqlStoreInstance({}, pool);
