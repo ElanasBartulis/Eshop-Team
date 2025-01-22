@@ -33,7 +33,7 @@ export default function HistoryTable() {
       setIsLoading(true);
       try {
         const promise = await fetch(
-          `http://localhost/ server/api/history/${userData.id}?page=${page}&rowsPerPage=${itemsPerPage}`
+          `http://localhost/server/api/history/${userData.id}?page=${page}&rowsPerPage=${itemsPerPage}`
         );
         if (promise.ok) {
           const response = await promise.json();

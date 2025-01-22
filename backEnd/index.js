@@ -12,5 +12,5 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api", mainRouter);
 
 app.listen(3000, () => {
-  console.log("Development server has started, go to http://localhost/ server/");
+  console.log("Development server has started, go to http://localhost/server/");
 });

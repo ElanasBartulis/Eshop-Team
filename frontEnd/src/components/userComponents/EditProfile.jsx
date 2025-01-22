@@ -111,7 +111,7 @@ export default function EditProfile({ activeSection }) {
     }
     //--------------------------------------------
     try {
-      const promise = await fetch('http://localhost/ server/api/users/update', {
+      const promise = await fetch('http://localhost/server/api/users/update', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

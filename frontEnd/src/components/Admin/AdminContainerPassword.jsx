@@ -29,7 +29,7 @@ export default function Password() {
     const validatedErrorMessage = validatedPw.error?.issues[0].message;
 
     try {
-      const promise = await fetch("http://localhost/ server/api/users/update", {
+      const promise = await fetch("http://localhost/server/api/users/update", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

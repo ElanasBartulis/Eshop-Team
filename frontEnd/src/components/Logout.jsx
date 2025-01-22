@@ -8,7 +8,7 @@ export default function LogoutButton() {
   const navigate = useNavigate();
 
   const handleLogout = async () => {
-      const response = await fetch('http://localhost/ server/api/users/log-out', {
+      const response = await fetch('http://localhost/server/api/users/log-out', {
         method: 'GET',
         credentials: 'include',
         headers: {

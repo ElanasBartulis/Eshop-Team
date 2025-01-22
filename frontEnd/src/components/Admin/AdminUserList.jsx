@@ -26,7 +26,7 @@ export default function UserList() {
 
   const fetchUsers = async () => {
     try {
-      const response = await fetch("http://localhost/ server/api/users/users");
+      const response = await fetch("http://localhost/server/api/users/users");
       if (!response.ok) {
         setErrorHandler({
           isSnackbarOpen: true,
@@ -61,7 +61,7 @@ export default function UserList() {
 
   const handleConfirmDelete = async () => {
     try {
-      const response = await fetch(`http://localhost/ server/api/users/users/${deleteConfirmation.userId}`, {
+      const response = await fetch(`http://localhost/server/api/users/users/${deleteConfirmation.userId}`, {
         method: "DELETE",
       });
       
@@ -115,7 +115,7 @@ export default function UserList() {
         return; 
       }
 
-      const response = await fetch(`http://localhost/ server/api/users/users/${editUser.id}`, {
+      const response = await fetch(`http://localhost/server/api/users/users/${editUser.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

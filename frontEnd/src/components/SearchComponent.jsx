@@ -10,7 +10,7 @@ export default function SearchComponent () {
       setSearchTerm(term);
   
       try {
-        const response = await fetch('http://localhost/ server/api/product');
+        const response = await fetch('http://localhost/server/api/product');
         const products = await response.json();
         
         const filtered = term

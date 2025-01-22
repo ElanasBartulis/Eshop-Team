@@ -8,7 +8,7 @@ export function useProductList() {
 
   async function getAllProducts() {
     try {
-      const productPromise = await fetch('http://localhost/ server/api/product');
+      const productPromise = await fetch('http://localhost/server/api/product');
       const productResponse = await productPromise.json();
 
         if (!arguments[0]?.includeRatings) {
