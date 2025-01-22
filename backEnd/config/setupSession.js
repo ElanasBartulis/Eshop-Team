@@ -9,14 +9,13 @@ const MysqlStoreInstance = MysqlStore(session);
 
 const dbConfig = {
   host: process.env["DB_HOST"],
-  // port: 3306,
   user: process.env["DB_USERNAME"],
   password: process.env["DB_PASSWORD"],
   database: process.env["DB_NAME"],
-  // socketPath: '/opt/lampp/var/mysql/mysql.sock'
 };
 
 const pool = mysql.createPool(dbConfig);
+
 
 const sessionStore = new MysqlStoreInstance({}, pool);
 
