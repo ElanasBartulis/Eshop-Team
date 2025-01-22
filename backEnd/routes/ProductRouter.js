@@ -2,7 +2,7 @@ import express from "express";
 import * as productController from "../controllers/productController.js";
 
 const router = express.Router();
-// http://srv701413.hstgr.cloud/server/api/product
+// http://localhost/ server/api/product
 router.get("/", productController.getAllProducts);
 router.get("/:id", productController.getProductById);
 router.post("/", productController.createProduct);

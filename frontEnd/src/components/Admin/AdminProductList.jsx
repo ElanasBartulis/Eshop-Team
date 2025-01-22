@@ -33,7 +33,7 @@ export default function ProductList() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const promise = await fetch("http://srv701413.hstgr.cloud/server/api/product/");
+        const promise = await fetch("http://localhost/ server/api/product/");
         const response = await promise.json();
         setData(response);
         setLoading(false);
@@ -117,7 +117,7 @@ export default function ProductList() {
   async function handleConfirmDelete() {
     try {
       const promise = await fetch(
-        `http://srv701413.hstgr.cloud/server/api/product/${deleteConfirmation.product.id}`,
+        `http://localhost/ server/api/product/${deleteConfirmation.product.id}`,
         {
           method: "DELETE",
         }
@@ -181,7 +181,7 @@ export default function ProductList() {
 
     try {
       const promise = await fetch(
-        `http://srv701413.hstgr.cloud/server/api/product/${selectedProduct.id}`,
+        `http://localhost/ server/api/product/${selectedProduct.id}`,
         {
           method: "PUT",
           headers: {

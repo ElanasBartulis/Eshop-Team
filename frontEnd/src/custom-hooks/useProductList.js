@@ -8,7 +8,7 @@ export function useProductList() {
 
   async function getAllProducts() {
     try {
-      const productPromise = await fetch('http://srv701413.hstgr.cloud/server/api/product');
+      const productPromise = await fetch('http://localhost/ server/api/product');
       const productResponse = await productPromise.json();
 
         if (!arguments[0]?.includeRatings) {
@@ -17,7 +17,7 @@ export function useProductList() {
           return;
         }
 
-        const ratingPromise = await fetch('http://srv701413.hstgr.cloud/server/api/rating');
+        const ratingPromise = await fetch('http://localhost/ server/api/rating');
         const ratingResponse = await ratingPromise.json();
         console.log('RATING', ratingResponse);
         const productsWithRatings = productResponse.map((product) => ({
