@@ -9,7 +9,7 @@ const useSessionCheck = ({
     async function checkSession() {
       try {
         const promise = await fetch(
-          'http://localhost/server/api/users/session'
+          'http://srv701413.hstgr.cloud/server/api/users/session'
         );
         const response = await promise.json();
         if (promise.ok && response.isLogged) {

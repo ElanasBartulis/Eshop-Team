@@ -6,7 +6,7 @@ import ratingRouter from "./ratingRouter.js";
 import uploadRouter from "./uploadRouter.js";
 const router = express.Router();
 
-// http://localhost/server/api/
+// http://srv701413.hstgr.cloud/server/api/
 router.use("/rating", ratingRouter);
 router.use("/users", userRouter);
 router.use("/product", productRouter);

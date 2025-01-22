@@ -25,7 +25,7 @@ export default function useRegister() {
 
     try {
       const promise = await fetch(
-        "http://localhost/server/api/users/register",
+        "http://srv701413.hstgr.cloud/server/api/users/register",
         {
           method: "POST",
           headers: {

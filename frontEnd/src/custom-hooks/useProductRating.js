@@ -30,7 +30,7 @@ export function useProductRating(
     }
 
     try {
-      const promise = await fetch('http://localhost/server/api/rating/create', {
+      const promise = await fetch('http://srv701413.hstgr.cloud/server/api/rating/create', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
