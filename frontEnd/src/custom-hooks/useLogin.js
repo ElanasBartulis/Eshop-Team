@@ -12,7 +12,7 @@ export default function useLogin() {
 
   useEffect(() => {
     async function checkSession() {
-      const promise = await fetch("http://localhost/server/api/users/session");
+      const promise = await fetch("/server/api/users/session");
       const response = await promise.json();
       if (promise.ok && response.isLogged) {
         setSessionState({ isLogged: true });
@@ -32,7 +32,7 @@ export default function useLogin() {
     };
 
     try {
-      const promise = await fetch("http://localhost/server/api/users/login", {
+      const promise = await fetch("/server/api/users/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

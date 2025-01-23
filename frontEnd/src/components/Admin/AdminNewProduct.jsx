@@ -95,7 +95,7 @@ export default function NewProduct() {
       }
 
       // INPUTS
-      const promise = await fetch(`http://localhost/server/api/product`, {
+      const promise = await fetch(`/server/api/product`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
