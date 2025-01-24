@@ -32,16 +32,25 @@ export const registrationSchema = z.object({
     .regex(/[a-z]/, {
       message: 'Password should contain at least one Lowercase character',
     }),
-  postCode: z
+    postCode: z
     .string()
-    .min(5, { message: 'Post code should be minimum 5 digits' })
-    .max(5, { message: 'Post code shoould be maximum 5 digits' })
-    .regex(/^\d{5}$/, { message: 'Postal code should contain only digits' }),
-  phoneNumber: z.string().regex(/^\+?370\d{8}$/, {
-    message: 'Phone number must be a valid phone number',
-  }),
+    .optional()
+    .nullable()
+    .transform(val => val === '' ? null : val)
+    .refine(val => val === null || /^\d{5}$/.test(val), {
+      message: "Postal code should contain only digits"
+    }),
 
-  address: z.string(),
+  phoneNumber: z
+    .string()
+    .optional()
+    .nullable()
+    .transform(val => val === '' ? null : val)
+    .refine(val => val === null || /^\+?370\d{8}$/.test(val), {
+      message: "Phone number must be valid"
+    }),
+
+  address: z.string().optional().nullable().transform(val => val === '' ? null : val),
 });
 
 export const updateSchema = registrationSchema

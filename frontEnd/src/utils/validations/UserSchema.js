@@ -19,23 +19,25 @@ export const registrationSchema = z.object({
     .max(50, { message: "Last name must be less than 50 symbols" })
     .regex(/^[a-zA-Z]+$/, { message: "Last name can only contain letters" }),
 
-  postCode: z
+    postCode: z
     .string()
-    .min(5, { message: "Post code should be minimum 5 digits" })
-    .max(5, { message: "Post code shoould be maximum 5 digits" })
-    .regex(/^\d{5}$/, { message: "Postal code should contain only digits" })
     .optional()
-    .nullable(),
+    .nullable()
+    .transform(val => val === '' ? null : val)
+    .refine(val => val === null || /^\d{5}$/.test(val), {
+      message: "Postal code should contain only digits"
+    }),
 
   phoneNumber: z
     .string()
-    .regex(/^\+?370\d{8}$/, {
-      message: "Phone number must be a valid phone number",
-    })
     .optional()
-    .nullable(),
+    .nullable()
+    .transform(val => val === '' ? null : val)
+    .refine(val => val === null || /^\+?370\d{8}$/.test(val), {
+      message: "Phone number must be valid"
+    }),
 
-  address: z.string().optional().nullable(),
+  address: z.string().optional().nullable().transform(val => val === '' ? null : val),
 });
 
 export const updateSchema = registrationSchema
