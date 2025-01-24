@@ -19,7 +19,7 @@ const ProductOverview = ({ data, onRatingUpdate }) => {
     rating: initialRating,
     ratingCount: initialRatingCount,
     id,
-    discription,
+    description,
   } = data;
   const images = [
     'https://images.unsplash.com/photo-1549056572-75914d5d5fd4?q=80&w=1964&auto=format&fit=crop',
@@ -70,7 +70,7 @@ const ProductOverview = ({ data, onRatingUpdate }) => {
 
           <p className="text-2xl font-semibold mb-4">{price}€</p>
 
-          <p className="text-gray-600 mb-6">{discription}</p>
+          <p className="text-gray-600 mb-6">{description}</p>
 
           <div className="grid grid-cols-3 grid-rows-2 gap-4 mt-10 absolute inset-x-0 bottom-0">
             <Button
