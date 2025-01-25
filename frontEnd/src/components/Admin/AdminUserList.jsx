@@ -13,7 +13,8 @@ export default function UserList() {
   const [editUser, setEditUser] = useState(null);
   const { setErrorHandler } = useContext(SessionContext);
   const [page, setPage] = useState(0); 
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [allUsersCount, setAllUsersCount] = useState(0)
   const [deleteConfirmation, setDeleteConfirmation] = useState({
     open: false,
     userId: null,
@@ -21,27 +22,30 @@ export default function UserList() {
   });
 
   useEffect(() => {
-    fetchUsers();
-  }, []);
+    const fetchUsers = async () => {
+      try {
+        const response = await fetch(`/server/api/users/users?page=${page}&rowsPerPage=${rowsPerPage}`);
+        const {users, count} = await response.json();
+        
+        if (!response.ok) {
+          setErrorHandler({
+            isSnackbarOpen: true,
+            snackbarMessage: "Failed to fetch users",
+            alertColor: "error",
+          });
+        }
 
-  const fetchUsers = async () => {
-    try {
-      const response = await fetch("/server/api/users/users");
-      if (!response.ok) {
-        setErrorHandler({
-          isSnackbarOpen: true,
-          snackbarMessage: "Failed to fetch users",
-          alertColor: "error",
-        });
+        setUsers(users);
+        setAllUsersCount(count)
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
       }
-      const data = await response.json();
-      setUsers(data);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+    };
+    fetchUsers();
+  }, [page, rowsPerPage]);
+
 
   const handleDeleteClick = (user) => {
     setDeleteConfirmation({
@@ -153,6 +157,7 @@ export default function UserList() {
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
+    console.log(newPage);
   };
 
   const handleChangeRowsPerPage = (event) => {
@@ -163,8 +168,6 @@ export default function UserList() {
   if (loading) {
     return <CircularProgress />;
   }
-
-  const paginatedUsers = users.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
   return (
     <>
@@ -184,7 +187,7 @@ export default function UserList() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {paginatedUsers.map((user) => (
+            {users.map((user) => (
               <TableRow key={user.id}>
                 <TableCell align="center">{user.id}</TableCell>
                 <TableCell align="center">{user.firstName}</TableCell>
@@ -235,7 +238,7 @@ export default function UserList() {
       <TablePagination
         rowsPerPageOptions={[5, 10, 25]}
         component="div"
-        count={users.length} 
+        count={allUsersCount} 
         rowsPerPage={rowsPerPage}
         page={page}
         onPageChange={handleChangePage}

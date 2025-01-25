@@ -244,8 +244,15 @@ export async function registerAdmin(req, res) {
 }
 
 export async function getAllUsers(req, res) {
-  if(!req.session.admin) return res.status(400).json({message: "Nothing to see here."})
+  // if(!req.session.admin) return res.status(400).json({message: "Nothing to see here."})
   try {
+    // Total user count
+    const count = await UserModel.count();
+
+    // Get page limits
+    const pageNumber = +req.query?.page || 0;
+    const rowsPerPage = +req.query?.rowsPerPage || count;
+
     const users = await UserModel.findAll({
       attributes: [
         'id',
@@ -257,8 +264,11 @@ export async function getAllUsers(req, res) {
         'postCode',
         'admin',
       ],
+      offset: pageNumber * rowsPerPage,
+      limit: rowsPerPage,
     });
-     res.status(200).json(users);
+    
+     res.status(200).json({users, count});
   } catch (err) {
     res
       .status(500)
