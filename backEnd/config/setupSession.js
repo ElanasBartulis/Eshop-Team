@@ -16,6 +16,7 @@ const dbConfig = {
 
 const pool = mysql.createPool(dbConfig);
 
+
 const sessionStore = new MysqlStoreInstance({}, pool);
 
 export function configDbSession(app) {

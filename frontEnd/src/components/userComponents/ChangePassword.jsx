@@ -26,7 +26,7 @@ export default function ChangePassword({ activeSection }) {
     const errorMesseges = validatedPw.error?.issues[0].message;
 
     try {
-      const promise = await fetch('http://localhost/server/api/users/update', {
+      const promise = await fetch('/server/api/users/update', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(passwordData),

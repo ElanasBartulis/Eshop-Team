@@ -8,18 +8,16 @@ export function useProductList() {
 
   async function getAllProducts() {
     try {
-      const productPromise = await fetch('http://localhost/server/api/product');
+      const productPromise = await fetch('/server/api/product');
       const productResponse = await productPromise.json();
 
-      console.log('PRODUCT', productResponse);
       if (!arguments[0]?.includeRatings) {
         setProducts(productResponse);
-
         setFilteredProducts(productResponse);
         return;
       }
 
-      const ratingPromise = await fetch('http://localhost/server/api/rating');
+      const ratingPromise = await fetch('/server/api/rating');
       const ratingResponse = await ratingPromise.json();
       console.log('RATING', ratingResponse);
       const productsWithRatings = productResponse.map((product) => ({

@@ -34,7 +34,7 @@ export default function DashboardMain() {
           Board games!
         </div>
         <div className="lg:place-items-end md:place-items-start">
-          <Sorting />
+          <Sorting/>
         </div>
       </div>
       <div className="grid xl:grid-cols-4 grid-rows-3 gap-6 lg:grid-cols-3 md:grid-cols-2">
