@@ -6,15 +6,49 @@ import { useProductList } from '../custom-hooks/useProductList';
 import SearchComponent from '../components/SearchComponent';
 import SearchContext from '../context/SearchContext';
 import frown from '../assets/Public/frown.svg';
+import { TablePagination } from '@mui/material';
 //tevinis elementas DASHBOARD
 export default function DashboardMain() {
   const { products, setProducts, getAllProducts } = useProductList();
   const { setFilteredProducts } = useContext(SearchContext);
   const { searchTerm, filteredProducts } = useContext(SearchContext);
+  const [page, setPage] = useState(0); // dabartinis page 0
+  const [itemsPerPage, setItemsPerPage] = useState(5);
+  const [totalProductCount, setTotalProductCount] = useState(0);
+  //____laikinai
+  const [allProducts, setAllProducts] = useState([]);
+
+  // useEffect(() => {
+  //   getAllProducts({ includeRatings: true });
+  // }, []);
 
   useEffect(() => {
-    getAllProducts({ includeRatings: true });
-  }, []);
+    async function getProducts() {
+      try {
+        const promise = await fetch(
+          `/server/api/product?page=${page}&rowsPerPage=${itemsPerPage}`
+        );
+        if (promise.ok) {
+          const { allProducts, totalProductCount } = await promise.json();
+          console.log(totalProductCount);
+          setAllProducts(allProducts);
+          setTotalProductCount(totalProductCount);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    getProducts();
+  }, [page, itemsPerPage]);
+
+  function handleListChange(e, newPage) {
+    setPage(newPage);
+  }
+
+  function handleChangeRowsPerPage(e) {
+    setItemsPerPage(parseInt(e.target.value, 10));
+    setPage(0);
+  }
 
   //UPDEITINAM PRODUKTU REITINGA
   function updateProductRating(productId, newRating) {
@@ -25,7 +59,7 @@ export default function DashboardMain() {
     );
   }
 
-  const productsToDisplay = searchTerm ? filteredProducts : products;
+  const productsToDisplay = searchTerm ? filteredProducts : allProducts;
 
   return (
     <div className="mb-20 mt-16">
@@ -34,7 +68,7 @@ export default function DashboardMain() {
           Board games!
         </div>
         <div className="lg:place-items-end md:place-items-start">
-          <Sorting/>
+          <Sorting />
         </div>
       </div>
       <div className="grid xl:grid-cols-4 grid-rows-3 gap-6 lg:grid-cols-3 md:grid-cols-2">
@@ -56,6 +90,15 @@ export default function DashboardMain() {
             <h2 className="text-xl p-2">No results matched...</h2>
           </div>
         )}
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25]}
+          component="div"
+          count={totalProductCount}
+          rowsPerPage={itemsPerPage}
+          page={page}
+          onPageChange={handleListChange}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
       </div>
     </div>
   );

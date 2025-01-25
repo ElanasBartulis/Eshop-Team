@@ -19,7 +19,7 @@ export function useProductList() {
 
       const ratingPromise = await fetch('/server/api/rating');
       const ratingResponse = await ratingPromise.json();
-      console.log('RATING', ratingResponse);
+
       const productsWithRatings = productResponse.map((product) => ({
         ...product,
         ratingCount: ratingResponse[product.id]?.countOfRatings || 0,

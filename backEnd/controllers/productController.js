@@ -1,9 +1,30 @@
-import productModel from "../models/productModel.js";
-import { productCreateSchema } from "../utils/validations/ProductSchema.js";
+import productModel from '../models/productModel.js';
+import { productCreateSchema } from '../utils/validations/ProductSchema.js';
 
 export async function getAllProducts(req, res) {
-  const allProducts = await productModel.findAll();
-  res.status(200).json(allProducts);
+  const pageNumber = +req.query?.page || 0;
+  const rowsPerPage = +req.query?.rowsPerPage || 12;
+  //Total product count
+  const totalProductCount = await productModel.count();
+
+  let allProducts;
+  try {
+    if (req.query.page !== undefined || req.query.rowsPerPage !== undefined) {
+      allProducts = await productModel.findAll({
+        offset: pageNumber * rowsPerPage,
+        limit: rowsPerPage,
+        order: [['createdAt', 'DESC']],
+      });
+      return res.status(200).json({ allProducts, totalProductCount });
+    } else {
+      allProducts = await productModel.findAll();
+
+      return res.status(200).json(allProducts);
+    }
+  } catch (err) {
+    console.log(err);
+    res.status(400).json({ message: 'Something went wrong' });
+  }
 }
 
 export async function getProductById(req, res) {
@@ -11,10 +32,10 @@ export async function getProductById(req, res) {
   if (!id || isNaN(id))
     return res
       .status(400)
-      .json({ message: "Product ID was not provided or was in wrong format" });
+      .json({ message: 'Product ID was not provided or was in wrong format' });
   const foundProduct = await productModel.findByPk(id);
   if (!foundProduct)
-    return res.status(404).json({ message: "Product not found" });
+    return res.status(404).json({ message: 'Product not found' });
   res.status(200).json(foundProduct);
 }
 
@@ -32,11 +53,11 @@ export async function deleteProduct(req, res) {
   if (!id || isNaN(id))
     return res
       .status(400)
-      .json({ message: "Product ID was not provided or was in wrong format" });
+      .json({ message: 'Product ID was not provided or was in wrong format' });
 
   const deletedProduct = await productModel.destroy({ where: { id } });
   if (!deleteProduct)
-    return res.status(404).json({ message: "Product not found" });
+    return res.status(404).json({ message: 'Product not found' });
   res.status(204).json();
 }
 
@@ -45,12 +66,12 @@ export async function updateProductById(req, res) {
   if (!id || isNaN(id))
     return res
       .status(400)
-      .json({ message: "Product ID was not provided or was in wrong format" });
+      .json({ message: 'Product ID was not provided or was in wrong format' });
   const validationResult = productCreateSchema.safeParse(req.body);
   if (!validationResult.success)
     return res.status(400).json({ error: validationResult.error.issues });
   const updatedProduct = await productModel.update(req.body, { where: { id } });
   if (!updatedProduct)
-    return res.status(404).json({ message: "Product not found" });
-  res.status(201).json("Product updated!");
+    return res.status(404).json({ message: 'Product not found' });
+  res.status(201).json('Product updated!');
 }
