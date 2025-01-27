@@ -347,7 +347,7 @@ export default function ProductList() {
               </div>
             </div>
 
-            {/* Zoom Modal */}
+            {/* IMAGE ZOOM MODAL */}
             <Modal
               open={imageOpen}
               onClose={() => setImageOpen(false)}
