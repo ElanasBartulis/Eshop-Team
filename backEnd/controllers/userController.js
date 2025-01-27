@@ -244,7 +244,7 @@ export async function registerAdmin(req, res) {
 }
 
 export async function getAllUsers(req, res) {
-  // if(!req.session.admin) return res.status(400).json({message: "Nothing to see here."})
+  if(!req.session.admin) return res.status(400).json({message: "Nothing to see here."})
   try {
     // Total user count
     const count = await UserModel.count();

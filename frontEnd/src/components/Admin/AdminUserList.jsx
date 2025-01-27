@@ -157,7 +157,6 @@ export default function UserList() {
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
-    console.log(newPage);
   };
 
   const handleChangeRowsPerPage = (event) => {

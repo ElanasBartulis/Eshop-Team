@@ -16,6 +16,7 @@ import { useContext, useEffect, useState } from "react";
 import SnackbarComponent from "../SnackBarComponent";
 import SessionContext from "../../context/SessionContext";
 import DeleteConfirmation from "../DeleteConfirm";
+import { use } from "react";
 
 export default function ProductList() {
   const { setErrorHandler } = useContext(SessionContext);
@@ -24,18 +25,26 @@ export default function ProductList() {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [data, setData] = useState();
   const [loading, setLoading] = useState(true);
+  const [paginationModel, setPaginationModel] = useState({
+    page: 0,
+    pageSize: 5,
+  });
+  const [allUsersCount, setAllUsersCount] = useState(0)
   const [deleteConfirmation, setDeleteConfirmation] = useState({
     open: false,
     product: null,
   });
+  const [imageOpen ,setImageOpen] = useState(false);
 
   // fetch data
   useEffect(() => {
     async function fetchData() {
       try {
-        const promise = await fetch("/server/api/product/");
-        const response = await promise.json();
-        setData(response);
+        const promise = await fetch(`/server/api/product/?page=${paginationModel.page}&rowsPerPage=${paginationModel.pageSize}`);
+        const {allProducts, count} = await promise.json();
+
+        setAllUsersCount(count)
+        setData(allProducts);
         setLoading(false);
       } catch (error) {
         setErrorHandler({
@@ -46,9 +55,8 @@ export default function ProductList() {
         setLoading(false);
       }
     }
-    console.log("Fetch updated");
     fetchData();
-  }, []);
+  }, [paginationModel]);
 
   const columns = (handleEdit, handleDelete) => [
     { field: "id", headerName: "ID", width: 70 },
@@ -84,8 +92,6 @@ export default function ProductList() {
     },
   ];
 
-  const paginationModel = { page: 0, pageSize: 10 };
-
   // Map every product
   const rows = data?.map((product) => ({
     id: product.id,
@@ -94,6 +100,7 @@ export default function ProductList() {
     discount: product.discount,
     description: product.description,
     rating: +product.rating.toFixed(2),
+    image: product.image
   }));
 
   function handleEdit(id) {
@@ -235,11 +242,15 @@ export default function ProductList() {
 
       <Paper sx={{ minHeight: 400, width: "100%", marginTop: "2.25rem" }}>
         <DataGrid
-          rows={rows}
-          columns={columns(handleEdit, handleDelete)}
-          initialState={{ pagination: { paginationModel } }}
-          pageSizeOptions={[5, 10, 15, 20, 25, 50]}
-          sx={{ border: 0 }}
+        rows={rows}
+        columns={columns(handleEdit, handleDelete)}
+        rowCount={allUsersCount}
+        paginationModel={paginationModel}
+        onPaginationModelChange={setPaginationModel}
+        pageSizeOptions={[5, 10, 15, 20, 25, 50]}
+        sx={{ border: 0 }}
+        paginationMode="server"
+        loading={loading}
         />
       </Paper>
       {/* MODULE SETUP START */}
@@ -311,6 +322,68 @@ export default function ProductList() {
                 defaultValue={selectedProduct?.description}
               />
             </div>
+            
+            {/* IMAGE */}
+            <div className="flex flex-col gap-2">
+              <Typography
+                level="body-md"
+                sx={{ fontSize: "12px", color: "#666666" }}
+              >
+                Product Image
+              </Typography>
+              <div 
+                className="w-full h-[200px] flex items-center justify-center border rounded-md cursor-pointer"
+                onClick={() => setImageOpen(true)}
+              >
+                {selectedProduct?.image ? (
+                  <img 
+                    src={`/server/api/upload/image/${selectedProduct?.image}`}
+                    alt={`${selectedProduct?.name || 'Product'} image`}
+                    className="max-w-full max-h-full object-contain"
+                  />
+                ) : (
+                  <Typography color="textSecondary">No image available</Typography>
+                )}
+              </div>
+            </div>
+
+            {/* Zoom Modal */}
+            <Modal
+              open={imageOpen}
+              onClose={() => setImageOpen(false)}
+              aria-labelledby="modal-modal-title"
+              aria-describedby="modal-modal-description"
+            >
+              <Box
+                sx={{
+                  position: 'absolute',
+                  top: '50%',
+                  left: '50%',
+                  transform: 'translate(-50%, -50%)',
+                  bgcolor: 'background.paper',
+                  boxShadow: 24,
+                  p: 2,
+                  width: '80vw',
+                  height: '80vh',
+                  outline: 'none',
+                  borderRadius: 1,
+                  overflow: 'auto',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center'
+                }}
+              >
+                <img
+                  src={`/server/api/upload/image/${selectedProduct?.image}`}
+                  alt={`${selectedProduct?.name || 'Product'} image`}
+                  style={{
+                    maxWidth: '100%',
+                    maxHeight: '100%',
+                    objectFit: 'contain'
+                  }}
+                />
+              </Box>
+            </Modal>
           
             {/* PRODUCT RATING */}
             <TextField

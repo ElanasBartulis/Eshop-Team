@@ -1,6 +1,6 @@
 import express from "express";
 import * as uploadController from "../controllers/uploadController.js";
-import uploadMw from "../config/multerConfig.js";
+import uploadMw, { privateFolder } from "../config/multerConfig.js";
 
 const router = express.Router();
 
@@ -10,5 +10,7 @@ router.post(
   uploadMw.single("addProduct"),
   uploadController.uploadImage
 );
+
+router.use("/image", express.static(privateFolder));
 
 export default router;

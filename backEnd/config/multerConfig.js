@@ -4,7 +4,7 @@ import path from "path";
 
 const root = path.join(path.dirname(fileURLToPath(import.meta.url)), "..");
 const assetsFolder = path.join(root, "assets");
-const privateFolder = path.join(assetsFolder, "Private");
+export const privateFolder = path.join(assetsFolder, "Private");
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
