@@ -1,28 +1,39 @@
 import productModel from '../models/productModel.js';
+import ratingModel from '../models/ratingModel.js';
 import { productCreateSchema } from '../utils/validations/ProductSchema.js';
+import { Op, Sequelize } from 'sequelize';
 
 export async function getAllProducts(req, res) {
   const pageNumber = +req.query?.page || 0;
   const rowsPerPage = +req.query?.rowsPerPage || 12;
-  //Total product count
   const totalProductCount = await productModel.count();
 
-  let allProducts;
   try {
     if (req.query.page !== undefined || req.query.rowsPerPage !== undefined) {
-      allProducts = await productModel.findAll({
+      const allProducts = await productModel.findAll({
         offset: pageNumber * rowsPerPage,
         limit: rowsPerPage,
         order: [['createdAt', 'DESC']],
+        attributes: {
+          include: [
+            // Gauti ratingsCountui naudojamas Sequelizre
+            [
+              Sequelize.literal(
+                '(SELECT COUNT(*) FROM ratings WHERE ratings.productId = product.id)'
+              ),
+              'ratingCount',
+            ],
+          ],
+        },
       });
+
       return res.status(200).json({ allProducts, totalProductCount });
     } else {
-      allProducts = await productModel.findAll();
-
+      const allProducts = await productModel.findAll();
       return res.status(200).json(allProducts);
     }
   } catch (err) {
-    console.log(err);
+    console.error('Error in getAllProducts:', err);
     res.status(400).json({ message: 'Something went wrong' });
   }
 }
@@ -74,4 +85,35 @@ export async function updateProductById(req, res) {
   if (!updatedProduct)
     return res.status(404).json({ message: 'Product not found' });
   res.status(201).json('Product updated!');
+}
+
+//FOR PRODUCT SEARCHING
+export async function getSearchedProduct(req, res) {
+  try {
+    const searchTerm = req.query.term?.toLowerCase() || '';
+
+    const searchResult = await productModel.findAll({
+      where: {
+        name: {
+          [Op.like]: `%${searchTerm}%`,
+        },
+      },
+      attributes: {
+        include: [
+          // This subquery will count ratings directly in the database
+          [
+            Sequelize.literal(
+              '(SELECT COUNT(*) FROM ratings WHERE ratings.productId = product.id)'
+            ),
+            'ratingCount',
+          ],
+        ],
+      },
+    });
+
+    res.status(200).json(searchResult);
+  } catch (error) {
+    console.error('Search error:', error);
+    res.status(500).json({ error: 'Error performing search' });
+  }
 }

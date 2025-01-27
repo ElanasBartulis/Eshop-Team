@@ -21,6 +21,7 @@ function App() {
   const [isCheckingSession, setIsCheckingSession] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredProducts, setFilteredProducts] = useState([]);
+  const [isSearching, setIsSearching] = useState(false);
   ///Naujai informacijai, po updeito gauti skirta funkcija
   const updateUserData = (newData) => {
     setUserData((prev) => ({ ...prev, ...newData }));
@@ -52,59 +53,68 @@ function App() {
         updateUserData,
       }}
     >
-      <SearchContext.Provider value={{ searchTerm, setSearchTerm, filteredProducts, setFilteredProducts }}>
-      <BrowserRouter>
-        <Routes>
-          <Route
-            path="/user"
-            element={
-              sessionState.isLogged ? (
-                userData?.admin ? (
-                  <Navigate
-                    to="/admin"
-                    replace
-                  />
-                ) : (
-                  <UserPanel />
-                )
-              ) : (
-                <Navigate
-                  to="/"
-                  replace
-                />
-              )
-            }
-          />
-          <Route
-            path="/"
-            element={<Dashboard />}
-          />
-          <Route
-            path="/admin"
-            element={
-              sessionState.isLogged ? (
-                userData?.admin ? (
-                  <Admin />
+      <SearchContext.Provider
+        value={{
+          searchTerm,
+          setSearchTerm,
+          filteredProducts,
+          setFilteredProducts,
+          isSearching,
+          setIsSearching,
+        }}
+      >
+        <BrowserRouter>
+          <Routes>
+            <Route
+              path="/user"
+              element={
+                sessionState.isLogged ? (
+                  userData?.admin ? (
+                    <Navigate
+                      to="/admin"
+                      replace
+                    />
+                  ) : (
+                    <UserPanel />
+                  )
                 ) : (
                   <Navigate
-                    to="/user"
+                    to="/"
                     replace
                   />
                 )
-              ) : (
-                <Navigate
-                  to="/"
-                  replace
-                />
-              )
-            }
-          />
-          <Route
-            path="/checkout"
-            element={ <Checkout />}
-          />
-        </Routes>
-      </BrowserRouter>
+              }
+            />
+            <Route
+              path="/"
+              element={<Dashboard />}
+            />
+            <Route
+              path="/admin"
+              element={
+                sessionState.isLogged ? (
+                  userData?.admin ? (
+                    <Admin />
+                  ) : (
+                    <Navigate
+                      to="/user"
+                      replace
+                    />
+                  )
+                ) : (
+                  <Navigate
+                    to="/"
+                    replace
+                  />
+                )
+              }
+            />
+            <Route
+              path="/checkout"
+              element={<Checkout />}
+            />
+          </Routes>
+        </BrowserRouter>
       </SearchContext.Provider>
     </SessionContext.Provider>
   );

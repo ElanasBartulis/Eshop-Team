@@ -1,40 +1,46 @@
-import React, { useContext, useState, useRef } from 'react';
+import React, { useContext, useState, useRef, useEffect } from 'react';
 import { TextField } from '@mui/material';
 import SearchContext from '../context/SearchContext';
 import SessionContext from '../context/SessionContext';
+import { useProductList } from '../custom-hooks/useProductList';
 
 export default function SearchComponent() {
-  const { searchTerm, setSearchTerm, setFilteredProducts } =
+  const { searchTerm, setSearchTerm, setFilteredProducts, setIsSearching } =
     useContext(SearchContext);
   const { setErrorHandler } = useContext(SessionContext);
-  const [products, setProducts] = useState([]);
-  const hasSearchedRef = useRef(false);
+  const { getAllProducts } = useProductList();
 
-  const handleSearch = async (event) => {
-    const term = event.target.value;
-    setSearchTerm(term);
-
-    if (!hasSearchedRef.current && term) {
+  useEffect(() => {
+    const timer = setTimeout(async () => {
       try {
-        const response = await fetch('/server/api/product');
-        const fetchedProducts = await response.json();
-        setProducts(fetchedProducts);
-        hasSearchedRef.current = true;
+        setIsSearching(true);
+        if (!searchTerm) {
+          await getAllProducts({ page: 0, itemsPerPage: 12 });
+
+          return;
+        }
+        const promise = await fetch(
+          `server/api/product/search?term=${searchTerm}`
+        );
+        const response = await promise.json();
+        setFilteredProducts(response);
       } catch (error) {
         setErrorHandler({
           isSnackbarOpen: true,
-          snackbarMessage: error,
+          snackbarMessage: error.message,
           alertColor: 'error',
         });
+      } finally {
+        setIsSearching(false);
       }
-    }
+    }, 300);
 
-    const filtered = term
-      ? products.filter((product) =>
-          product.name.toLowerCase().includes(term.toLowerCase())
-        )
-      : products;
-    setFilteredProducts(filtered);
+    return () => clearTimeout(timer);
+  }, [searchTerm]);
+
+  const handleSearch = (event) => {
+    const term = event.target.value;
+    setSearchTerm(term);
   };
 
   return (

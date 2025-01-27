@@ -6,39 +6,24 @@ import { useProductList } from '../custom-hooks/useProductList';
 import SearchComponent from '../components/SearchComponent';
 import SearchContext from '../context/SearchContext';
 import frown from '../assets/Public/frown.svg';
-import { TablePagination } from '@mui/material';
+import { CircularProgress, Stack, TablePagination } from '@mui/material';
 //tevinis elementas DASHBOARD
 export default function DashboardMain() {
-  const { products, setProducts, getAllProducts } = useProductList();
+  const {
+    products,
+    setProducts,
+    getAllProducts,
+    totalProductCount,
+    isLoading,
+  } = useProductList();
   const { setFilteredProducts } = useContext(SearchContext);
-  const { searchTerm, filteredProducts } = useContext(SearchContext);
+  const { searchTerm, filteredProducts, isSearching } =
+    useContext(SearchContext);
   const [page, setPage] = useState(0); // dabartinis page 0
-  const [itemsPerPage, setItemsPerPage] = useState(5);
-  const [totalProductCount, setTotalProductCount] = useState(0);
-  //____laikinai
-  const [allProducts, setAllProducts] = useState([]);
-
-  // useEffect(() => {
-  //   getAllProducts({ includeRatings: true });
-  // }, []);
+  const [itemsPerPage, setItemsPerPage] = useState(12);
 
   useEffect(() => {
-    async function getProducts() {
-      try {
-        const promise = await fetch(
-          `/server/api/product?page=${page}&rowsPerPage=${itemsPerPage}`
-        );
-        if (promise.ok) {
-          const { allProducts, totalProductCount } = await promise.json();
-          console.log(totalProductCount);
-          setAllProducts(allProducts);
-          setTotalProductCount(totalProductCount);
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    }
-    getProducts();
+    getAllProducts({ page, itemsPerPage });
   }, [page, itemsPerPage]);
 
   function handleListChange(e, newPage) {
@@ -59,7 +44,7 @@ export default function DashboardMain() {
     );
   }
 
-  const productsToDisplay = searchTerm ? filteredProducts : allProducts;
+  const productsToDisplay = searchTerm ? filteredProducts : products;
 
   return (
     <div className="mb-20 mt-16">
@@ -72,10 +57,31 @@ export default function DashboardMain() {
         </div>
       </div>
       <div className="grid xl:grid-cols-4 grid-rows-3 gap-6 lg:grid-cols-3 md:grid-cols-2">
-        {productsToDisplay.length > 0 ? (
+        {isSearching || isLoading ? (
+          <Stack
+            sx={{
+              color: 'grey.500',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              minHeight: '200px',
+              gap: '20px',
+            }}
+            className="col-span-full"
+            spacing={2}
+            direction="row"
+          >
+            <CircularProgress sx={{ color: 'rgb(153 27 27)' }} />
+            Loading...
+          </Stack>
+        ) : productsToDisplay.length > 0 ? (
           productsToDisplay.map((data) => (
             <ProductCard
-              data={data}
+              data={{
+                ...data,
+                rating: data.rating,
+                ratingCount: data.ratingCount,
+              }}
               key={data.id}
               onRatingUpdate={updateProductRating}
             />
@@ -90,16 +96,17 @@ export default function DashboardMain() {
             <h2 className="text-xl p-2">No results matched...</h2>
           </div>
         )}
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={totalProductCount}
-          rowsPerPage={itemsPerPage}
-          page={page}
-          onPageChange={handleListChange}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
       </div>
+
+      <TablePagination
+        rowsPerPageOptions={[5, 12, 20, 25]}
+        component="div"
+        count={totalProductCount}
+        rowsPerPage={itemsPerPage}
+        page={page}
+        onPageChange={handleListChange}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+      />
     </div>
   );
 }

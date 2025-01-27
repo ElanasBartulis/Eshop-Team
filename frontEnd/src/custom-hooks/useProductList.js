@@ -5,31 +5,30 @@ import { useContext } from 'react';
 export function useProductList() {
   const [products, setProducts] = useState([]);
   const { setFilteredProducts } = useContext(SearchContext);
-
-  async function getAllProducts() {
+  const [totalProductCount, setTotalProductCount] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
+  async function getAllProducts({ page = 0, itemsPerPage = 12 }) {
     try {
-      const productPromise = await fetch('/server/api/product');
-      const productResponse = await productPromise.json();
+      setIsLoading(true);
+      const productPromise = await fetch(
+        `/server/api/product?page=${page}&rowsPerPage=${itemsPerPage}`
+      );
+      const { allProducts, totalProductCount } = await productPromise.json();
+      setTotalProductCount(totalProductCount);
 
-      if (!arguments[0]?.includeRatings) {
-        setProducts(productResponse);
-        setFilteredProducts(productResponse);
-        return;
-      }
-
-      const ratingPromise = await fetch('/server/api/rating');
-      const ratingResponse = await ratingPromise.json();
-
-      const productsWithRatings = productResponse.map((product) => ({
-        ...product,
-        ratingCount: ratingResponse[product.id]?.countOfRatings || 0,
-        rating:
-          ratingResponse[product.id]?.averageRating || product.ratings || 0,
-      }));
-      setProducts(productsWithRatings);
+      setProducts(allProducts);
+      setFilteredProducts(allProducts);
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   }
-  return { getAllProducts, products, setProducts };
+  return {
+    getAllProducts,
+    products,
+    setProducts,
+    totalProductCount,
+    isLoading,
+  };
 }
