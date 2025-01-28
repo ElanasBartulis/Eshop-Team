@@ -1,26 +1,26 @@
-import { TextField } from '@mui/material';
-import { useContext, useEffect, useState } from 'react';
-import SessionContext from '../../context/SessionContext';
-import SnackbarComponent from '../SnackBarComponent';
-import { registrationSchema } from '../../../../backEnd/utils/validations/UserSchema';
+import { TextField } from "@mui/material";
+import { useContext, useEffect, useState } from "react";
+import SessionContext from "../../context/SessionContext";
+import SnackbarComponent from "../SnackBarComponent";
+import { registrationSchema } from "../../../../backEnd/utils/validations/UserSchema";
 export default function EditProfile({ activeSection }) {
   const { setErrorHandler, updateUserData, userData } =
     useContext(SessionContext);
 
   //----------- normaliam erroru atvaizdavimui skirta consta// naudojama ant textfieldu kartu su snackbaru
   const fieldLabels = {
-    email: 'Email',
-    phoneNumber: 'Phone Number',
-    address: 'Address',
-    postCode: 'Post Code',
+    email: "Email",
+    phoneNumber: "Phone Number",
+    address: "Address",
+    postCode: "Post Code",
   };
   //-----------------------------------------------------------
   //Steitas sekti formos duomenis del pakeitimu, palei
   const [formValues, setFormValues] = useState({
-    email: '',
-    phoneNumber: '',
-    address: '',
-    postCode: '',
+    email: "",
+    phoneNumber: "",
+    address: "",
+    postCode: "",
   });
   //-----------------------------------------------------------------
   // Steitas skirtas sekti kurie laukeliai buvo pakeisti, kurie buvo nepaliesti, palei tai siunciami i backa tik tie laukeliai kurie buvo editinti-pakeisti
@@ -28,13 +28,16 @@ export default function EditProfile({ activeSection }) {
   //--------------------------------------------
   //----------------- useEffect'as skirtas uzpildyti inputu laukus, pasikeitus useData'ai// pakitus userData'ai useEffect'as atnaujina inputu value
   useEffect(() => {
-    setFormValues({
-      email: userData.email || '',
-      phoneNumber: userData.phoneNumber || '',
-      address: userData.address || '',
-      postCode: userData.postCode || '',
-    });
-  }, [userData]);
+    if (activeSection === "editProfile") {
+      setFormValues({
+        email: userData.email || "",
+        phoneNumber: userData.phoneNumber || "",
+        address: userData.address || "",
+        postCode: userData.postCode || "",
+      });
+      setChangedFields({});
+    }
+  }, [activeSection, userData]);
   //-------------------------------------------------------------
   //---------------Funkcija skirta nauju ivesciu reiksmems nustatyti. Dirba kartu su setFormValues, ir setChangedFields
   //-----DETALESNIS PAAISKINIMAS: inpute onChange={handleInputChange("email")} paleidziam sia funkcija. Passinam inputo name siuo atveju email
@@ -58,8 +61,8 @@ export default function EditProfile({ activeSection }) {
     if (noChanges) {
       setErrorHandler({
         isSnackbarOpen: true,
-        snackbarMessage: 'Cant change field into same value.',
-        alertColor: 'error',
+        snackbarMessage: "Cant change field into same value.",
+        alertColor: "error",
       });
 
       return;
@@ -81,8 +84,8 @@ export default function EditProfile({ activeSection }) {
     if (Object.keys(updatingData).length === 0) {
       setErrorHandler({
         isSnackbarOpen: true,
-        snackbarMessage: 'Please edit atleast one field, to make changes.',
-        alertColor: 'error',
+        snackbarMessage: "Please edit atleast one field, to make changes.",
+        alertColor: "error",
       });
 
       return;
@@ -105,16 +108,16 @@ export default function EditProfile({ activeSection }) {
       setErrorHandler({
         isSnackbarOpen: true,
         snackbarMessage: errMessage,
-        alertColor: 'error',
+        alertColor: "error",
       });
       return;
     }
     //--------------------------------------------
     try {
-      const promise = await fetch('/server/api/users/update', {
-        method: 'PUT',
+      const promise = await fetch("/server/api/users/update", {
+        method: "PUT",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(updatingData),
       });
@@ -136,36 +139,33 @@ export default function EditProfile({ activeSection }) {
           isSnackbarOpen: true,
           snackbarMessage: Object.keys(updatingData)
             .map((field) => `${fieldLabels[field]} was updated!`)
-            .join('. '),
-          alertColor: 'success',
+            .join(". "),
+          alertColor: "success",
         });
       } else {
         setErrorHandler({
           isSnackbarOpen: true,
           snackbarMessage: errMessage,
-          alertColor: 'error',
+          alertColor: "error",
         });
       }
     } catch (error) {
-      console.error('Error during login:', error);
+      console.error("Error during login:", error);
       setErrorHandler({
         isSnackbarOpen: true,
-        snackbarMessage: 'An error occurred. Please try again.',
-        alertColor: 'error',
+        snackbarMessage: "An error occurred. Please try again.",
+        alertColor: "error",
       });
-      setSnackbarMessage('An error occurred. Please try again.');
+      setSnackbarMessage("An error occurred. Please try again.");
     }
   }
 
   return (
     <>
-      {activeSection === 'editProfile' && (
+      {activeSection === "editProfile" && (
         <div>
           <h2 className="text-xl font-bold mb-4">Change your data</h2>
-          <form
-            className="flex flex-col gap-14"
-            onSubmit={editProfile}
-          >
+          <form className="flex flex-col gap-14" onSubmit={editProfile}>
             <TextField
               variant="outlined"
               type="text"
@@ -173,14 +173,14 @@ export default function EditProfile({ activeSection }) {
               label="Change email"
               name="email"
               value={formValues.email}
-              onChange={handleInputChange('email')}
+              onChange={handleInputChange("email")}
               sx={{
-                '& .MuiOutlinedInput-root.Mui-focused fieldset': {
-                  borderColor: 'rgb(17 24 39)',
+                "& .MuiOutlinedInput-root.Mui-focused fieldset": {
+                  borderColor: "rgb(17 24 39)",
                 },
 
-                '& .MuiInputLabel-root': {
-                  color: 'rgb(17 24 39)',
+                "& .MuiInputLabel-root": {
+                  color: "rgb(17 24 39)",
                 },
               }}
             />
@@ -191,14 +191,14 @@ export default function EditProfile({ activeSection }) {
               label="Change phone number"
               name="phoneNumber"
               value={formValues.phoneNumber}
-              onChange={handleInputChange('phoneNumber')}
+              onChange={handleInputChange("phoneNumber")}
               sx={{
-                '& .MuiOutlinedInput-root.Mui-focused fieldset': {
-                  borderColor: 'rgb(17 24 39)',
+                "& .MuiOutlinedInput-root.Mui-focused fieldset": {
+                  borderColor: "rgb(17 24 39)",
                 },
 
-                '& .MuiInputLabel-root': {
-                  color: 'rgb(17 24 39)',
+                "& .MuiInputLabel-root": {
+                  color: "rgb(17 24 39)",
                 },
               }}
             />
@@ -209,14 +209,14 @@ export default function EditProfile({ activeSection }) {
               label="Change address"
               name="address"
               value={formValues.address}
-              onChange={handleInputChange('address')}
+              onChange={handleInputChange("address")}
               sx={{
-                '& .MuiOutlinedInput-root.Mui-focused fieldset': {
-                  borderColor: 'rgb(17 24 39)',
+                "& .MuiOutlinedInput-root.Mui-focused fieldset": {
+                  borderColor: "rgb(17 24 39)",
                 },
 
-                '& .MuiInputLabel-root': {
-                  color: 'rgb(17 24 39)',
+                "& .MuiInputLabel-root": {
+                  color: "rgb(17 24 39)",
                 },
               }}
             />
@@ -227,14 +227,14 @@ export default function EditProfile({ activeSection }) {
               label="Change post code"
               name="postCode"
               value={formValues.postCode}
-              onChange={handleInputChange('postCode')}
+              onChange={handleInputChange("postCode")}
               sx={{
-                '& .MuiOutlinedInput-root.Mui-focused fieldset': {
-                  borderColor: 'rgb(17 24 39)',
+                "& .MuiOutlinedInput-root.Mui-focused fieldset": {
+                  borderColor: "rgb(17 24 39)",
                 },
 
-                '& .MuiInputLabel-root': {
-                  color: 'rgb(17 24 39)',
+                "& .MuiInputLabel-root": {
+                  color: "rgb(17 24 39)",
                 },
               }}
             />
