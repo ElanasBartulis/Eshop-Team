@@ -1,6 +1,6 @@
-import e from 'express';
-import productModel from '../models/productModel.js';
-import ratingModel from '../models/ratingModel.js';
+import e from "express";
+import productModel from "../models/productModel.js";
+import ratingModel from "../models/ratingModel.js";
 
 export async function addRating(req, res) {
   const { userId, productId, ratings } = req.body;
@@ -13,7 +13,7 @@ export async function addRating(req, res) {
     if (existingRating) {
       return res
         .status(400)
-        .json({ message: 'You have already rated this product' });
+        .json({ message: "You have already rated this product" });
     }
 
     // Addinam reitinga
@@ -31,13 +31,13 @@ export async function addRating(req, res) {
     );
 
     return res.status(201).json({
-      message: 'Rating added',
+      message: "Rating added",
       averageRating: avrgRating,
       countOfRatings: allratings.length,
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Internal server error.' });
+    res.status(500).json({ message: "Internal server error." });
   }
 }
 
@@ -47,11 +47,11 @@ export async function getProductRatingByProductId(req, res) {
   const { productId } = req.params;
 
   const product = await productModel.findOne({ where: { id: productId } });
-  console.log(product);
+
   const allratings = await ratingModel.findAll({ where: { productId } });
 
   if (!product) {
-    return res.status(404).json({ message: 'Product not found' });
+    return res.status(404).json({ message: "Product not found" });
   }
 
   return res.status(200).json({
@@ -64,7 +64,7 @@ export async function getProductRatingByProductId(req, res) {
 export async function getAllRatings(req, res) {
   try {
     const products = await productModel.findAll({
-      include: [{ model: ratingModel, attributes: ['ratings'] }],
+      include: [{ model: ratingModel, attributes: ["ratings"] }],
     });
     const ratingsMap = {};
 
@@ -86,6 +86,6 @@ export async function getAllRatings(req, res) {
     res.status(200).json(ratingsMap);
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ message: 'Internal server error' });
+    return res.status(500).json({ message: "Internal server error" });
   }
 }

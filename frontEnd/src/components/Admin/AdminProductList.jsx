@@ -20,7 +20,6 @@ import { use } from "react";
 
 export default function ProductList() {
   const { setErrorHandler } = useContext(SessionContext);
-
   const [open, setOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [data, setData] = useState();
@@ -29,21 +28,23 @@ export default function ProductList() {
     page: 0,
     pageSize: 5,
   });
-  const [allUsersCount, setAllUsersCount] = useState(0)
+  const [allUsersCount, setAllUsersCount] = useState(0);
   const [deleteConfirmation, setDeleteConfirmation] = useState({
     open: false,
     product: null,
   });
-  const [imageOpen ,setImageOpen] = useState(false);
+  const [imageOpen, setImageOpen] = useState(false);
 
   // fetch data
   useEffect(() => {
     async function fetchData() {
       try {
-        const promise = await fetch(`/server/api/product/?page=${paginationModel.page}&rowsPerPage=${paginationModel.pageSize}`);
-        const {allProducts, count} = await promise.json();
+        const promise = await fetch(
+          `/server/api/product/?page=${paginationModel.page}&rowsPerPage=${paginationModel.pageSize}`
+        );
+        const { allProducts, count } = await promise.json();
 
-        setAllUsersCount(count)
+        setAllUsersCount(count);
         setData(allProducts);
         setLoading(false);
       } catch (error) {
@@ -100,14 +101,15 @@ export default function ProductList() {
     discount: product.discount,
     description: product.description,
     rating: +product.rating.toFixed(2),
-    image: product.image
+    image: product.image,
   }));
 
   function handleEdit(id) {
     setSelectedProduct(id);
     setOpen(true);
   }
-  function handleDelete(product) {
+
+  async function handleDelete(product) {
     setDeleteConfirmation({
       open: true,
       product,
@@ -131,8 +133,16 @@ export default function ProductList() {
       );
 
       if (promise.ok) {
+        //Jei promise ok, istrinti image is sistemos
+        await fetch(
+          `/server/api/upload/image/${deleteConfirmation.product.image}`,
+          { method: "DELETE" }
+        );
+
         setData((prevData) =>
-          prevData.filter((product) => product.id !== deleteConfirmation.product.id)
+          prevData.filter(
+            (product) => product.id !== deleteConfirmation.product.id
+          )
         );
 
         setErrorHandler({
@@ -164,7 +174,7 @@ export default function ProductList() {
     setOpen(false);
     setSelectedProduct(null);
   }
-  
+
   async function handleSaveChanges(event) {
     event.preventDefault();
     const formData = new FormData(event.target);
@@ -187,16 +197,13 @@ export default function ProductList() {
     }
 
     try {
-      const promise = await fetch(
-        `/server/api/product/${selectedProduct.id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(editedData),
-        }
-      );
+      const promise = await fetch(`/server/api/product/${selectedProduct.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(editedData),
+      });
       const response = await promise.json();
       if (promise.ok) {
         setData((prevData) =>
@@ -230,7 +237,7 @@ export default function ProductList() {
   }
   return (
     <>
-      {/* jeigu ilgai krauna sukimosi icon per visa ekrana suksis */}
+      {/* jeigu ilgai krauna - sukimosi icon per visa ekrana suksis */}
       <Backdrop
         sx={(theme) => ({ color: "#fff", zIndex: theme.zIndex.drawer + 1 })}
         open={loading}
@@ -242,15 +249,15 @@ export default function ProductList() {
 
       <Paper sx={{ minHeight: 400, width: "100%", marginTop: "2.25rem" }}>
         <DataGrid
-        rows={rows}
-        columns={columns(handleEdit, handleDelete)}
-        rowCount={allUsersCount}
-        paginationModel={paginationModel}
-        onPaginationModelChange={setPaginationModel}
-        pageSizeOptions={[5, 10, 15, 20, 25, 50]}
-        sx={{ border: 0 }}
-        paginationMode="server"
-        loading={loading}
+          rows={rows}
+          columns={columns(handleEdit, handleDelete)}
+          rowCount={allUsersCount}
+          paginationModel={paginationModel}
+          onPaginationModelChange={setPaginationModel}
+          pageSizeOptions={[5, 10, 15, 20, 25, 50]}
+          sx={{ border: 0 }}
+          paginationMode="server"
+          loading={loading}
         />
       </Paper>
       {/* MODULE SETUP START */}
@@ -322,7 +329,7 @@ export default function ProductList() {
                 defaultValue={selectedProduct?.description}
               />
             </div>
-            
+
             {/* IMAGE */}
             <div className="flex flex-col gap-2">
               <Typography
@@ -331,18 +338,20 @@ export default function ProductList() {
               >
                 Product Image
               </Typography>
-              <div 
+              <div
                 className="w-full h-[200px] flex items-center justify-center border rounded-md cursor-pointer"
                 onClick={() => setImageOpen(true)}
               >
                 {selectedProduct?.image ? (
-                  <img 
+                  <img
                     src={`/server/api/upload/image/${selectedProduct?.image}`}
-                    alt={`${selectedProduct?.name || 'Product'} image`}
+                    alt={`${selectedProduct?.name || "Product"} image`}
                     className="max-w-full max-h-full object-contain"
                   />
                 ) : (
-                  <Typography color="textSecondary">No image available</Typography>
+                  <Typography color="textSecondary">
+                    No image available
+                  </Typography>
                 )}
               </div>
             </div>
@@ -356,35 +365,35 @@ export default function ProductList() {
             >
               <Box
                 sx={{
-                  position: 'absolute',
-                  top: '50%',
-                  left: '50%',
-                  transform: 'translate(-50%, -50%)',
-                  bgcolor: 'background.paper',
+                  position: "absolute",
+                  top: "50%",
+                  left: "50%",
+                  transform: "translate(-50%, -50%)",
+                  bgcolor: "background.paper",
                   boxShadow: 24,
                   p: 2,
-                  width: '80vw',
-                  height: '80vh',
-                  outline: 'none',
+                  width: "80vw",
+                  height: "80vh",
+                  outline: "none",
                   borderRadius: 1,
-                  overflow: 'auto',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center'
+                  overflow: "auto",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
                 }}
               >
                 <img
                   src={`/server/api/upload/image/${selectedProduct?.image}`}
-                  alt={`${selectedProduct?.name || 'Product'} image`}
+                  alt={`${selectedProduct?.name || "Product"} image`}
                   style={{
-                    maxWidth: '100%',
-                    maxHeight: '100%',
-                    objectFit: 'contain'
+                    maxWidth: "100%",
+                    maxHeight: "100%",
+                    objectFit: "contain",
                   }}
                 />
               </Box>
             </Modal>
-          
+
             {/* PRODUCT RATING */}
             <TextField
               type="text"
@@ -394,7 +403,7 @@ export default function ProductList() {
               defaultValue={selectedProduct?.rating}
               disabled
             />
-            
+
             <div>
               <Button
                 variant="contained"
@@ -430,7 +439,7 @@ export default function ProductList() {
         </Box>
       </Modal>
       <SnackbarComponent />
-      <DeleteConfirmation 
+      <DeleteConfirmation
         open={deleteConfirmation.open}
         message={`Are you sure you want to delete this product? This action cannot be undone.`}
         onClose={handleCancelDelete}

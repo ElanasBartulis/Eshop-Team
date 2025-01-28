@@ -41,7 +41,7 @@ export default function useLogin() {
       });
 
       const response = await promise.json();
-      // console.log("Is useLogin", response.session.user);
+
       if (promise.ok) {
         setUserData(response.session.user);
         setSessionState({ isLogged: true });

@@ -57,8 +57,6 @@ export default function NewProduct() {
 
       const imageUploadResponse = await imageUploadPromise.json();
 
-      console.log(imageUploadPromise);
-
       if (!imageUploadResponse.ok) {
         setErrorHandler({
           isSnackbarOpen: true,

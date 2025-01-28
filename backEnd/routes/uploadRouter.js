@@ -11,6 +11,8 @@ router.post(
   uploadController.uploadImage
 );
 
+router.delete("/image/:fileName", uploadController.deleteImage);
+
 router.use("/image", express.static(privateFolder));
 
 export default router;
