@@ -5,8 +5,8 @@ import { Op, Sequelize } from 'sequelize';
 
 export async function getAllProducts(req, res) {
   const count = await productModel.count();
-  const pageNumber = +req.query?.page || count;
-  const rowsPerPage = +req.query?.rowsPerPage || 12;
+  const pageNumber = +req.query?.page || 0;
+  const rowsPerPage = +req.query?.rowsPerPage || count;
 
   try {
     if (req.query.page !== undefined || req.query.rowsPerPage !== undefined) {

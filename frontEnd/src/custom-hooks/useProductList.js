@@ -5,7 +5,7 @@ import { useContext } from 'react';
 export function useProductList() {
   const [products, setProducts] = useState([]);
   const { setFilteredProducts } = useContext(SearchContext);
-  const [totalProductCount, setTotalProductCount] = useState(0);
+  const [count, setcount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   async function getAllProducts({ page = 0, itemsPerPage = 12 }) {
     try {
@@ -13,9 +13,9 @@ export function useProductList() {
       const productPromise = await fetch(
         `/server/api/product?page=${page}&rowsPerPage=${itemsPerPage}`
       );
-      const { allProducts, totalProductCount } = await productPromise.json();
-      setTotalProductCount(totalProductCount);
-
+      const { allProducts, count } = await productPromise.json();
+      
+      setcount(count);
       setProducts(allProducts);
       setFilteredProducts(allProducts);
     } catch (error) {
@@ -28,7 +28,7 @@ export function useProductList() {
     getAllProducts,
     products,
     setProducts,
-    totalProductCount,
+    count,
     isLoading,
   };
 }

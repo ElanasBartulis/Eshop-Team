@@ -13,7 +13,7 @@ export default function DashboardMain() {
     products,
     setProducts,
     getAllProducts,
-    totalProductCount,
+    count,
     isLoading,
   } = useProductList();
   const { setFilteredProducts } = useContext(SearchContext);
@@ -101,7 +101,7 @@ export default function DashboardMain() {
       <TablePagination
         rowsPerPageOptions={[5, 12, 20, 25]}
         component="div"
-        count={totalProductCount}
+        count={count}
         rowsPerPage={itemsPerPage}
         page={page}
         onPageChange={handleListChange}
