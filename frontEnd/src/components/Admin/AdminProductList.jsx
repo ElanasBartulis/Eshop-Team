@@ -43,8 +43,6 @@ export default function ProductList() {
         const promise = await fetch(`/server/api/product/?page=${paginationModel.page}&rowsPerPage=${paginationModel.pageSize}`);
         const {allProducts, count} = await promise.json();
 
-        console.log(count)
-
         setAllUsersCount(count)
         setData(allProducts);
         setLoading(false);
