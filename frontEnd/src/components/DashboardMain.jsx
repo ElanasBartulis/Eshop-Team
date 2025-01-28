@@ -6,15 +6,34 @@ import { useProductList } from '../custom-hooks/useProductList';
 import SearchComponent from '../components/SearchComponent';
 import SearchContext from '../context/SearchContext';
 import frown from '../assets/Public/frown.svg';
+import { CircularProgress, Stack, TablePagination } from '@mui/material';
 //tevinis elementas DASHBOARD
 export default function DashboardMain() {
-  const { products, setProducts, getAllProducts } = useProductList();
+  const {
+    products,
+    setProducts,
+    getAllProducts,
+    count,
+    isLoading,
+  } = useProductList();
   const { setFilteredProducts } = useContext(SearchContext);
-  const { searchTerm, filteredProducts } = useContext(SearchContext);
+  const { searchTerm, filteredProducts, isSearching } =
+    useContext(SearchContext);
+  const [page, setPage] = useState(0); // dabartinis page 0
+  const [itemsPerPage, setItemsPerPage] = useState(12);
 
   useEffect(() => {
-    getAllProducts({ includeRatings: true });
-  }, []);
+    getAllProducts({ page, itemsPerPage });
+  }, [page, itemsPerPage]);
+
+  function handleListChange(e, newPage) {
+    setPage(newPage);
+  }
+
+  function handleChangeRowsPerPage(e) {
+    setItemsPerPage(parseInt(e.target.value, 10));
+    setPage(0);
+  }
 
   //UPDEITINAM PRODUKTU REITINGA
   function updateProductRating(productId, newRating) {
@@ -34,14 +53,35 @@ export default function DashboardMain() {
           Board games!
         </div>
         <div className="lg:place-items-end md:place-items-start">
-          <Sorting/>
+          <Sorting />
         </div>
       </div>
       <div className="grid xl:grid-cols-4 grid-rows-3 gap-6 lg:grid-cols-3 md:grid-cols-2">
-        {productsToDisplay.length > 0 ? (
+        {isSearching || isLoading ? (
+          <Stack
+            sx={{
+              color: 'grey.500',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              minHeight: '200px',
+              gap: '20px',
+            }}
+            className="col-span-full"
+            spacing={2}
+            direction="row"
+          >
+            <CircularProgress sx={{ color: 'rgb(153 27 27)' }} />
+            Loading...
+          </Stack>
+        ) : productsToDisplay.length > 0 ? (
           productsToDisplay.map((data) => (
             <ProductCard
-              data={data}
+              data={{
+                ...data,
+                rating: data.rating,
+                ratingCount: data.ratingCount,
+              }}
               key={data.id}
               onRatingUpdate={updateProductRating}
             />
@@ -57,6 +97,16 @@ export default function DashboardMain() {
           </div>
         )}
       </div>
+
+      <TablePagination
+        rowsPerPageOptions={[5, 12, 20, 25]}
+        component="div"
+        count={count}
+        rowsPerPage={itemsPerPage}
+        page={page}
+        onPageChange={handleListChange}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+      />
     </div>
   );
 }
