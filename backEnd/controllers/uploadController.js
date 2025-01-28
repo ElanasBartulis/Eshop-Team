@@ -4,13 +4,13 @@ import { privateFolder } from "../config/multerConfig.js";
 
 export async function uploadImage(req, res) {
   try {
-    console.log("File uploaded:", req.file.filename);
-
-    if (!req.file || req.file === undefined) {
+    if (!req.file) {
       return res
         .status(400)
         .send("File is too big or file format is not JPEG or PNG");
     }
+
+    console.log("File uploaded:", req.file.filename);
 
     res.status(200).json({
       message: "File uploaded successfully",
