@@ -30,6 +30,7 @@ const uploadMw = multer({
   fileFilter,
   limits: {
     fileSize: 1024 * 1024 * 5,
+    files: 3,
   },
 });
 export default uploadMw;

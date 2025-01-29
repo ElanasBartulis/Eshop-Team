@@ -57,8 +57,16 @@ export async function createProduct(req, res) {
 
   // if image is uploaded
   if (req.body.image) {
-    const filename = req.body.image.split("\\").pop().split("/").pop();
-    req.body.image = filename;
+    // if array
+    if (Array.isArray(req.body.image)) {
+      // process each image path in the array & give me file name
+      req.body.image = req.body.image.map((imagePath) =>
+        imagePath.split("\\").pop().split("/").pop()
+      );
+    } else {
+      // single image
+      req.body.image = [req.body.image.split("\\").pop().split("/").pop()];
+    }
   }
 
   const newProduct = await productModel.create(req.body);
@@ -90,9 +98,16 @@ export async function updateProductById(req, res) {
 
   // if image is uploaded
   if (req.body.image) {
-    // take just the name istead of full path
-    const filename = req.body.image.split("\\").pop().split("/").pop();
-    req.body.image = filename;
+    // if array
+    if (Array.isArray(req.body.image)) {
+      // process each image path in the array & give me file name
+      req.body.image = req.body.image.map((imagePath) =>
+        imagePath.split("\\").pop().split("/").pop()
+      );
+    } else {
+      // single image
+      req.body.image = [req.body.image.split("\\").pop().split("/").pop()];
+    }
   }
 
   const updatedProduct = await productModel.update(req.body, { where: { id } });

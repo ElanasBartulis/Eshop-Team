@@ -4,18 +4,19 @@ import { privateFolder } from "../config/multerConfig.js";
 
 export async function uploadImage(req, res) {
   try {
-    if (!req.file) {
+    if (!req.files || req.files.length === 0) {
       return res
         .status(400)
-        .send("File is too big or file format is not JPEG or PNG");
+        .send("No files uploaded or files are too big or wrong format");
     }
-
-    console.log("File uploaded:", req.file.filename);
+    // Log all file names
+    const uploadedFiles = req.files.map((file) => file.filename);
+    console.log("Files uploaded:", uploadedFiles);
 
     res.status(200).json({
       message: "File uploaded successfully",
       file: req.file,
-      filename: req.file.filename,
+      filename: uploadedFiles,
     });
   } catch (error) {
     console.error("Upload error:", error);
@@ -24,22 +25,34 @@ export async function uploadImage(req, res) {
 }
 
 export async function deleteImage(req, res) {
-  //Nurodyti failo pavadinima
-  const { fileName } = req.params;
-  // Rasti failo lokacija
-  const filePath = path.join(privateFolder, fileName);
+  //Nurodyti failu pavadinimus (atskirti su , )
+  const fileNames = req.params.fileName.split(",").filter(Boolean);
+
+  // Serveris gali priimti tik 1 response todel sitas egzistuoja
+  let allFilesDeleted = true;
 
   try {
-    // patikrinti ar egzistuoja
-    if (fs.existsSync(filePath)) {
-      // jei egzistuoja istrinti
-      fs.unlinkSync(filePath);
-      res.status(200).json({ message: "File deleted successfully" });
+    for (const fileName of fileNames) {
+      // Rasti failo lokacija
+      const filePath = path.join(privateFolder, fileName);
+
+      // patikrinti ar egzistuoja
+      if (fs.existsSync(filePath)) {
+        // jei egzistuoja istrinti
+        fs.unlinkSync(filePath);
+      } else {
+        // jei (ne)egzistuoja
+        allFilesDeleted = false;
+      }
+    }
+
+    if (allFilesDeleted) {
+      res.status(200).json({ message: "All files deleted successfully" });
     } else {
-      res.status(404).json({ message: "File not found" });
+      res.status(404).json({ message: "Delete files not found" });
     }
   } catch (error) {
     console.log("Delete error: ", error);
-    res.status(500).json({ message: "Failed to delete file" });
+    res.status(500).json({ message: "Failed to delete files" });
   }
 }

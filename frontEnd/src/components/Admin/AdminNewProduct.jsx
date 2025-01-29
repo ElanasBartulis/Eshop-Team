@@ -17,10 +17,16 @@ export default function NewProduct() {
   }
 
   function handleFileChange(e) {
-    const file = e.target.files[0];
-    if (file) {
+    // make files an array
+    const files = Array.from(e.target.files);
+    // if the length is more then 0 check image format
+    if (files.length > 0) {
       const allowedTypes = ["image/jpeg", "image/png"];
-      if (!allowedTypes.includes(file.type)) {
+      const invalidFiles = files.some(
+        (file) => !allowedTypes.includes(file.type)
+      );
+
+      if (invalidFiles) {
         setErrorHandler({
           isSnackbarOpen: true,
           snackbarMessage:
@@ -31,7 +37,7 @@ export default function NewProduct() {
         setFileInput(null);
         return;
       }
-      setFileInput(file);
+      setFileInput(files);
     }
   }
 
@@ -39,10 +45,10 @@ export default function NewProduct() {
     e.preventDefault();
     const formData = new FormData(e.target);
 
-    if (!fileInput) {
+    if (!fileInput || fileInput.length === 0) {
       setErrorHandler({
         isSnackbarOpen: true,
-        snackbarMessage: "Please upload an image first",
+        snackbarMessage: "Please upload at least one image",
         alertColor: "error",
       });
       return;
@@ -73,7 +79,7 @@ export default function NewProduct() {
         discount: +formData?.get("discount"),
         description: formData?.get("description"),
         rating: 0,
-        image: imageUploadResponse.file.path.toString(),
+        image: imageUploadResponse.filename,
       };
 
       // Jei ne visi fieldai uzpildyti, nesiusti formos.
@@ -219,6 +225,7 @@ export default function NewProduct() {
             name="addProduct"
             onChange={handleFileChange}
             accept="image/jpeg,image/png"
+            multiple
           />
 
           <button

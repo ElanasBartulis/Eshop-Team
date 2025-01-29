@@ -22,7 +22,30 @@ const productModel = sequelize.define(
       type: DataTypes.FLOAT,
     },
     image: {
-      type: DataTypes.STRING,
+      type: DataTypes.JSON,
+      get() {
+        const value = this.getDataValue("image"); // Get raw value from database
+        if (Array.isArray(value)) {
+          return value; // Return if already an array
+        }
+        if (typeof value === "string" && !value.startsWith("[")) {
+          return [value]; // If single filename string, wrap in array
+        }
+        try {
+          return value ? JSON.parse(value) : []; // Try to parse JSON string into array
+        } catch (error) {
+          return [value]; // If parsing fails, wrap value in array
+        }
+      },
+      set(value) {
+        if (Array.isArray(value)) {
+          this.setDataValue("image", value); // Stores array as JSON string
+        } else if (typeof value === "string") {
+          this.setDataValue("image", [value]); // Wraps single image in array and stores as JSON
+        } else {
+          this.setDataValue("image", "[]"); // Handles null/undefined by storing empty array
+        }
+      },
     },
   },
   { timestamps: true }

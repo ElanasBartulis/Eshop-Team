@@ -1,9 +1,9 @@
-import { useContext, useEffect, useState } from 'react';
-import { Modal, Box } from '@mui/material';
-import Rating from '@mui/material/Rating';
-import ProductOverview from './ProductOverview';
-import SessionContext from './../context/SessionContext';
-import { useProductRating } from '../custom-hooks/useProductRating';
+import { useContext, useEffect, useState } from "react";
+import { Modal, Box } from "@mui/material";
+import Rating from "@mui/material/Rating";
+import ProductOverview from "./ProductOverview";
+import SessionContext from "./../context/SessionContext";
+import { useProductRating } from "../custom-hooks/useProductRating";
 
 export default function ProductCard({
   data,
@@ -43,13 +43,13 @@ export default function ProductCard({
         <button
           onClick={handleWishlistClick}
           className={`absolute end-4 top-4 z-10 rounded-full bg-white p-1.5 text-gray-900 transition hover:text-gray-900/75 ${
-            isWishlisted ? `text-red-500` : ''
+            isWishlisted ? `text-red-500` : ""
           }`}
         >
           <span className="sr-only">Wishlist</span>
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            fill={isWishlisted ? 'currentColor' : 'none'}
+            fill={isWishlisted ? "currentColor" : "none"}
             viewBox="0 0 24 24"
             strokeWidth="1.5"
             stroke="currentColor"
@@ -65,14 +65,14 @@ export default function ProductCard({
 
         <img
           onClick={handleOpen}
-          src={`/server/api/upload/image/${image}`}
+          src={`/server/api/upload/image/${image[0]}`}
           alt=""
           className="h-64 w-full object-cover transition duration-500 group-hover:scale-105 sm:h-72"
         />
 
         <div className="  relative border border-gray-100 bg-white p-6">
           {discount === null || discount == 0 ? (
-            ''
+            ""
           ) : (
             <span className="whitespace-nowrap bg-red-800 px-3 py-1.5 text-gray-50 text-xs font-medium">
               {discount} %
@@ -111,20 +111,17 @@ export default function ProductCard({
       >
         <Box
           sx={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
             width: 900,
-            bgcolor: 'background.paper',
+            bgcolor: "background.paper",
             p: 4,
             borderRadius: 1,
           }}
         >
-          <ProductOverview
-            data={data}
-            onRatingUpdate={onRatingUpdate}
-          />
+          <ProductOverview data={data} onRatingUpdate={onRatingUpdate} />
         </Box>
       </Modal>
     </div>

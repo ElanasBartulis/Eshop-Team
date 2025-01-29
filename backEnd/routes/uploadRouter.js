@@ -7,7 +7,7 @@ const router = express.Router();
 // /server/api/image
 router.post(
   "/image",
-  uploadMw.single("addProduct"),
+  uploadMw.array("addProduct", 3),
   uploadController.uploadImage
 );
 

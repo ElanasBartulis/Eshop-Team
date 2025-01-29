@@ -17,6 +17,8 @@ import SnackbarComponent from "../SnackBarComponent";
 import SessionContext from "../../context/SessionContext";
 import DeleteConfirmation from "../DeleteConfirm";
 import { use } from "react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, Pagination } from "swiper/modules";
 
 export default function ProductList() {
   const { setErrorHandler } = useContext(SessionContext);
@@ -338,21 +340,24 @@ export default function ProductList() {
               >
                 Product Image
               </Typography>
-              <div
-                className="w-full h-[200px] flex items-center justify-center border rounded-md cursor-pointer"
-                onClick={() => setImageOpen(true)}
-              >
-                {selectedProduct?.image ? (
-                  <img
-                    src={`/server/api/upload/image/${selectedProduct?.image}`}
-                    alt={`${selectedProduct?.name || "Product"} image`}
-                    className="max-w-full max-h-full object-contain"
-                  />
-                ) : (
-                  <Typography color="textSecondary">
-                    No image available
-                  </Typography>
-                )}
+              <div className="w-full h-[200px] flex items-center justify-center border rounded-md cursor-pointer">
+                <Swiper
+                  navigation
+                  pagination={{ clickable: true }}
+                  modules={[Navigation, Pagination]}
+                  className="rounded-lg shadow-lg"
+                >
+                  {selectedProduct?.image.map((src, index) => (
+                    <SwiperSlide key={index}>
+                      <img
+                        src={`/server/api/upload/image/${src}`}
+                        alt={`Product image ${index + 1}`}
+                        className="w-full h-auto"
+                        onClick={() => setImageOpen(true)}
+                      />
+                    </SwiperSlide>
+                  ))}
+                </Swiper>
               </div>
             </div>
 
@@ -376,21 +381,28 @@ export default function ProductList() {
                   height: "80vh",
                   outline: "none",
                   borderRadius: 1,
-                  overflow: "auto",
+                  overflow: "hidden",
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
                 }}
               >
-                <img
-                  src={`/server/api/upload/image/${selectedProduct?.image}`}
-                  alt={`${selectedProduct?.name || "Product"} image`}
-                  style={{
-                    maxWidth: "100%",
-                    maxHeight: "100%",
-                    objectFit: "contain",
-                  }}
-                />
+                <Swiper
+                  navigation
+                  pagination={{ clickable: true }}
+                  modules={[Navigation, Pagination]}
+                  className="rounded-lg shadow-lg w-full h-full"
+                >
+                  {selectedProduct?.image.map((src, index) => (
+                    <SwiperSlide key={index}>
+                      <img
+                        src={`/server/api/upload/image/${src}`}
+                        alt={`Product image ${index + 1}`}
+                        className="w-full h-auto object-contain"
+                      />
+                    </SwiperSlide>
+                  ))}
+                </Swiper>
               </Box>
             </Modal>
 
