@@ -7,20 +7,17 @@ import SearchComponent from '../components/SearchComponent';
 import SearchContext from '../context/SearchContext';
 import frown from '../assets/Public/frown.svg';
 import { CircularProgress, Stack, TablePagination } from '@mui/material';
+import { useWishList } from '../custom-hooks/useWishList';
 //tevinis elementas DASHBOARD
 export default function DashboardMain() {
-  const {
-    products,
-    setProducts,
-    getAllProducts,
-    count,
-    isLoading,
-  } = useProductList();
+  const { products, setProducts, getAllProducts, count, isLoading } =
+    useProductList();
   const { setFilteredProducts } = useContext(SearchContext);
   const { searchTerm, filteredProducts, isSearching } =
     useContext(SearchContext);
   const [page, setPage] = useState(0); // dabartinis page 0
   const [itemsPerPage, setItemsPerPage] = useState(12);
+  const { toggleWishList, isInWishList, wishListItems } = useWishList();
 
   useEffect(() => {
     getAllProducts({ page, itemsPerPage });
@@ -84,6 +81,8 @@ export default function DashboardMain() {
               }}
               key={data.id}
               onRatingUpdate={updateProductRating}
+              toggleWishList={toggleWishList}
+              isInWishList={isInWishList}
             />
           ))
         ) : (
