@@ -5,7 +5,12 @@ import ProductOverview from './ProductOverview';
 import SessionContext from './../context/SessionContext';
 import { useProductRating } from '../custom-hooks/useProductRating';
 
-export default function ProductCard({ data, onRatingUpdate }) {
+export default function ProductCard({
+  data,
+  onRatingUpdate,
+  toggleWishList,
+  isInWishList,
+}) {
   const [open, setOpen] = useState(false);
   const {
     name,
@@ -14,6 +19,7 @@ export default function ProductCard({ data, onRatingUpdate }) {
     ratingCount: initialRatingCount,
     id,
     discount,
+    image,
   } = data;
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -23,14 +29,27 @@ export default function ProductCard({ data, onRatingUpdate }) {
     handleRating,
   } = useProductRating(id, initialRating, initialRatingCount, onRatingUpdate);
 
+  const isWishlisted = isInWishList(data.id);
+
+  function handleWishlistClick(event) {
+    event.preventDefault();
+    toggleWishList(data);
+  }
+  console.log();
+
   return (
     <div>
       <div className="group relative block overflow-hidden cursor-pointer">
-        <button className="absolute end-4 top-4 z-10 rounded-full bg-white p-1.5 text-gray-900 transition hover:text-gray-900/75">
+        <button
+          onClick={handleWishlistClick}
+          className={`absolute end-4 top-4 z-10 rounded-full bg-white p-1.5 text-gray-900 transition hover:text-gray-900/75 ${
+            isWishlisted ? `text-red-500` : ''
+          }`}
+        >
           <span className="sr-only">Wishlist</span>
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            fill="none"
+            fill={isWishlisted ? 'currentColor' : 'none'}
             viewBox="0 0 24 24"
             strokeWidth="1.5"
             stroke="currentColor"
@@ -46,13 +65,13 @@ export default function ProductCard({ data, onRatingUpdate }) {
 
         <img
           onClick={handleOpen}
-          src="https://images.unsplash.com/photo-1549056572-75914d5d5fd4?q=80&w=1964&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+          src={`/server/api/upload/image/${image}`}
           alt=""
           className="h-64 w-full object-cover transition duration-500 group-hover:scale-105 sm:h-72"
         />
 
         <div className="  relative border border-gray-100 bg-white p-6">
-          {discount === null ? (
+          {discount === null || discount == 0 ? (
             ''
           ) : (
             <span className="whitespace-nowrap bg-red-800 px-3 py-1.5 text-gray-50 text-xs font-medium">

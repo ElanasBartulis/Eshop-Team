@@ -53,6 +53,18 @@ export default function Menu({ activeSection, handleSection }) {
             Change password
           </li>
         )}
+        {activeSection === 'wishlist' ? (
+          <li className="text-red-800 hover:bg-red-800 hover:text-gray-50 p-2 rounded cursor-pointer">
+            My Wishlist
+          </li>
+        ) : (
+          <li
+            className="text-gray-50 hover:bg-red-800 p-2 rounded cursor-pointer"
+            onClick={() => handleSection('wishlist')}
+          >
+            My Wishlist
+          </li>
+        )}
       </ul>
     </>
   );

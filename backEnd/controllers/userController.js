@@ -55,6 +55,7 @@ export async function register(req, res) {
       phoneNumber,
       address,
       postCode,
+      id: user.id,
     };
     req.session.userId = user.id;
     req.session.isLogged = true;
@@ -177,7 +178,8 @@ export async function updateUser(req, res) {
 export async function updateUserById(req, res) {
   const { id } = req.params;
   const updateData = req.body;
-  if(!req.session.isLogged) return res.status(400).json({message: "Nothing to see here."})
+  if (!req.session.isLogged)
+    return res.status(400).json({ message: 'Nothing to see here.' });
   try {
     const [updated] = await UserModel.update(updateData, { where: { id } });
     if (!updated) {
@@ -207,7 +209,8 @@ export async function registerAdmin(req, res) {
   const { password, email } = req.body;
 
   // While this line is active , create Admin is not accessable
-  if(!req.session.admin) return res.status(400).json({message: "Request Denied"})
+  if (!req.session.admin)
+    return res.status(400).json({ message: 'Request Denied' });
 
   try {
     const validationResult = adminRegistrationSchema.safeParse(req.body);
@@ -244,7 +247,8 @@ export async function registerAdmin(req, res) {
 }
 
 export async function getAllUsers(req, res) {
-  if(!req.session.admin) return res.status(400).json({message: "Nothing to see here."})
+  if (!req.session.admin)
+    return res.status(400).json({ message: 'Nothing to see here.' });
   try {
     // Total user count
     const count = await UserModel.count();
@@ -267,8 +271,8 @@ export async function getAllUsers(req, res) {
       offset: pageNumber * rowsPerPage,
       limit: rowsPerPage,
     });
-    
-     res.status(200).json({users, count});
+
+    res.status(200).json({ users, count });
   } catch (err) {
     res
       .status(500)
@@ -280,8 +284,9 @@ export async function deleteUser(req, res) {
   const { id } = req.params;
 
   try {
-    if(!req.session.admin) return res.status(400).json({message: "Permission denied"})
-    
+    if (!req.session.admin)
+      return res.status(400).json({ message: 'Permission denied' });
+
     const deleted = await UserModel.destroy({ where: { id } });
     if (!deleted) {
       return res.status(404).json({ message: 'User not found' });

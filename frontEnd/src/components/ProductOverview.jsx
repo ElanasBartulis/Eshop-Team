@@ -20,11 +20,12 @@ const ProductOverview = ({ data, onRatingUpdate }) => {
     ratingCount: initialRatingCount,
     id,
     description,
+    image,
   } = data;
   const images = [
-    'https://images.unsplash.com/photo-1549056572-75914d5d5fd4?q=80&w=1964&auto=format&fit=crop',
-    'https://images.unsplash.com/photo-1549056572-75914d5d5fd4?q=80&w=1964&auto=format&fit=crop',
-    'https://images.unsplash.com/photo-1549056572-75914d5d5fd4?q=80&w=1964&auto=format&fit=crop',
+    `/server/api/upload/image/${image}`,
+    `/server/api/upload/image/${image}`,
+    `/server/api/upload/image/${image}`,
   ];
 
   const {
