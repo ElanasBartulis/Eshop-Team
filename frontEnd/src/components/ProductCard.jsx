@@ -4,6 +4,7 @@ import Rating from '@mui/material/Rating';
 import ProductOverview from './ProductOverview';
 import SessionContext from './../context/SessionContext';
 import { useProductRating } from '../custom-hooks/useProductRating';
+import { useCart } from '../context/CartContext';
 
 export default function ProductCard({ data, onRatingUpdate }) {
   const [open, setOpen] = useState(false);
@@ -22,6 +23,44 @@ export default function ProductCard({ data, onRatingUpdate }) {
     ratingCount,
     handleRating,
   } = useProductRating(id, initialRating, initialRatingCount, onRatingUpdate);
+
+  const { dispatch } = useCart();
+  console.log(data);
+
+  const handleAddToCart = async (e) => {
+    e.preventDefault();
+    try {
+      console.log('Attempting to add product with ID:', data.id);
+      
+      const requestBody = {
+        productId: data.id,
+        quantity: 1,
+      };
+      
+      console.log('Fetch request body:', requestBody);
+      
+      const response = await fetch('/server/api/cart/add', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify(requestBody),
+      });
+      
+      const responseData = await response.json();
+      console.log('Response data:', responseData);
+  
+      if (!response.ok) {
+        throw new Error(responseData.error || `HTTP error! status: ${response.status}`);
+      }
+      
+      dispatch({ type: 'ADD_ITEM', payload: responseData });
+      
+    } catch (error) {
+      console.error('Error adding product to cart:', error);
+    }
+  };
 
   return (
     <div>
@@ -78,7 +117,10 @@ export default function ProductCard({ data, onRatingUpdate }) {
             <p>({ratingCount})</p>
           </div>
           <form className="mt-4">
-            <button className="block w-full rounded bg-gray-900 p-4 text-gray-50 text-sm font-medium transition hover:scale-105 hover:text-red-800">
+            <button 
+              className="block w-full rounded bg-gray-900 p-4 text-gray-50 text-sm font-medium transition hover:scale-105 hover:text-red-800"
+              onClick={handleAddToCart}
+            >
               Add to Cart
             </button>
           </form>

@@ -16,7 +16,6 @@ const dbConfig = {
 
 const pool = mysql.createPool(dbConfig);
 
-
 const sessionStore = new MysqlStoreInstance({}, pool);
 
 export function configDbSession(app) {
@@ -24,7 +23,7 @@ export function configDbSession(app) {
     session({
       secret: "banana",
       resave: false,
-      saveUninitialized: false,
+      saveUninitialized: true,
       store: sessionStore,
       cookie: {
         maxAge: 1000 * 60 * 60 * 24,
