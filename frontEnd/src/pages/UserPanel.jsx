@@ -7,6 +7,7 @@ import Greeting from '../components/userComponents/Greeting';
 import EditProfile from '../components/userComponents/EditProfile';
 import ChangePassword from '../components/userComponents/ChangePassword';
 import UserDashboard from '../components/userComponents/UserDashboard';
+import Wishlist from '../components/userComponents/Wishlist';
 
 export default function UserPanel() {
   const [activeSection, setActiveSection] = useState('dashboard');
@@ -36,6 +37,7 @@ export default function UserPanel() {
 
               <EditProfile activeSection={activeSection} />
               <ChangePassword activeSection={activeSection} />
+              <Wishlist activeSection={activeSection} />
 
               {activeSection === 'purchaseHistory' && (
                 <div>
