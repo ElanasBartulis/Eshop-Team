@@ -1,7 +1,7 @@
-import productModel from "../models/productModel.js";
-import ratingModel from "../models/ratingModel.js";
-import { productCreateSchema } from "../utils/validations/ProductSchema.js";
-import { Op, Sequelize } from "sequelize";
+import productModel from '../models/productModel.js';
+import ratingModel from '../models/ratingModel.js';
+import { productCreateSchema } from '../utils/validations/ProductSchema.js';
+import { Op, Sequelize } from 'sequelize';
 
 export async function getAllProducts(req, res) {
   const count = await productModel.count();
@@ -13,15 +13,15 @@ export async function getAllProducts(req, res) {
       const allProducts = await productModel.findAll({
         offset: pageNumber * rowsPerPage,
         limit: rowsPerPage,
-        order: [["createdAt", "DESC"]],
+        order: [['createdAt', 'DESC']],
         attributes: {
           include: [
             // Gauti ratingsCountui naudojamas Sequelizre
             [
               Sequelize.literal(
-                "(SELECT COUNT(*) FROM ratings WHERE ratings.productId = product.id)"
+                '(SELECT COUNT(*) FROM ratings WHERE ratings.productId = product.id)'
               ),
-              "ratingCount",
+              'ratingCount',
             ],
           ],
         },
@@ -33,8 +33,8 @@ export async function getAllProducts(req, res) {
       return res.status(200).json(allProducts);
     }
   } catch (err) {
-    console.error("Error in getAllProducts:", err);
-    res.status(400).json({ message: "Something went wrong" });
+    console.error('Error in getAllProducts:', err);
+    res.status(400).json({ message: 'Something went wrong' });
   }
 }
 
@@ -43,10 +43,22 @@ export async function getProductById(req, res) {
   if (!id || isNaN(id))
     return res
       .status(400)
-      .json({ message: "Product ID was not provided or was in wrong format" });
-  const foundProduct = await productModel.findByPk(id);
+      .json({ message: 'Product ID was not provided or was in wrong format' });
+  const foundProduct = await productModel.findByPk(id, {
+    attributes: {
+      include: [
+        // Gauti ratingsCountui naudojamas Sequelizre
+        [
+          Sequelize.literal(
+            '(SELECT COUNT(*) FROM ratings WHERE ratings.productId = product.id)'
+          ),
+          'ratingCount',
+        ],
+      ],
+    },
+  });
   if (!foundProduct)
-    return res.status(404).json({ message: "Product not found" });
+    return res.status(404).json({ message: 'Product not found' });
   res.status(200).json(foundProduct);
 }
 
@@ -61,11 +73,11 @@ export async function createProduct(req, res) {
     if (Array.isArray(req.body.image)) {
       // process each image path in the array & give me file name
       req.body.image = req.body.image.map((imagePath) =>
-        imagePath.split("\\").pop().split("/").pop()
+        imagePath.split('\\').pop().split('/').pop()
       );
     } else {
       // single image
-      req.body.image = [req.body.image.split("\\").pop().split("/").pop()];
+      req.body.image = [req.body.image.split('\\').pop().split('/').pop()];
     }
   }
 
@@ -78,11 +90,11 @@ export async function deleteProduct(req, res) {
   if (!id || isNaN(id))
     return res
       .status(400)
-      .json({ message: "Product ID was not provided or was in wrong format" });
+      .json({ message: 'Product ID was not provided or was in wrong format' });
 
   const deletedProduct = await productModel.destroy({ where: { id } });
   if (!deleteProduct)
-    return res.status(404).json({ message: "Product not found" });
+    return res.status(404).json({ message: 'Product not found' });
   res.status(204).json();
 }
 
@@ -91,7 +103,7 @@ export async function updateProductById(req, res) {
   if (!id || isNaN(id))
     return res
       .status(400)
-      .json({ message: "Product ID was not provided or was in wrong format" });
+      .json({ message: 'Product ID was not provided or was in wrong format' });
   const validationResult = productCreateSchema.safeParse(req.body);
   if (!validationResult.success)
     return res.status(400).json({ error: validationResult.error.issues });
@@ -102,24 +114,24 @@ export async function updateProductById(req, res) {
     if (Array.isArray(req.body.image)) {
       // process each image path in the array & give me file name
       req.body.image = req.body.image.map((imagePath) =>
-        imagePath.split("\\").pop().split("/").pop()
+        imagePath.split('\\').pop().split('/').pop()
       );
     } else {
       // single image
-      req.body.image = [req.body.image.split("\\").pop().split("/").pop()];
+      req.body.image = [req.body.image.split('\\').pop().split('/').pop()];
     }
   }
 
   const updatedProduct = await productModel.update(req.body, { where: { id } });
   if (!updatedProduct)
-    return res.status(404).json({ message: "Product not found" });
-  res.status(201).json("Product updated!");
+    return res.status(404).json({ message: 'Product not found' });
+  res.status(201).json('Product updated!');
 }
 
 //FOR PRODUCT SEARCHING
 export async function getSearchedProduct(req, res) {
   try {
-    const searchTerm = req.query.term?.toLowerCase() || "";
+    const searchTerm = req.query.term?.toLowerCase() || '';
 
     const searchResult = await productModel.findAll({
       where: {
@@ -132,9 +144,9 @@ export async function getSearchedProduct(req, res) {
           // This subquery will count ratings directly in the database
           [
             Sequelize.literal(
-              "(SELECT COUNT(*) FROM ratings WHERE ratings.productId = product.id)"
+              '(SELECT COUNT(*) FROM ratings WHERE ratings.productId = product.id)'
             ),
-            "ratingCount",
+            'ratingCount',
           ],
         ],
       },
@@ -142,7 +154,7 @@ export async function getSearchedProduct(req, res) {
 
     res.status(200).json(searchResult);
   } catch (error) {
-    console.error("Search error:", error);
-    res.status(500).json({ error: "Error performing search" });
+    console.error('Search error:', error);
+    res.status(500).json({ error: 'Error performing search' });
   }
 }
