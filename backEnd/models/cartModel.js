@@ -1,6 +1,5 @@
 import sequelize from "../config/sequelize.js";
 import { DataTypes } from "sequelize";
-import UserModel from "./userModel.js";
 
 const Cart = sequelize.define("Cart", {
   id: {
@@ -11,11 +10,6 @@ const Cart = sequelize.define("Cart", {
   userId: {
     type: DataTypes.INTEGER,
     allowNull: true,
-    references: {
-      model: UserModel,
-      key: "id",
-      field: "userId",
-    },
     onDelete: "CASCADE",
   },
   sessionId: {

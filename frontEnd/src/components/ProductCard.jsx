@@ -1,10 +1,10 @@
-import { useContext, useEffect, useState } from 'react';
-import { Modal, Box } from '@mui/material';
-import Rating from '@mui/material/Rating';
-import ProductOverview from './ProductOverview';
-import SessionContext from './../context/SessionContext';
-import { useProductRating } from '../custom-hooks/useProductRating';
-import { useCart } from '../context/CartContext';
+import { useContext, useEffect, useState } from "react";
+import { Modal, Box } from "@mui/material";
+import Rating from "@mui/material/Rating";
+import ProductOverview from "./ProductOverview";
+import SessionContext from "./../context/SessionContext";
+import { useProductRating } from "../custom-hooks/useProductRating";
+import { useCart } from "../context/CartContext";
 
 export default function ProductCard({ data, onRatingUpdate }) {
   const [open, setOpen] = useState(false);
@@ -24,41 +24,44 @@ export default function ProductCard({ data, onRatingUpdate }) {
     handleRating,
   } = useProductRating(id, initialRating, initialRatingCount, onRatingUpdate);
 
+  const { session } = useContext(SessionContext);
   const { dispatch } = useCart();
   console.log(data);
 
   const handleAddToCart = async (e) => {
     e.preventDefault();
     try {
-      console.log('Attempting to add product with ID:', data.id);
-      
+      console.log("Current user:", session); // See what's in the session
+
       const requestBody = {
         productId: data.id,
         quantity: 1,
+        userId: session?.user?.id, // Add this line
       };
-      
-      console.log('Fetch request body:', requestBody);
-      
-      const response = await fetch('/server/api/cart/add', {
-        method: 'POST',
+
+      console.log("Fetch request body:", requestBody);
+
+      const response = await fetch("/server/api/cart/add", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        credentials: 'include',
+        credentials: "include",
         body: JSON.stringify(requestBody),
       });
-      
+
       const responseData = await response.json();
-      console.log('Response data:', responseData);
-  
+      console.log("Response data:", responseData);
+
       if (!response.ok) {
-        throw new Error(responseData.error || `HTTP error! status: ${response.status}`);
+        throw new Error(
+          responseData.error || `HTTP error! status: ${response.status}`
+        );
       }
-      
-      dispatch({ type: 'ADD_ITEM', payload: responseData });
-      
+
+      dispatch({ type: "ADD_ITEM", payload: responseData });
     } catch (error) {
-      console.error('Error adding product to cart:', error);
+      console.error("Error adding product to cart:", error);
     }
   };
 
@@ -92,7 +95,7 @@ export default function ProductCard({ data, onRatingUpdate }) {
 
         <div className="  relative border border-gray-100 bg-white p-6">
           {discount === null ? (
-            ''
+            ""
           ) : (
             <span className="whitespace-nowrap bg-red-800 px-3 py-1.5 text-gray-50 text-xs font-medium">
               {discount} %
@@ -117,7 +120,7 @@ export default function ProductCard({ data, onRatingUpdate }) {
             <p>({ratingCount})</p>
           </div>
           <form className="mt-4">
-            <button 
+            <button
               className="block w-full rounded bg-gray-900 p-4 text-gray-50 text-sm font-medium transition hover:scale-105 hover:text-red-800"
               onClick={handleAddToCart}
             >
@@ -134,20 +137,17 @@ export default function ProductCard({ data, onRatingUpdate }) {
       >
         <Box
           sx={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
             width: 900,
-            bgcolor: 'background.paper',
+            bgcolor: "background.paper",
             p: 4,
             borderRadius: 1,
           }}
         >
-          <ProductOverview
-            data={data}
-            onRatingUpdate={onRatingUpdate}
-          />
+          <ProductOverview data={data} onRatingUpdate={onRatingUpdate} />
         </Box>
       </Modal>
     </div>

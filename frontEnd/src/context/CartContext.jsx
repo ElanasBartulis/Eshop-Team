@@ -1,17 +1,29 @@
-import { createContext, useReducer, useContext } from 'react';
+import { createContext, useReducer, useContext } from "react";
 
 const CartContext = createContext();
 
 const cartReducer = (state, action) => {
   switch (action.type) {
-    case 'ADD_ITEM':
-      const existingItem = state.items.find(item => item.productId === action.payload.productId);
+    case "SET_CART":
+      return {
+        ...state,
+        items: action.payload.map((item) => ({
+          ...item,
+          Product: item.Product, // Preserve the Product data
+        })),
+      };
+    case "ADD_ITEM":
+      // Fixed the check for existing items
+      const existingItem = state.items.find(
+        (item) => item.productId === action.payload.productId
+      );
+
       if (existingItem) {
         return {
           ...state,
-          items: state.items.map(item =>
+          items: state.items.map((item) =>
             item.productId === action.payload.productId
-              ? { ...item, quantity: item.quantity + action.payload.quantity }
+              ? { ...item, quantity: item.quantity + 1 }
               : item
           ),
         };
@@ -21,31 +33,29 @@ const cartReducer = (state, action) => {
           items: [...state.items, action.payload],
         };
       }
-    case 'UPDATE_QUANTITY':
+
+    case "UPDATE_QUANTITY":
       return {
         ...state,
-        items: state.items.map(item =>
+        items: state.items.map((item) =>
           item.productId === action.payload.productId
             ? { ...item, quantity: action.payload.quantity }
             : item
         ),
       };
-    case 'REMOVE_ITEM':
+
+    case "REMOVE_ITEM":
       return {
         ...state,
-        items: state.items.filter(item => item.productId !== action.payload),
+        items: state.items.filter((item) => item.productId !== action.payload),
       };
-    case 'SET_CART':
-      return {
-        ...state,
-        items: action.payload,
-      };
+
     default:
       return state;
   }
 };
 
-const CartProvider = ({ children }) => {
+export const CartProvider = ({ children }) => {
   const [state, dispatch] = useReducer(cartReducer, { items: [] });
 
   return (
@@ -55,6 +65,4 @@ const CartProvider = ({ children }) => {
   );
 };
 
-const useCart = () => useContext(CartContext);
-
-export { CartProvider, useCart };
+export const useCart = () => useContext(CartContext);

@@ -6,35 +6,49 @@ import Product from "../models/productModel.js";
 export async function getCart(req, res) {
   try {
     const sessionId = req.session.id;
-    const userId = req.user?.id || null;
+    const userId = req.session.user?.id || null;
+
+    console.log("Session data:", {
+      sessionId,
+      userId,
+      session: req.session,
+    });
+
     let cart = await Cart.findOne({
       where: userId ? { userId } : { sessionId },
       include: [
         {
           model: CartItem,
-          include: [Product],
-        },
-        {
-          model: User,
-          as: "User",
-          attributes: ["id"],
+          include: [
+            {
+              model: Product,
+              attributes: ["id", "name", "price"],
+            },
+          ],
         },
       ],
     });
 
+    console.log("Cart data (raw):", cart);
+    console.log("Cart data (stringified):", JSON.stringify(cart, null, 2));
+
+    // If no cart exists, create one
     if (!cart) {
-      cart = await Cart.create({ sessionId, userId });
+      cart = await Cart.create({
+        sessionId,
+        userId,
+      });
+      cart.dataValues.CartItems = []; // Ensure we have a CartItems property
     }
 
-    cart = await cart.update({ userId: userId }, { where: { id: cart.id } });
-
-    res.json({
-      cart,
-      userId: req.user?.id,
-    });
+    console.log("Cart found/created:", cart);
+    res.json(cart);
   } catch (error) {
     console.error("Error in GET /cart:", error);
-    res.status(500).json({ error: "Failed to retrieve cart" });
+    res.status(500).json({
+      error: "Failed to retrieve cart",
+      details: error.message,
+    });
   }
 }
 
@@ -43,7 +57,16 @@ export async function addToCart(req, res) {
   try {
     const sessionId = req.session.id;
     const { productId, quantity = 1 } = req.body;
-    const userId = req.user?.id || null; // Changed from req.session.userId
+
+    // Debug log for session data
+    console.log("Session in addToCart:", {
+      sessionId,
+      user: req.session.user,
+      isLogged: req.session.isLogged,
+    });
+
+    // Get userId from session.user
+    const userId = req.session.user?.id || null;
 
     console.log("Adding item with:", {
       sessionId,
@@ -58,7 +81,18 @@ export async function addToCart(req, res) {
     });
 
     if (!cart) {
-      cart = await Cart.create({ sessionId, userId });
+      cart = await Cart.create({
+        sessionId,
+        userId,
+      });
+      console.log("New cart created:", cart.id);
+    }
+
+    if (!cart) {
+      cart = await Cart.create({
+        sessionId,
+        userId: userIdToUse, // Make sure to include userId here
+      });
       console.log("New cart created:", cart.id);
     }
 
