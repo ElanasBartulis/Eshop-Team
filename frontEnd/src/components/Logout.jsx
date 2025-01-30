@@ -4,35 +4,39 @@ import SessionContext from '../context/SessionContext';
 import { LogOut } from 'lucide-react';
 
 export default function LogoutButton() {
-  const { sessionState, setSessionState, setUserData, setErrorHandler } = useContext(SessionContext);
+  const { sessionState, setSessionState, setUserData, setErrorHandler } =
+    useContext(SessionContext);
   const navigate = useNavigate();
 
   const handleLogout = async () => {
-      const response = await fetch('/server/api/users/log-out', {
-        method: 'GET',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
+    const response = await fetch('/server/api/users/log-out', {
+      method: 'GET',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
 
-      if (response.ok) {
-        setSessionState({ isLogged: false });
-        setUserData({});
-        navigate('/');
-        setErrorHandler({
-          isSnackbarOpen: true,
-          snackbarMessage: "Logged out successfully!",
-          alertColor: "success",
-        });
-      } else {
-        console.error('Logout failed');
-      }
+    if (response.ok) {
+      setUserData(null);
+      setSessionState({ isLogged: false });
+      navigate('/');
+      setErrorHandler({
+        isSnackbarOpen: true,
+        snackbarMessage: 'Logged out successfully!',
+        alertColor: 'success',
+      });
+    } else {
+      console.error('Logout failed');
+    }
   };
 
   return sessionState.isLogged ? (
     <button onClick={handleLogout}>
-        <LogOut size={22} color="#991B1B" />
+      <LogOut
+        size={22}
+        color="#991B1B"
+      />
     </button>
   ) : null;
-};
+}

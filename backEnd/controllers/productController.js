@@ -44,7 +44,19 @@ export async function getProductById(req, res) {
     return res
       .status(400)
       .json({ message: 'Product ID was not provided or was in wrong format' });
-  const foundProduct = await productModel.findByPk(id);
+  const foundProduct = await productModel.findByPk(id, {
+    attributes: {
+      include: [
+        // Gauti ratingsCountui naudojamas Sequelizre
+        [
+          Sequelize.literal(
+            '(SELECT COUNT(*) FROM ratings WHERE ratings.productId = product.id)'
+          ),
+          'ratingCount',
+        ],
+      ],
+    },
+  });
   if (!foundProduct)
     return res.status(404).json({ message: 'Product not found' });
   res.status(200).json(foundProduct);

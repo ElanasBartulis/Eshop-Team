@@ -10,6 +10,10 @@ export default function ProductCard({
   onRatingUpdate,
   toggleWishList,
   isInWishList,
+  imageHeight = 'h-64 sm:h-72',
+  containerStyles = '',
+  imageStyles = '',
+  contentStyles = '',
 }) {
   const [open, setOpen] = useState(false);
   const {
@@ -38,7 +42,7 @@ export default function ProductCard({
   console.log();
 
   return (
-    <div>
+    <div className={`${containerStyles}`}>
       <div className="group relative block overflow-hidden cursor-pointer">
         <button
           onClick={handleWishlistClick}
@@ -67,12 +71,14 @@ export default function ProductCard({
           onClick={handleOpen}
           src={`/server/api/upload/image/${image}`}
           alt=""
-          className="h-64 w-full object-cover transition duration-500 group-hover:scale-105 sm:h-72"
+          className={`w-full object-cover transition duration-500 group-hover:scale-105 ${imageHeight} ${imageStyles}`}
         />
 
-        <div className="  relative border border-gray-100 bg-white p-6">
+        <div
+          className={`relative border border-gray-100 bg-white p-6 ${contentStyles}`}
+        >
           {discount === null || discount == 0 ? (
-            ''
+            <span className="whitespace-nowrap bg-white px-3 py-1.5 text-gray-50 text-xs font-medium"></span>
           ) : (
             <span className="whitespace-nowrap bg-red-800 px-3 py-1.5 text-gray-50 text-xs font-medium">
               {discount} %
@@ -122,7 +128,11 @@ export default function ProductCard({
           }}
         >
           <ProductOverview
-            data={data}
+            data={{
+              ...data,
+              rating: currentRating,
+              ratingCount: ratingCount,
+            }}
             onRatingUpdate={onRatingUpdate}
           />
         </Box>
