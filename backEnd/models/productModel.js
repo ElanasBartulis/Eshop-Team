@@ -16,7 +16,9 @@ const productModel = sequelize.define(
       type: DataTypes.FLOAT,
     },
     description: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT("medium"),
+      charset: "utf8mb4", // Supports full Unicode character set including emojis
+      collate: "utf8mb4_unicode_ci", // Case-insensitive Unicode collation
     },
     rating: {
       type: DataTypes.FLOAT,

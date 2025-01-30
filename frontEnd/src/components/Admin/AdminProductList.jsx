@@ -329,6 +329,8 @@ export default function ProductList() {
                 label="Description"
                 name="description"
                 defaultValue={selectedProduct?.description}
+                minRows={3} // Minimum number of rows
+                maxRows={6} // Maximum number of rows before scrolling
               />
             </div>
 
@@ -340,19 +342,22 @@ export default function ProductList() {
               >
                 Product Image
               </Typography>
-              <div className="w-full h-[200px] flex items-center justify-center border rounded-md cursor-pointer">
+              <div className="w-full h-[200px] flex items-center justify-center border rounded-md cursor-pointer overflow-hidden">
                 <Swiper
                   navigation
                   pagination={{ clickable: true }}
                   modules={[Navigation, Pagination]}
-                  className="rounded-lg shadow-lg"
+                  className="!h-full w-full"
                 >
                   {selectedProduct?.image.map((src, index) => (
-                    <SwiperSlide key={index}>
+                    <SwiperSlide
+                      key={index}
+                      className="flex items-center justify-center"
+                    >
                       <img
                         src={`/server/api/upload/image/${src}`}
                         alt={`Product image ${index + 1}`}
-                        className="w-full h-auto"
+                        className="w-full h-full object-contain"
                         onClick={() => setImageOpen(true)}
                       />
                     </SwiperSlide>
@@ -398,7 +403,7 @@ export default function ProductList() {
                       <img
                         src={`/server/api/upload/image/${src}`}
                         alt={`Product image ${index + 1}`}
-                        className="w-full h-auto object-contain"
+                        className="w-full h-full object-contain"
                       />
                     </SwiperSlide>
                   ))}
