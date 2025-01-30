@@ -16,6 +16,16 @@ export default function NewProduct() {
     }
   }
 
+  function resetForm(formElement) {
+    //for reset
+    formElement.reset();
+
+    //reset state
+    setMinMaxPriceInput("");
+    setMinMaxDiscountInput("");
+    setFileInput(null);
+  }
+
   function handleFileChange(e) {
     // make files an array
     const files = Array.from(e.target.files);
@@ -114,6 +124,8 @@ export default function NewProduct() {
           snackbarMessage: "Product successfully created!",
           alertColor: "success",
         });
+        // After form submit reset everything.
+        resetForm(e.target);
       } else {
         setErrorHandler({
           isSnackbarOpen: true,
