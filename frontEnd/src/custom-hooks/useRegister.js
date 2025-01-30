@@ -24,16 +24,13 @@ export default function useRegister() {
     };
 
     try {
-      const promise = await fetch(
-        "/server/api/users/register",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(registerData),
-        }
-      );
+      const promise = await fetch("/server/api/users/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(registerData),
+      });
 
       const response = await promise.json();
 
@@ -47,7 +44,13 @@ export default function useRegister() {
         });
         setOpen(false);
       } else {
-        const error = response ? response : { message: "An error occurred" };
+        // if response is not ok
+        const error = response
+          ? // give me 1st zod validation
+            response.error[0]
+          : // else this
+            { message: "An error occurred" };
+
         setErrorHandler({
           isSnackbarOpen: true,
           snackbarMessage: error.message,
