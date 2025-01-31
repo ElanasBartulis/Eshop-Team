@@ -1,6 +1,4 @@
-import Cart from "../models/cartModel.js";
-import CartItem from "../models/cartItemModel.js";
-import Product from "../models/productModel.js";
+import { Cart, CartItem, Product } from "../models/indexModel.js";
 
 // Get cart
 export async function getCart(req, res) {
@@ -8,20 +6,16 @@ export async function getCart(req, res) {
     const sessionId = req.session.id;
     const userId = req.session.user?.id || null;
 
-    console.log("Session data:", {
-      sessionId,
-      userId,
-      session: req.session,
-    });
-
     let cart = await Cart.findOne({
       where: userId ? { userId } : { sessionId },
       include: [
         {
           model: CartItem,
+          as: "CartItems",
           include: [
             {
               model: Product,
+              as: "Product",
               attributes: ["id", "name", "price"],
             },
           ],
@@ -29,22 +23,8 @@ export async function getCart(req, res) {
       ],
     });
 
-    console.log("Cart data (raw):", cart);
-    console.log("Cart data (stringified):", JSON.stringify(cart, null, 2));
-
-    // If no cart exists, create one
-    if (!cart) {
-      cart = await Cart.create({
-        sessionId,
-        userId,
-      });
-      cart.dataValues.CartItems = []; // Ensure we have a CartItems property
-    }
-
-    console.log("Cart found/created:", cart);
-    res.json(cart);
+    res.status(200).json(cart);
   } catch (error) {
-    console.error("Error in GET /cart:", error);
     res.status(500).json({
       error: "Failed to retrieve cart",
       details: error.message,
@@ -58,22 +38,8 @@ export async function addToCart(req, res) {
     const sessionId = req.session.id;
     const { productId, quantity = 1 } = req.body;
 
-    // Debug log for session data
-    console.log("Session in addToCart:", {
-      sessionId,
-      user: req.session.user,
-      isLogged: req.session.isLogged,
-    });
-
     // Get userId from session.user
     const userId = req.session.user?.id || null;
-
-    console.log("Adding item with:", {
-      sessionId,
-      userId,
-      productId,
-      quantity,
-    });
 
     // Find or create cart
     let cart = await Cart.findOne({
@@ -96,8 +62,6 @@ export async function addToCart(req, res) {
       console.log("New cart created:", cart.id);
     }
 
-    console.log("Using cart:", cart.id);
-
     // Find or create cart item
     const [cartItem, created] = await CartItem.findOrCreate({
       where: {
@@ -115,7 +79,6 @@ export async function addToCart(req, res) {
       await cartItem.save();
     }
 
-    console.log("Cart item:", cartItem);
     res.json(cartItem);
   } catch (error) {
     console.error("Detailed error in POST /cart/add:", error);

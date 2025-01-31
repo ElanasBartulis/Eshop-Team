@@ -21,7 +21,7 @@ export default function ShoppingCartModal(data) {
         });
 
         const cart = await response.json();
-        console.log("Full cart data:", cart);
+        // console.log("Response", response);
 
         // Updated to handle the new structure
         if (cart && cart.CartItems) {

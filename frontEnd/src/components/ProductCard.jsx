@@ -26,12 +26,12 @@ export default function ProductCard({ data, onRatingUpdate }) {
 
   const { session } = useContext(SessionContext);
   const { dispatch } = useCart();
-  console.log(data);
+  // console.log(data);
 
   const handleAddToCart = async (e) => {
     e.preventDefault();
     try {
-      console.log("Current user:", session); // See what's in the session
+      // console.log("Current user:", session); // See what's in the session
 
       const requestBody = {
         productId: data.id,
@@ -39,7 +39,7 @@ export default function ProductCard({ data, onRatingUpdate }) {
         userId: session?.user?.id, // Add this line
       };
 
-      console.log("Fetch request body:", requestBody);
+      // console.log("Fetch request body:", requestBody);
 
       const response = await fetch("/server/api/cart/add", {
         method: "POST",
@@ -51,7 +51,7 @@ export default function ProductCard({ data, onRatingUpdate }) {
       });
 
       const responseData = await response.json();
-      console.log("Response data:", responseData);
+      // console.log("Response data:", responseData);
 
       if (!response.ok) {
         throw new Error(
