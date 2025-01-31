@@ -1,19 +1,20 @@
-import { useContext, useEffect, useState } from 'react';
-import { Modal, Box } from '@mui/material';
-import Rating from '@mui/material/Rating';
-import ProductOverview from './ProductOverview';
-import SessionContext from './../context/SessionContext';
-import { useProductRating } from '../custom-hooks/useProductRating';
+import { useContext, useEffect, useState } from "react";
+import { Modal, Box } from "@mui/material";
+import Rating from "@mui/material/Rating";
+import ProductOverview from "./ProductOverview";
+import SessionContext from "./../context/SessionContext";
+import { useProductRating } from "../custom-hooks/useProductRating";
+import { useCart } from "../context/CartContext";
 
 export default function ProductCard({
   data,
   onRatingUpdate,
   toggleWishList,
   isInWishList,
-  imageHeight = 'h-64 sm:h-72',
-  containerStyles = '',
-  imageStyles = '',
-  contentStyles = '',
+  imageHeight = "h-64 sm:h-72",
+  containerStyles = "",
+  imageStyles = "",
+  contentStyles = "",
 }) {
   const [open, setOpen] = useState(false);
   const {
@@ -39,7 +40,47 @@ export default function ProductCard({
     event.preventDefault();
     toggleWishList(data);
   }
-  console.log();
+
+  const { session } = useContext(SessionContext);
+  const { dispatch } = useCart();
+  // console.log(data);
+
+  const handleAddToCart = async (e) => {
+    e.preventDefault();
+    try {
+      // console.log("Current user:", session); // See what's in the session
+
+      const requestBody = {
+        productId: data.id,
+        quantity: 1,
+        userId: session?.user?.id, // Add this line
+      };
+
+      // console.log("Fetch request body:", requestBody);
+
+      const response = await fetch("/server/api/cart/add", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(requestBody),
+      });
+
+      const responseData = await response.json();
+      // console.log("Response data:", responseData);
+
+      if (!response.ok) {
+        throw new Error(
+          responseData.error || `HTTP error! status: ${response.status}`
+        );
+      }
+
+      dispatch({ type: "ADD_ITEM", payload: responseData });
+    } catch (error) {
+      console.error("Error adding product to cart:", error);
+    }
+  };
 
   return (
     <div className={`${containerStyles}`}>
@@ -47,13 +88,13 @@ export default function ProductCard({
         <button
           onClick={handleWishlistClick}
           className={`absolute end-4 top-4 z-10 rounded-full bg-white p-1.5 text-gray-900 transition hover:text-gray-900/75 ${
-            isWishlisted ? `text-red-500` : ''
+            isWishlisted ? `text-red-500` : ""
           }`}
         >
           <span className="sr-only">Wishlist</span>
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            fill={isWishlisted ? 'currentColor' : 'none'}
+            fill={isWishlisted ? "currentColor" : "none"}
             viewBox="0 0 24 24"
             strokeWidth="1.5"
             stroke="currentColor"
@@ -103,7 +144,10 @@ export default function ProductCard({
             <p>({ratingCount})</p>
           </div>
           <form className="mt-4">
-            <button className="block w-full rounded bg-gray-900 p-4 text-gray-50 text-sm font-medium transition hover:scale-105 hover:text-red-800">
+            <button
+              className="block w-full rounded bg-gray-900 p-4 text-gray-50 text-sm font-medium transition hover:scale-105 hover:text-red-800"
+              onClick={handleAddToCart}
+            >
               Add to Cart
             </button>
           </form>
@@ -117,12 +161,12 @@ export default function ProductCard({
       >
         <Box
           sx={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
             width: 900,
-            bgcolor: 'background.paper',
+            bgcolor: "background.paper",
             p: 4,
             borderRadius: 1,
           }}

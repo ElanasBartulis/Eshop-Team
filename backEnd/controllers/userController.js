@@ -92,22 +92,38 @@ export async function login(req, res) {
     )
       return res.status(400).json({ message: "Invalid credentials" });
 
+    // Set all user data including id in the user object
     req.session.user = {
+      id: existingUser.id, // Make sure id is set here
       email: existingUser.email,
       firstName: existingUser.firstName,
       lastName: existingUser.lastName,
       phoneNumber: existingUser.phoneNumber,
       address: existingUser.address,
       postCode: existingUser.postCode,
-      id: existingUser.id,
     };
-    req.session.isLogged = true;
     req.session.admin = existingUser.admin;
+    req.session.isLogged = true;
+
+    // Save session explicitly
+    await new Promise((resolve, reject) => {
+      req.session.save((err) => {
+        if (err) reject(err);
+        resolve();
+      });
+    });
+
+    // Add debug log
+    console.log("Session after login:", {
+      sessionId: req.session.id,
+      user: req.session.user,
+    });
 
     return res
       .status(200)
       .json({ message: "Logged in successfully", session: req.session });
   } catch (err) {
+    console.error("Login error:", err);
     res.status(500).json({ message: "Internal server error" });
   }
 }
