@@ -16,7 +16,7 @@ export async function getCart(req, res) {
             {
               model: Product,
               as: "Product",
-              attributes: ["id", "name", "price"],
+              attributes: ["id", "name", "price", "image"],
             },
           ],
         },
@@ -32,16 +32,12 @@ export async function getCart(req, res) {
   }
 }
 
-// Add to cart
 export async function addToCart(req, res) {
   try {
     const sessionId = req.session.id;
     const { productId, quantity = 1 } = req.body;
-
-    // Get userId from session.user
     const userId = req.session.user?.id || null;
 
-    // Find or create cart
     let cart = await Cart.findOne({
       where: userId ? { userId } : { sessionId },
     });
@@ -51,42 +47,43 @@ export async function addToCart(req, res) {
         sessionId,
         userId,
       });
-      console.log("New cart created:", cart.id);
     }
 
-    if (!cart) {
-      cart = await Cart.create({
-        sessionId,
-        userId: userIdToUse, // Make sure to include userId here
-      });
-      console.log("New cart created:", cart.id);
-    }
-
-    // Find or create cart item
-    const [cartItem, created] = await CartItem.findOrCreate({
+    let cartItem = await CartItem.findOne({
       where: {
         cartId: cart.id,
         productId: productId,
       },
-      defaults: {
+    });
+
+    if (cartItem) {
+      cartItem.quantity += parseInt(quantity);
+      await cartItem.save();
+    } else {
+      cartItem = await CartItem.create({
         cartId: cart.id,
         productId: productId,
         quantity: quantity,
-      },
-    });
-
-    if (!created) {
-      await cartItem.save();
+      });
     }
 
-    res.json(cartItem);
+    const updatedCartItem = await CartItem.findOne({
+      where: { id: cartItem.id },
+      include: [
+        {
+          model: Product,
+          attributes: ["id", "name", "price"],
+        },
+      ],
+    });
+
+    res.json(updatedCartItem);
   } catch (error) {
-    console.error("Detailed error in POST /cart/add:", error);
+    console.error("Error in POST /cart/add:", error);
     res.status(500).json({ error: error.message });
   }
 }
 
-// Update quantity
 export async function updateCart(req, res) {
   try {
     const { productId, quantity } = req.body;
@@ -115,7 +112,6 @@ export async function updateCart(req, res) {
   }
 }
 
-// Remove item
 export async function deleteCartItem(req, res) {
   try {
     const { productId } = req.body;

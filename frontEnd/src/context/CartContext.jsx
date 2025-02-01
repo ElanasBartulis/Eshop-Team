@@ -9,30 +9,35 @@ const cartReducer = (state, action) => {
         ...state,
         items: action.payload.map((item) => ({
           ...item,
-          Product: item.Product, // Preserve the Product data
+          Product: item.Product,
         })),
       };
     case "ADD_ITEM":
-      // Fixed the check for existing items
-      const existingItem = state.items.find(
+      const existingItemIndex = state.items.findIndex(
         (item) => item.productId === action.payload.productId
       );
 
-      if (existingItem) {
+      if (existingItemIndex !== -1) {
+        const updatedItems = state.items.map((item) => {
+          if (item.productId === action.payload.productId) {
+            return {
+              ...item,
+              quantity: item.quantity + action.payload.quantity,
+            };
+          }
+          return item;
+        });
+
         return {
           ...state,
-          items: state.items.map((item) =>
-            item.productId === action.payload.productId
-              ? { ...item, quantity: item.quantity + 1 }
-              : item
-          ),
-        };
-      } else {
-        return {
-          ...state,
-          items: [...state.items, action.payload],
+          items: updatedItems,
         };
       }
+
+      return {
+        ...state,
+        items: [...state.items, action.payload],
+      };
 
     case "UPDATE_QUANTITY":
       return {
