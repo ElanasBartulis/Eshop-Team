@@ -1,5 +1,5 @@
-import { useCart } from "../context/CartContext.jsx"; // Make sure the path is correct
-import { useEffect, useState } from "react"; // Add useState
+import { useCart } from "../context/CartContext.jsx";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function ShoppingCartModal(data) {
@@ -21,9 +21,7 @@ export default function ShoppingCartModal(data) {
         });
 
         const cart = await response.json();
-        // console.log("Response", response);
 
-        // Updated to handle the new structure
         if (cart && cart.CartItems) {
           dispatch({ type: "SET_CART", payload: cart.CartItems });
         }
@@ -36,13 +34,70 @@ export default function ShoppingCartModal(data) {
     fetchCart();
   }, [dispatch]);
 
-  // Add loading and empty state handling
   if (isLoading) {
     return <div>Loading cart...</div>;
   }
 
   if (!state.items || state.items.length === 0) {
     return <div>Your cart is empty</div>;
+  }
+
+  async function handleRemoveItem(productId) {
+    try {
+      const response = await fetch("/server/api/cart/remove", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({ productId }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to remove item");
+      }
+
+      dispatch({
+        type: "REMOVE_ITEM",
+        payload: productId,
+      });
+    } catch (error) {
+      console.error("Error removing item:", error);
+      setError("Failed to remove item from cart");
+    }
+  }
+
+  async function handleQuantityChange(productId, newQuantity) {
+    try {
+      const response = await fetch("/server/api/cart/update", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          productId,
+          quantity: parseInt(newQuantity),
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to update quantity");
+      }
+
+      const updatedItem = await response.json();
+
+      dispatch({
+        type: "UPDATE_QUANTITY",
+        payload: {
+          productId,
+          quantity: parseInt(newQuantity),
+        },
+      });
+    } catch (error) {
+      console.error("Error updating quantity:", error);
+      setError("Failed to update quantity");
+    }
   }
 
   return (
@@ -52,8 +107,8 @@ export default function ShoppingCartModal(data) {
           {state.items.map((item) => (
             <li key={item.id} className="flex items-center gap-4">
               <img
-                src="https://images.unsplash.com/photo-1549056572-75914d5d5fd4?q=80&w=1964&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                alt=""
+                src={`/server/api/upload/image/${item.Product?.image?.[0]}`}
+                alt={item.Product?.name || "Product image"}
                 className="size-16 rounded object-cover"
               />
 
@@ -85,7 +140,9 @@ export default function ShoppingCartModal(data) {
                       handleQuantityChange(item.productId, e.target.value)
                     }
                     id="Line1Qty"
-                    className="h-8 w-12 rounded border-gray-200 bg-gray-50 p-0 text-center text-xs text-gray-600 [-moz-appearance:_textfield] focus:outline-none [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none"
+                    className="w-12 h-8 text-center focus:outline-none"
+
+                    // className="h-8 w-12 rounded border-gray-200 bg-gray-50 p-0 text-center text-xs text-gray-600 [-moz-appearance:_textfield] focus:outline-none [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none"
                   />
                 </form>
 

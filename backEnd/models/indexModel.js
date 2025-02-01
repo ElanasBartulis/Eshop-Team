@@ -6,13 +6,13 @@ import UserModel from "./userModel.js";
 Cart.hasMany(CartItem, {
   foreignKey: "cartId",
   as: "CartItems",
+  onDelete: "CASCADE",
 });
 
 CartItem.belongsTo(Cart, {
   foreignKey: "cartId",
 });
 
-// CartItem - Product relationship
 CartItem.belongsTo(Product, {
   foreignKey: "productId",
   as: "Product",
@@ -22,7 +22,6 @@ Product.hasMany(CartItem, {
   foreignKey: "productId",
 });
 
-// Cart - User relationship
 Cart.belongsTo(UserModel, {
   foreignKey: "userId",
 });
