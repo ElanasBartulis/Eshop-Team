@@ -11,6 +11,7 @@ import "swiper/css/pagination";
 import { Navigation, Pagination } from "swiper/modules";
 import { useProductRating } from "../custom-hooks/useProductRating";
 import { Box, Modal } from "@mui/material";
+import ReactMarkdown from "react-markdown";
 
 const ProductOverview = ({ data, onRatingUpdate }) => {
   const [imageOpen, setImageOpen] = useState(false);
@@ -32,23 +33,30 @@ const ProductOverview = ({ data, onRatingUpdate }) => {
   } = useProductRating(id, initialRating, initialRatingCount, onRatingUpdate);
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="flex flex-col lg:flex-row gap-8">
+    // Container
+    <div className="container mx-auto px-4 my-16">
+      <div className="flex flex-col lg:flex-row gap-8 items-center">
+        {/* left image */}
         <div className="lg:w-1/2 relative">
           <Swiper
             navigation
             pagination={{ clickable: true }}
             modules={[Navigation, Pagination]}
-            className="rounded-lg shadow-lg"
+            className="rounded-lg shadow-lg h-[670px]"
           >
             {image.map((src, index) => (
-              <SwiperSlide key={index}>
-                <img
-                  src={`/server/api/upload/image/${src}`}
-                  alt={`Product image ${index + 1}`}
-                  className="w-full h-auto cursor-pointer"
-                  onClick={() => setImageOpen(true)}
-                />
+              <SwiperSlide
+                key={index}
+                className="!flex items-center justify-center h-full"
+              >
+                <div className="w-full h-full flex items-center justify-center">
+                  <img
+                    src={`/server/api/upload/image/${src}`}
+                    alt={`Product image ${index + 1}`}
+                    className="max-w-full max-h-full object-contain cursor-pointer"
+                    onClick={() => setImageOpen(true)}
+                  />
+                </div>
               </SwiperSlide>
             ))}
           </Swiper>
@@ -91,17 +99,18 @@ const ProductOverview = ({ data, onRatingUpdate }) => {
                   <img
                     src={`/server/api/upload/image/${src}`}
                     alt={`Product image ${index + 1}`}
-                    className="w-full h-auto object-contain"
+                    className="w-full h-full object-contain"
                   />
                 </SwiperSlide>
               ))}
             </Swiper>
           </Box>
         </Modal>
-
-        <div className="lg:w-1/2 relative">
+        {/* rigth side */}
+        <div className="lg:w-1/2 relative flex flex-col">
+          {/* Product name */}
           <h1 className="text-3xl font-bold mb-4">{name}</h1>
-
+          {/* Rating number */}
           <div className="flex items-center mb-4 gap-1">
             <Rating
               name="half-rating"
@@ -111,14 +120,17 @@ const ProductOverview = ({ data, onRatingUpdate }) => {
             />
             <p>({ratingCount})</p>
           </div>
-
+          {/* Price number */}
           <p className="text-2xl font-semibold mb-4">{price}€</p>
 
-          <div>
-            <p className="text-gray-600 mb-6">{description}</p>
+          <div className="mb-6">
+            {/* Description */}
+            <p className="text-gray-600 max-h-96 overflow-y-auto prose">
+              <ReactMarkdown>{description}</ReactMarkdown>
+            </p>
           </div>
 
-          <div className="grid grid-cols-3 grid-rows-2 gap-4 mt-10 absolute inset-x-0 bottom-0">
+          <div className="grid grid-cols-3 grid-rows-2 gap-4 mt-auto inset-x-0 bottom-0">
             <Button
               size="sm"
               className="rounded"
