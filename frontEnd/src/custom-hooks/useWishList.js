@@ -7,9 +7,7 @@ export function useWishList() {
   // This key is used to store wishlist items in localStorage
   // Returns null if user is admin (firstName === 'ADMIN') or not logged in
   const storageKey =
-    userData?.id && userData?.firstName !== 'ADMIN'
-      ? `wishlist_${userData.id}`
-      : null;
+    userData?.id && !userData?.admin ? `wishlist_${userData.id}` : null;
 
   //State for product id's
   const [wishListIds, setWishListIds] = useState(() => {

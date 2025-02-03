@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext } from 'react';
+import { useEffect, useState, useContext, useMemo } from 'react';
 import ProductCard from './ProductCard';
 import Sorting from './Sorting';
 import { rating } from '@material-tailwind/react';
@@ -18,6 +18,27 @@ export default function DashboardMain() {
   const [page, setPage] = useState(0); // dabartinis page 0
   const [itemsPerPage, setItemsPerPage] = useState(12);
   const { toggleWishList, isInWishList, wishListItems } = useWishList();
+  const [sortName, setSortName] = useState('');
+
+  function sortItemsBy(name) {
+    setSortName(name);
+  }
+  function sortProducts(data) {
+    const productsToSort = [...data];
+    if (sortName == 'priceAscending') {
+      productsToSort.sort((a, b) => a.price - b.price);
+    }
+    if (sortName == 'priceDescending') {
+      productsToSort.sort((a, b) => b.price - a.price);
+    }
+    if (sortName == 'sortByName') {
+      productsToSort.sort((a, b) => a.name.localeCompare(b.name));
+    }
+    if (sortName == 'sortByRating') {
+      productsToSort.sort((a, b) => b.rating - a.rating);
+    }
+    return productsToSort;
+  }
 
   useEffect(() => {
     getAllProducts({ page, itemsPerPage });
@@ -40,8 +61,11 @@ export default function DashboardMain() {
       )
     );
   }
-
-  const productsToDisplay = searchTerm ? filteredProducts : products;
+  // Using useMemo to prevent not needed rerenders
+  const productsToDisplay = useMemo(() => {
+    const baseProducts = searchTerm ? filteredProducts : products;
+    return baseProducts.length > 0 ? sortProducts(baseProducts) : [];
+  }, [searchTerm, filteredProducts, products, sortName]);
 
   return (
     <div className="mb-20 mt-16">
@@ -50,7 +74,7 @@ export default function DashboardMain() {
           Board games!
         </div>
         <div className="lg:place-items-end md:place-items-start">
-          <Sorting />
+          <Sorting sortName={sortItemsBy} />
         </div>
       </div>
       <div className="grid xl:grid-cols-4 grid-rows-3 gap-6 lg:grid-cols-3 md:grid-cols-2">
