@@ -81,7 +81,7 @@ const ProductOverview = ({ data, onRatingUpdate }) => {
 
   return (
     // Container
-    <div className="container mx-auto px-4 my-16">
+    <div className="container px-4 my-16">
       <div className="flex flex-col lg:flex-row gap-8 items-center">
         {/* left image */}
         <div className="lg:w-1/2 relative">
