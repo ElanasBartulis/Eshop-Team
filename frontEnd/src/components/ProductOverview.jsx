@@ -172,7 +172,7 @@ const ProductOverview = ({ data, onRatingUpdate }) => {
 
           <div className="mb-6">
             {/* Description */}
-            <p className="text-gray-600 max-h-96 overflow-y-auto prose">
+            <p className="text-gray-600 max-h-96 overflow-y-auto prose prose-sm">
               <ReactMarkdown>{description}</ReactMarkdown>
             </p>
           </div>
