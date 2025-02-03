@@ -141,8 +141,6 @@ export default function ShoppingCartModal(data) {
                     }
                     id="Line1Qty"
                     className="w-12 h-8 text-center focus:outline-none"
-
-                    // className="h-8 w-12 rounded border-gray-200 bg-gray-50 p-0 text-center text-xs text-gray-600 [-moz-appearance:_textfield] focus:outline-none [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none"
                   />
                 </form>
 
