@@ -1,32 +1,50 @@
-import { useContext, useEffect, useState } from 'react';
-import SessionContext from '../../context/SessionContext.js';
+import { useContext, useEffect, useState } from "react";
+import SessionContext from "../../context/SessionContext.js";
+import chess from "../../assets/Public/chess.png";
 
 export default function UserDashboard({ activeSection }) {
   const { userData } = useContext(SessionContext);
 
   return (
     <>
-      {activeSection === 'dashboard' && (
+      {activeSection === "dashboard" && (
         <div>
-          <h2 className="text-xl font-bold mb-4">User Dashboard</h2>
-          <ul>
-            <li>
-              Name: {userData.firstName} {userData.lastName}
-            </li>
-
-            <li>Email: {userData.email}</li>
-            <li>
-              Address: {userData.address || 'You havent added your address'}
-            </li>
-            <li>
-              Phone:{' '}
-              {userData.phoneNumber || 'You havent added your phone number'}
-            </li>
-            <li>
-              Post Code:{' '}
-              {userData.postCode || 'You havent added your phone number'}
-            </li>
-          </ul>
+          <div className="w-5/6">
+            <h2 className="text-2xl font-bold mb-4">User Information</h2>
+            <ul className="text-lg">
+              <li className="grid grid-cols-4 grid-rows-1 gap-2 mb-1">
+                <div className="font-semibold">Name:</div>
+                <div className="col-span-3">
+                  {userData.firstName} {userData.lastName}
+                </div>
+              </li>
+              <li className="grid grid-cols-4 grid-rows-1 gap-2 mb-1">
+                <div className="font-semibold">Email:</div>
+                <div className="col-span-3">{userData.email}</div>
+              </li>
+              <li className="grid grid-cols-4 grid-rows-1 gap-2 mb-1">
+                <div className="font-semibold">Address:</div>
+                <div className="col-span-3">
+                  {userData.address || "You havent added your address"}
+                </div>
+              </li>
+              <li className="grid grid-cols-4 grid-rows-1 gap-2 mb-1">
+                <div className="font-semibold">Phone:</div>
+                <div className="col-span-3">
+                  {userData.phoneNumber || "You havent added your phone number"}
+                </div>
+              </li>
+              <li className="grid grid-cols-4 grid-rows-1 gap-2 mb-1">
+                <div className="font-semibold">Post Code:</div>
+                <div className="col-span-3">
+                  {userData.postCode || "You havent added your phone number"}
+                </div>
+              </li>
+            </ul>
+          </div>
+          <div className="size-40 w-full flex justify-end">
+            <img src={chess} alt="chess image" className="size-40 p-2" />
+          </div>
         </div>
       )}
     </>
