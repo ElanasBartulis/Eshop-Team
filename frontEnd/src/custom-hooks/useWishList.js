@@ -3,17 +3,13 @@ import SessionContext from '../context/SessionContext';
 
 export function useWishList() {
   const { setErrorHandler, userData } = useContext(SessionContext);
-  // Create a unique storage key for each non-admin user
+
   // This key is used to store wishlist items in localStorage
   // Returns null if user is admin (firstName === 'ADMIN') or not logged in
   const storageKey =
-    userData?.id && userData?.firstName !== 'ADMIN'
-      ? `wishlist_${userData.id}`
-      : null;
+    userData?.id && !userData?.admin ? `wishlist_${userData.id}` : null;
 
-  // Initialize state for storing product IDs
-  // This useState uses a function to compute initial state only once
-  // If there's a valid storage key, try to load existing wishlist from localStorage
+  //State for product id's
   const [wishListIds, setWishListIds] = useState(() => {
     if (storageKey) {
       const savedIds = localStorage.getItem(storageKey);
@@ -41,7 +37,7 @@ export function useWishList() {
 
   // This effect fetches full product data whenever the list of IDs changes
   useEffect(() => {
-    let isActive = true; // Add a cleanup
+    let isActive = true; // Clean up function is needed for fast fetching operations, without it, it can lead to errors
 
     async function fetchProducts() {
       // If no products in wishlist, clear product data and exit
@@ -53,26 +49,54 @@ export function useWishList() {
       try {
         // Create an array of fetch promises for all products
         const fetchPromises = wishListIds.map(async (id) => {
-          const promise = await fetch(`/server/api/product/${id}`);
+          try {
+            // Add nested try-catch for individual fetch operations
+            const promise = await fetch(`/server/api/product/${id}`);
 
-          const response = await promise.json();
-          return response;
+            if (!promise.ok) return null; // Return null for non-existing products
+
+            const response = await promise.json();
+            return response; // Return the actual product data
+          } catch (error) {
+            return null; // Return null if individual fetch fails
+          }
         });
 
         const productData = await Promise.all(fetchPromises);
 
-        // Only update if component is still mounted
+        //Filter out nulls;
+        const filteredProduct = productData.filter(
+          (product) => product !== null
+        );
+
+        //If there is some deleteded products update those product id's;
         if (isActive) {
-          setWishListItems(productData);
+          if (filteredProduct.length < wishListIds.length) {
+            // Set time out needed for fast state changes, react dont like when states want to mount at the same time.
+            setTimeout(() => {
+              const validIds = filteredProduct.map((product) => product.id);
+              setWishListIds(validIds);
+
+              setErrorHandler({
+                isSnackbarOpen: true,
+                snackbarMessage:
+                  'Some items in your wishlist are no longer available',
+                alertColor: 'warning',
+              });
+            }, 0);
+          }
+          setWishListItems(filteredProduct);
         }
       } catch (error) {
         console.error('Fetch error:', error);
         if (isActive) {
-          setErrorHandler({
-            isSnackbarOpen: true,
-            snackbarMessage: 'Error loading wishlist items',
-            alertColor: 'error',
-          });
+          setTimeout(() => {
+            setErrorHandler({
+              isSnackbarOpen: true,
+              snackbarMessage: 'Error loading wishlist items',
+              alertColor: 'error',
+            });
+          }, 0);
         }
       }
     }
@@ -91,17 +115,19 @@ export function useWishList() {
       localStorage.setItem(storageKey, JSON.stringify(wishListIds));
     }
   }, [wishListIds, storageKey]);
-  // Function to add/remove items from wishlist
+  // Function to add or remove items from wishlist
   function toggleWishList(product) {
     if (!storageKey) {
-      setErrorHandler({
-        isSnackbarOpen: true,
-        snackbarMessage:
-          userData?.firstName === 'ADMIN'
-            ? 'Admins cannot use the wishlist feature'
-            : 'Please login to save items to wishlist',
-        alertColor: 'error',
-      });
+      setTimeout(() => {
+        setErrorHandler({
+          isSnackbarOpen: true,
+          snackbarMessage:
+            userData?.firstName === 'ADMIN'
+              ? 'Admins cannot use the wishlist feature'
+              : 'Please login to save items to wishlist',
+          alertColor: 'error',
+        });
+      }, 0);
       return;
     }
     // Update wishlist IDs based on current state
@@ -111,18 +137,20 @@ export function useWishList() {
         ? currentIds.filter((id) => id !== product.id)
         : [...currentIds, product.id];
 
-      setErrorHandler({
-        isSnackbarOpen: true,
-        snackbarMessage: foundId
-          ? 'Item removed from your wish list'
-          : 'Item added to your wish list',
-        alertColor: foundId ? 'error' : 'success',
-      });
+      setTimeout(() => {
+        setErrorHandler({
+          isSnackbarOpen: true,
+          snackbarMessage: foundId
+            ? 'Item removed from your wish list'
+            : 'Item added to your wish list',
+          alertColor: foundId ? 'error' : 'success',
+        });
+      }, 0);
 
       return newIds;
     });
   }
-
+  //Function to check if product is  in wish list
   function isInWishList(productId) {
     return wishListIds.includes(productId);
   }

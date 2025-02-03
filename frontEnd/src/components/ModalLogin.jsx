@@ -1,26 +1,28 @@
-import React, { useState } from "react";
-import { useContext } from "react";
-import { Button, Modal, Box } from "@mui/material";
-import Logo from "../assets/Public/logo.png";
-import useLogin from "../custom-hooks/useLogin";
-import SessionContext from "../context/SessionContext.js";
-import useRegister from "../custom-hooks/useRegister.js";
+import React, { useState } from 'react';
+import { useContext } from 'react';
+import { Button, Modal, Box, Stack, CircularProgress } from '@mui/material';
+import Logo from '../assets/Public/logo.png';
+import useLogin from '../custom-hooks/useLogin';
+import SessionContext from '../context/SessionContext.js';
+import useRegister from '../custom-hooks/useRegister.js';
 import { useNavigate } from 'react-router-dom';
-import SnackbarComponent from "../components/SnackBarComponent.jsx";
+import SnackbarComponent from '../components/SnackBarComponent.jsx';
 
 const style = {
-  position: "absolute",
-  top: "15%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
+  position: 'absolute',
+  top: '15%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
   width: 1200,
   height: 200,
 };
 
 export default function ModalSwitcher() {
-  const [activeModal, setActiveModal] = useState("login");
+  const [activeModal, setActiveModal] = useState('login');
+  const [isLoading, setIsLoading] = useState();
 
-  const { sessionState, open, setOpen, userData, setErrorHandler } = useContext(SessionContext);
+  const { sessionState, open, setOpen, userData, setErrorHandler } =
+    useContext(SessionContext);
 
   const { onLogin } = useLogin();
   const { onRegister } = useRegister();
@@ -28,19 +30,27 @@ export default function ModalSwitcher() {
 
   const handleOpen = () => {
     if (sessionState.isLogged) {
-      if (userData.admin) {
-        navigate('/admin');
-      } else {
-        navigate('/user');
-      }
+      setIsLoading(true);
+      //Navigate with small delay
+      setTimeout(() => {
+        if (userData.admin) {
+          navigate('/admin');
+        } else {
+          navigate('/user');
+        }
+
+        setTimeout(() => {
+          setIsLoading(false);
+        }, 300);
+      }, 400);
     } else {
       setOpen(true);
     }
   };
-  
+
   const handleClose = () => {
     setOpen(false);
-    setActiveModal("login");
+    setActiveModal('login');
   };
 
   const openModal = (modal) => {
@@ -58,12 +68,34 @@ export default function ModalSwitcher() {
 
   return (
     <div>
-      <Button className="hover:text-red-800 text-gray-900" onClick={handleOpen}>
+      {isLoading && (
+        <div className="fixed inset-0 bg-white z-50">
+          <Stack
+            sx={{
+              color: 'grey.500',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              minHeight: '100vh',
+              gap: '20px',
+            }}
+            spacing={2}
+            direction="row"
+          >
+            <CircularProgress sx={{ color: 'rgb(153 27 27)' }} />
+            Loading...
+          </Stack>
+        </div>
+      )}
+      <Button
+        className="hover:text-red-800 text-gray-900"
+        onClick={handleOpen}
+      >
         {/* Session.Login ? Vardas : Account */}
-        {sessionState.isLogged ? userData.firstName : "Account"}
+        {sessionState.isLogged ? userData.firstName : 'Account'}
       </Button>
 
-      {activeModal === "login" && (
+      {activeModal === 'login' && (
         <Modal
           open={open}
           onClose={handleClose}
@@ -82,7 +114,11 @@ export default function ModalSwitcher() {
                 </aside>
                 <main className="flex items-center justify-center px-8 py-8 sm:px-12 lg:col-span-7 lg:px-16 lg:py-12 xl:col-span-6">
                   <div className="max-w-xl lg:max-w-3xl">
-                    <img src={Logo} alt="Logo" className="h-20 w-auto" />
+                    <img
+                      src={Logo}
+                      alt="Logo"
+                      className="h-20 w-auto"
+                    />
                     <h1 className="mt-6 text-2xl font-bold text-gray-900 sm:text-3xl md:text-4xl">
                       Welcome Back! Login
                     </h1>
@@ -123,9 +159,9 @@ export default function ModalSwitcher() {
                           Login
                         </button>
                         <p className="mt-4 text-sm text-gray-500 sm:mt-0">
-                          First time here?{" "}
+                          First time here?{' '}
                           <button
-                            onClick={() => openModal("register")}
+                            onClick={() => openModal('register')}
                             className="text-gray-700 underline mx-1 hover:text-red-800 font-bold"
                           >
                             Register
@@ -141,7 +177,7 @@ export default function ModalSwitcher() {
         </Modal>
       )}
 
-      {activeModal === "register" && (
+      {activeModal === 'register' && (
         <Modal
           open={open}
           onClose={handleClose}
@@ -161,9 +197,16 @@ export default function ModalSwitcher() {
 
                 <main className="flex items-center justify-center px-8 py-8 sm:px-12 lg:col-span-7 lg:px-16 lg:py-12 xl:col-span-6">
                   <div className="max-w-xl lg:max-w-3xl">
-                    <a className="block text-blue-600" href="/">
+                    <a
+                      className="block text-blue-600"
+                      href="/"
+                    >
                       <span className="sr-only">Home</span>
-                      <img src={Logo} alt="Logo" className="h-20 w-auto" />
+                      <img
+                        src={Logo}
+                        alt="Logo"
+                        className="h-20 w-auto"
+                      />
                     </a>
 
                     <h1 className="mt-6 text-2xl font-bold text-gray-900 sm:text-3xl md:text-4xl">
@@ -212,8 +255,8 @@ export default function ModalSwitcher() {
                           htmlFor="Email"
                           className="block text-sm font-medium text-gray-700"
                         >
-                          {" "}
-                          Email{" "}
+                          {' '}
+                          Email{' '}
                         </label>
 
                         <input
@@ -229,8 +272,8 @@ export default function ModalSwitcher() {
                           htmlFor="Password"
                           className="block text-sm font-medium text-gray-700"
                         >
-                          {" "}
-                          Password{" "}
+                          {' '}
+                          Password{' '}
                         </label>
 
                         <input
@@ -258,7 +301,10 @@ export default function ModalSwitcher() {
                       </div>
 
                       <div className="col-span-6">
-                        <label htmlFor="MarketingAccept" className="flex gap-4">
+                        <label
+                          htmlFor="MarketingAccept"
+                          className="flex gap-4"
+                        >
                           <input
                             type="checkbox"
                             id="MarketingAccept"
@@ -276,12 +322,18 @@ export default function ModalSwitcher() {
                       <div className="col-span-6">
                         <p className="text-sm text-gray-500">
                           By creating an account, you agree to our
-                          <a href="#" className="text-gray-700 underline">
-                            {" "}
-                            terms and conditions{" "}
+                          <a
+                            href="#"
+                            className="text-gray-700 underline"
+                          >
+                            {' '}
+                            terms and conditions{' '}
                           </a>
                           and
-                          <a href="#" className="text-gray-700 underline">
+                          <a
+                            href="#"
+                            className="text-gray-700 underline"
+                          >
                             privacy policy
                           </a>
                           .
@@ -296,7 +348,7 @@ export default function ModalSwitcher() {
                       <div className="col-span-5 ">
                         Already have an account?
                         <button
-                          onClick={() => openModal("login")}
+                          onClick={() => openModal('login')}
                           className="text-gray-700 underline mx-1 hover:text-red-800 font-bold"
                         >
                           Login

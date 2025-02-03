@@ -1,13 +1,13 @@
-import { useEffect, useState, useContext } from "react";
-import ProductCard from "./ProductCard";
-import Sorting from "./Sorting";
-import { rating } from "@material-tailwind/react";
-import { useProductList } from "../custom-hooks/useProductList";
-import SearchComponent from "../components/SearchComponent";
-import SearchContext from "../context/SearchContext";
-import frown from "../assets/Public/frown.svg";
-import { CircularProgress, Stack, TablePagination } from "@mui/material";
-import { useWishList } from "../custom-hooks/useWishList";
+import { useEffect, useState, useContext, useMemo } from 'react';
+import ProductCard from './ProductCard';
+import Sorting from './Sorting';
+import { rating } from '@material-tailwind/react';
+import { useProductList } from '../custom-hooks/useProductList';
+import SearchComponent from '../components/SearchComponent';
+import SearchContext from '../context/SearchContext';
+import frown from '../assets/Public/frown.svg';
+import { CircularProgress, Stack, TablePagination } from '@mui/material';
+import { useWishList } from '../custom-hooks/useWishList';
 //tevinis elementas DASHBOARD
 export default function DashboardMain() {
   const { products, setProducts, getAllProducts, count, isLoading } =
@@ -18,6 +18,27 @@ export default function DashboardMain() {
   const [page, setPage] = useState(0); // dabartinis page 0
   const [itemsPerPage, setItemsPerPage] = useState(12);
   const { toggleWishList, isInWishList, wishListItems } = useWishList();
+  const [sortName, setSortName] = useState('');
+
+  function sortItemsBy(name) {
+    setSortName(name);
+  }
+  function sortProducts(data) {
+    const productsToSort = [...data];
+    if (sortName == 'priceAscending') {
+      productsToSort.sort((a, b) => a.price - b.price);
+    }
+    if (sortName == 'priceDescending') {
+      productsToSort.sort((a, b) => b.price - a.price);
+    }
+    if (sortName == 'sortByName') {
+      productsToSort.sort((a, b) => a.name.localeCompare(b.name));
+    }
+    if (sortName == 'sortByRating') {
+      productsToSort.sort((a, b) => b.rating - a.rating);
+    }
+    return productsToSort;
+  }
 
   useEffect(() => {
     getAllProducts({ page, itemsPerPage });
@@ -40,8 +61,11 @@ export default function DashboardMain() {
       )
     );
   }
-
-  const productsToDisplay = searchTerm ? filteredProducts : products;
+  // Using useMemo to prevent not needed rerenders
+  const productsToDisplay = useMemo(() => {
+    const baseProducts = searchTerm ? filteredProducts : products;
+    return baseProducts.length > 0 ? sortProducts(baseProducts) : [];
+  }, [searchTerm, filteredProducts, products, sortName]);
 
   return (
     <div className="mb-20 mt-16">
@@ -50,25 +74,25 @@ export default function DashboardMain() {
           Board games!
         </div>
         <div className="lg:place-items-end md:place-items-start">
-          <Sorting />
+          <Sorting sortName={sortItemsBy} />
         </div>
       </div>
       <div className="grid xl:grid-cols-4 grid-rows-3 gap-6 lg:grid-cols-3 md:grid-cols-2">
         {isSearching || isLoading ? (
           <Stack
             sx={{
-              color: "grey.500",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              minHeight: "200px",
-              gap: "20px",
+              color: 'grey.500',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              minHeight: '200px',
+              gap: '20px',
             }}
             className="col-span-full"
             spacing={2}
             direction="row"
           >
-            <CircularProgress sx={{ color: "rgb(153 27 27)" }} />
+            <CircularProgress sx={{ color: 'rgb(153 27 27)' }} />
             Loading...
           </Stack>
         ) : productsToDisplay.length > 0 ? (
@@ -87,7 +111,11 @@ export default function DashboardMain() {
           ))
         ) : (
           <div className="p-2">
-            <img src={frown} alt="frown smile image" className="size-14" />
+            <img
+              src={frown}
+              alt="frown smile image"
+              className="size-14"
+            />
             <h2 className="text-xl p-2">No results matched...</h2>
           </div>
         )}
