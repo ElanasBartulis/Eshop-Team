@@ -1,20 +1,20 @@
-import { useContext, useEffect, useState } from "react";
-import { Modal, Box } from "@mui/material";
-import Rating from "@mui/material/Rating";
-import ProductOverview from "./ProductOverview";
-import SessionContext from "./../context/SessionContext";
-import { useProductRating } from "../custom-hooks/useProductRating";
-import { useCart } from "../context/CartContext";
+import { useContext, useEffect, useState } from 'react';
+import { Modal, Box } from '@mui/material';
+import Rating from '@mui/material/Rating';
+import ProductOverview from './ProductOverview';
+import SessionContext from './../context/SessionContext';
+import { useProductRating } from '../custom-hooks/useProductRating';
+import { useCart } from '../context/CartContext';
 
 export default function ProductCard({
   data,
   onRatingUpdate,
   toggleWishList,
   isInWishList,
-  imageHeight = "h-64 sm:h-72",
-  containerStyles = "",
-  imageStyles = "",
-  contentStyles = "",
+  imageHeight = 'h-64 sm:h-72',
+  containerStyles = '',
+  imageStyles = '',
+  contentStyles = '',
 }) {
   const [open, setOpen] = useState(false);
   const {
@@ -33,6 +33,12 @@ export default function ProductCard({
     ratingCount,
     handleRating,
   } = useProductRating(id, initialRating, initialRatingCount, onRatingUpdate);
+  //Discount state
+  const [discountedPrice, setDiscountedPrice] = useState(0);
+  //UseEffect only calclulate the discount when it changes
+  useEffect(() => {
+    setDiscountedPrice(data.price * (1 - data.discount / 100));
+  }, [discount]);
 
   const isWishlisted = isInWishList(data.id);
 
@@ -53,12 +59,12 @@ export default function ProductCard({
         userId: session?.user?.id,
       };
 
-      const response = await fetch("/server/api/cart/add", {
-        method: "POST",
+      const response = await fetch('/server/api/cart/add', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
-        credentials: "include",
+        credentials: 'include',
         body: JSON.stringify(requestBody),
       });
 
@@ -70,9 +76,9 @@ export default function ProductCard({
         );
       }
 
-      dispatch({ type: "ADD_ITEM", payload: responseData });
+      dispatch({ type: 'ADD_ITEM', payload: responseData });
     } catch (error) {
-      console.error("Error adding product to cart:", error);
+      console.error('Error adding product to cart:', error);
     }
   };
 
@@ -82,13 +88,13 @@ export default function ProductCard({
         <button
           onClick={handleWishlistClick}
           className={`absolute end-4 top-4 z-10 rounded-full bg-white p-1.5 text-gray-900 transition hover:text-gray-900/75 ${
-            isWishlisted ? `text-red-500` : ""
+            isWishlisted ? `text-red-500` : ''
           }`}
         >
           <span className="sr-only">Wishlist</span>
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            fill={isWishlisted ? "currentColor" : "none"}
+            fill={isWishlisted ? 'currentColor' : 'none'}
             viewBox="0 0 24 24"
             strokeWidth="1.5"
             stroke="currentColor"
@@ -126,14 +132,23 @@ export default function ProductCard({
           >
             {name}
           </h3>
-          <div className="flex">
-            <p className="m-1.5 font-semibold text-gray-700 text-xl">
-              {price}€
-            </p>
-            <p className="m-1.5 font-semibold line-through text-red-800 text-lm">
-              {price}€
-            </p>
-          </div>
+          {discount ? (
+            <div className="flex">
+              <p className="m-1.5 font-semibold text-gray-700 text-xl">
+                {discountedPrice.toFixed(2)}€
+              </p>
+              <p className="m-1.5 font-semibold line-through text-red-800 text-lm">
+                {price.toFixed(2)}€
+              </p>
+            </div>
+          ) : (
+            <div className="flex">
+              <p className="m-1.5 font-semibold text-gray-700 text-xl">
+                {price.toFixed(2)}€
+              </p>
+            </div>
+          )}
+
           <div className="flex gap-1">
             <Rating
               name={`rating-${id}`}
@@ -161,12 +176,12 @@ export default function ProductCard({
       >
         <Box
           sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
             width: 1200,
-            bgcolor: "background.paper",
+            bgcolor: 'background.paper',
             p: 4,
             borderRadius: 1,
           }}

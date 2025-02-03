@@ -7,7 +7,10 @@ import {
 import UserModel from '../models/userModel.js';
 import { adminRegistrationSchema } from '../utils/validations/adminSchema.js';
 
-import { registrationSchema } from '../utils/validations/UserSchema.js';
+import {
+  registrationSchema,
+  updateSchema,
+} from '../utils/validations/UserSchema.js';
 
 //REGISTRATION CONTROLLER (user registration)
 export async function register(req, res) {
