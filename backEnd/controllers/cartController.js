@@ -72,7 +72,8 @@ export async function addToCart(req, res) {
       include: [
         {
           model: Product,
-          attributes: ["id", "name", "price"],
+          as: "Product",
+          attributes: ["id", "name", "price", "image"],
         },
       ],
     });

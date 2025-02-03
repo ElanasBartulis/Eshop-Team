@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import Rating from "@mui/material/Rating";
 import { Input, IconButton, Typography } from "@material-tailwind/react";
 import Minus from "../assets/Public/minus.svg";
@@ -12,10 +12,12 @@ import { Navigation, Pagination } from "swiper/modules";
 import { useProductRating } from "../custom-hooks/useProductRating";
 import { Box, Modal } from "@mui/material";
 import ReactMarkdown from "react-markdown";
+import { useCart } from "../context/CartContext";
+import SessionContext from "./../context/SessionContext";
 
 const ProductOverview = ({ data, onRatingUpdate }) => {
   const [imageOpen, setImageOpen] = useState(false);
-  const [value, setValue] = useState(0);
+  const [value, setValue] = useState(1);
   const {
     name,
     price,
@@ -32,6 +34,51 @@ const ProductOverview = ({ data, onRatingUpdate }) => {
     handleRating,
   } = useProductRating(id, initialRating, initialRatingCount, onRatingUpdate);
 
+  const { session } = useContext(SessionContext);
+  const { dispatch } = useCart();
+
+  const handleQuantityChange = (newValue) => {
+    const validValue = Math.max(1, Number(newValue) || 1);
+    setValue(validValue);
+  };
+
+  const handleInputChange = (e) => {
+    const newValue = e.target.value === "" ? 1 : Number(e.target.value);
+    handleQuantityChange(newValue);
+  };
+
+  const handleAddToCart = async (e) => {
+    e.preventDefault();
+    try {
+      const requestBody = {
+        productId: data.id,
+        quantity: value,
+        userId: session?.user?.id,
+      };
+
+      const response = await fetch("/server/api/cart/add", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(requestBody),
+      });
+
+      const responseData = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          responseData.error || `HTTP error! status: ${response.status}`
+        );
+      }
+
+      dispatch({ type: "ADD_ITEM", payload: responseData });
+    } catch (error) {
+      console.error("Error adding product to cart:", error);
+    }
+  };
+
   return (
     // Container
     <div className="container mx-auto px-4 my-16">
@@ -42,7 +89,7 @@ const ProductOverview = ({ data, onRatingUpdate }) => {
             navigation
             pagination={{ clickable: true }}
             modules={[Navigation, Pagination]}
-            className="rounded-lg shadow-lg h-[670px]"
+            className="rounded-lg h-[670px]"
           >
             {image.map((src, index) => (
               <SwiperSlide
@@ -92,7 +139,7 @@ const ProductOverview = ({ data, onRatingUpdate }) => {
               navigation
               pagination={{ clickable: true }}
               modules={[Navigation, Pagination]}
-              className="rounded-lg shadow-lg w-full h-full"
+              className="rounded-lg w-full h-full"
             >
               {image.map((src, index) => (
                 <SwiperSlide key={index}>
@@ -134,7 +181,7 @@ const ProductOverview = ({ data, onRatingUpdate }) => {
             <Button
               size="sm"
               className="rounded"
-              onClick={() => setValue((cur) => (cur === 0 ? 0 : cur - 1))}
+              onClick={() => handleQuantityChange(value - 1)}
             >
               <img
                 src={Minus}
@@ -146,7 +193,7 @@ const ProductOverview = ({ data, onRatingUpdate }) => {
             <Input
               type="number"
               value={value}
-              onChange={(e) => setValue(Number(e.target.value))}
+              onChange={handleInputChange}
               className=" !border-t-blue-gray-400 placeholder:text-blue-gray-400 placeholder:opacity-100  focus:!border-t-gray-900 appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none w-10 row-start-2 text-center mx-3"
               style={{ width: "70px", height: "50px" }}
               labelProps={{
@@ -156,7 +203,7 @@ const ProductOverview = ({ data, onRatingUpdate }) => {
             <Button
               size="sm"
               className="rounded"
-              onClick={() => setValue((cur) => cur + 1)}
+              onClick={() => handleQuantityChange(value + 1)}
             >
               <img
                 src={Plus}
@@ -165,7 +212,10 @@ const ProductOverview = ({ data, onRatingUpdate }) => {
                 style={{ cursor: "pointer" }}
               />
             </Button>
-            <button className="block w-full rounded bg-gray-900 p-4 text-gray-50 text-sm font-medium transition hover:scale-105 hover:text-red-800 col-span-3">
+            <button
+              className="block w-full rounded bg-gray-900 p-4 text-gray-50 text-sm font-medium transition hover:scale-105 hover:text-red-800 col-span-3"
+              onClick={handleAddToCart}
+            >
               Add to Cart
             </button>
           </div>
