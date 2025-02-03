@@ -122,12 +122,18 @@ export default function ProductCard({
 
           <h3
             onClick={handleOpen}
-            className="mt-4 text-lg font-medium text-gray-900 hover:text-red-800"
+            className="mt-2 text-2xl font-medium text-gray-900 hover:text-red-800"
           >
             {name}
           </h3>
-
-          <p className="mt-1.5 font-semibold text-sm text-gray-700">{price}€</p>
+          <div className="flex">
+            <p className="m-1.5 font-semibold text-gray-700 text-xl">
+              {price}€
+            </p>
+            <p className="m-1.5 font-semibold line-through text-red-800 text-lm">
+              {price}€
+            </p>
+          </div>
           <div className="flex gap-1">
             <Rating
               name={`rating-${id}`}
