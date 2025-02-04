@@ -7,11 +7,13 @@ export function useProductList() {
   const { setFilteredProducts } = useContext(SearchContext);
   const [count, setcount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
-  async function getAllProducts({ page = 0, itemsPerPage = 12 }) {
+  async function getAllProducts({ page = 0, itemsPerPage = 12, sortBy }) {
     try {
       setIsLoading(true);
       const productPromise = await fetch(
-        `/server/api/product?page=${page}&rowsPerPage=${itemsPerPage}`
+        `/server/api/product?page=${page}&rowsPerPage=${itemsPerPage}&sortBy=${
+          sortBy || ''
+        }`
       );
       const { allProducts, count } = await productPromise.json();
 

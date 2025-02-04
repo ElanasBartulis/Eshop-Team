@@ -9,13 +9,34 @@ export async function getAllProducts(req, res) {
   const count = await productModel.count();
   const pageNumber = +req.query?.page || 0;
   const rowsPerPage = +req.query?.rowsPerPage || count;
+  const sortBy = req.query?.sortBy || 'createdAt';
+  const order = req.query?.order || 'DESC';
 
   try {
+    let orderConfig;
+    // Handle different sort cases
+    switch (sortBy) {
+      case 'priceAscending':
+        orderConfig = [['price', 'ASC']];
+        break;
+      case 'priceDescending':
+        orderConfig = [['price', 'DESC']];
+        break;
+      case 'sortByName':
+        orderConfig = [['name', 'ASC']];
+        break;
+      case 'sortByRating':
+        orderConfig = [['rating', 'DESC']];
+        break;
+      default:
+        orderConfig = [['createdAt', 'DESC']];
+    }
+
     if (req.query.page !== undefined || req.query.rowsPerPage !== undefined) {
       const allProducts = await productModel.findAll({
         offset: pageNumber * rowsPerPage,
         limit: rowsPerPage,
-        order: [['createdAt', 'DESC']],
+        order: orderConfig,
         attributes: {
           include: [
             // Gauti ratingsCountui naudojamas Sequelizre
