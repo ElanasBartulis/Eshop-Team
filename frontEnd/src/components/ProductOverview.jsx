@@ -1,19 +1,19 @@
-import React, { useEffect, useState, useContext } from "react";
-import Rating from "@mui/material/Rating";
-import { Input, IconButton, Typography } from "@material-tailwind/react";
-import Minus from "../assets/Public/minus.svg";
-import Plus from "../assets/Public/plus.svg";
-import Button from "@mui/material/Button";
-import { Swiper, SwiperSlide } from "swiper/react";
-import "swiper/css";
-import "swiper/css/navigation";
-import "swiper/css/pagination";
-import { Navigation, Pagination } from "swiper/modules";
-import { useProductRating } from "../custom-hooks/useProductRating";
-import { Box, Modal } from "@mui/material";
-import ReactMarkdown from "react-markdown";
-import { useCart } from "../context/CartContext";
-import SessionContext from "./../context/SessionContext";
+import React, { useEffect, useState, useContext } from 'react';
+import Rating from '@mui/material/Rating';
+import { Input, IconButton, Typography } from '@material-tailwind/react';
+import Minus from '../assets/Public/minus.svg';
+import Plus from '../assets/Public/plus.svg';
+import Button from '@mui/material/Button';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+import { Navigation, Pagination } from 'swiper/modules';
+import { useProductRating } from '../custom-hooks/useProductRating';
+import { Box, Modal } from '@mui/material';
+import ReactMarkdown from 'react-markdown';
+import { useCart } from '../context/CartContext';
+import SessionContext from './../context/SessionContext';
 
 const ProductOverview = ({ data, onRatingUpdate }) => {
   const [imageOpen, setImageOpen] = useState(false);
@@ -26,6 +26,8 @@ const ProductOverview = ({ data, onRatingUpdate }) => {
     id,
     description,
     image,
+    discount,
+    discountedPrice,
   } = data;
 
   const {
@@ -43,7 +45,7 @@ const ProductOverview = ({ data, onRatingUpdate }) => {
   };
 
   const handleInputChange = (e) => {
-    const newValue = e.target.value === "" ? 1 : Number(e.target.value);
+    const newValue = e.target.value === '' ? 1 : Number(e.target.value);
     handleQuantityChange(newValue);
   };
 
@@ -56,12 +58,12 @@ const ProductOverview = ({ data, onRatingUpdate }) => {
         userId: session?.user?.id,
       };
 
-      const response = await fetch("/server/api/cart/add", {
-        method: "POST",
+      const response = await fetch('/server/api/cart/add', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
-        credentials: "include",
+        credentials: 'include',
         body: JSON.stringify(requestBody),
       });
 
@@ -73,9 +75,9 @@ const ProductOverview = ({ data, onRatingUpdate }) => {
         );
       }
 
-      dispatch({ type: "ADD_ITEM", payload: responseData });
+      dispatch({ type: 'ADD_ITEM', payload: responseData });
     } catch (error) {
-      console.error("Error adding product to cart:", error);
+      console.error('Error adding product to cart:', error);
     }
   };
 
@@ -118,21 +120,21 @@ const ProductOverview = ({ data, onRatingUpdate }) => {
         >
           <Box
             sx={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              bgcolor: "background.paper",
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              bgcolor: 'background.paper',
               boxShadow: 24,
               p: 2,
-              width: "80vw",
-              height: "80vh",
-              outline: "none",
+              width: '80vw',
+              height: '80vh',
+              outline: 'none',
               borderRadius: 1,
-              overflow: "hidden",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
+              overflow: 'hidden',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
             }}
           >
             <Swiper
@@ -168,7 +170,22 @@ const ProductOverview = ({ data, onRatingUpdate }) => {
             <p>({ratingCount})</p>
           </div>
           {/* Price number */}
-          <p className="text-2xl font-semibold mb-4">{price}€</p>
+          {discount ? (
+            <div className="flex">
+              <p className="m-1.5 font-semibold text-gray-700 text-xl">
+                {discountedPrice.toFixed(2)}€
+              </p>
+              <p className="m-1.5 font-semibold line-through text-red-800 text-lm">
+                {price.toFixed(2)}€
+              </p>
+            </div>
+          ) : (
+            <div className="flex">
+              <p className="m-1.5 font-semibold text-gray-700 text-xl">
+                {price.toFixed(2)}€
+              </p>
+            </div>
+          )}
 
           <div className="mb-6">
             {/* Description */}
@@ -187,7 +204,7 @@ const ProductOverview = ({ data, onRatingUpdate }) => {
                 src={Minus}
                 alt="minus image"
                 className="size-4 row-start-2"
-                style={{ cursor: "pointer" }}
+                style={{ cursor: 'pointer' }}
               />
             </Button>
             <Input
@@ -195,9 +212,9 @@ const ProductOverview = ({ data, onRatingUpdate }) => {
               value={value}
               onChange={handleInputChange}
               className=" !border-t-blue-gray-400 placeholder:text-blue-gray-400 placeholder:opacity-100  focus:!border-t-gray-900 appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none w-10 row-start-2 text-center mx-3"
-              style={{ width: "90px", height: "50px" }}
+              style={{ width: '90px', height: '50px' }}
               labelProps={{
-                className: "before:content-none after:content-none",
+                className: 'before:content-none after:content-none',
               }}
             />
             <Button
@@ -209,7 +226,7 @@ const ProductOverview = ({ data, onRatingUpdate }) => {
                 src={Plus}
                 alt="plus image"
                 className="size-4 row-start-2"
-                style={{ cursor: "pointer" }}
+                style={{ cursor: 'pointer' }}
               />
             </Button>
             <button
