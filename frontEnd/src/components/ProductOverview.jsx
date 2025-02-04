@@ -26,6 +26,8 @@ const ProductOverview = ({ data, onRatingUpdate }) => {
     id,
     description,
     image,
+    discount,
+    discountedPrice,
   } = data;
 
   const {
@@ -168,7 +170,22 @@ const ProductOverview = ({ data, onRatingUpdate }) => {
             <p>({ratingCount})</p>
           </div>
           {/* Price number */}
-          <p className="text-2xl font-semibold mb-4">{price}€</p>
+          {discount ? (
+            <div className="flex">
+              <p className="m-1.5 font-semibold text-gray-700 text-xl">
+                {discountedPrice.toFixed(2)}€
+              </p>
+              <p className="m-1.5 font-semibold line-through text-red-800 text-lm">
+                {price.toFixed(2)}€
+              </p>
+            </div>
+          ) : (
+            <div className="flex">
+              <p className="m-1.5 font-semibold text-gray-700 text-xl">
+                {price.toFixed(2)}€
+              </p>
+            </div>
+          )}
 
           <div className="mb-6">
             {/* Description */}

@@ -39,7 +39,7 @@ export default function ProductCard({
   //UseEffect only calclulate the discount when it changes
   useEffect(() => {
     setDiscountedPrice(data.price * (1 - data.discount / 100));
-  }, [discount]);
+  }, [data.price, data.discount]);
 
   const isWishlisted = isInWishList(data.id);
 
@@ -202,6 +202,7 @@ export default function ProductCard({
               ...data,
               rating: currentRating,
               ratingCount: ratingCount,
+              discountedPrice: discountedPrice,
             }}
             onRatingUpdate={onRatingUpdate}
           />

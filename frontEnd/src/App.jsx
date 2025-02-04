@@ -9,6 +9,7 @@ import { Backdrop, CircularProgress } from '@mui/material';
 import Checkout from './pages/Checkout.jsx';
 import SearchContext from './context/SearchContext';
 import { CartProvider } from './context/CartContext.jsx';
+import SalesPage from './pages/Sales.jsx';
 
 function App() {
   const [sessionState, setSessionState] = useState({ isLogged: false });
@@ -65,58 +66,62 @@ function App() {
         }}
       >
         <CartProvider>
-        <BrowserRouter>
-          <Routes>
-            <Route
-              path="/user"
-              element={
-                sessionState.isLogged ? (
-                  userData?.admin ? (
-                    <Navigate
-                      to="/admin"
-                      replace
-                    />
-                  ) : (
-                    <UserPanel />
-                  )
-                ) : (
-                  <Navigate
-                    to="/"
-                    replace
-                  />
-                )
-              }
-            />
-            <Route
-              path="/"
-              element={<Dashboard />}
-            />
-            <Route
-              path="/admin"
-              element={
-                sessionState.isLogged ? (
-                  userData?.admin ? (
-                    <Admin />
+          <BrowserRouter>
+            <Routes>
+              <Route
+                path="/user"
+                element={
+                  sessionState.isLogged ? (
+                    userData?.admin ? (
+                      <Navigate
+                        to="/admin"
+                        replace
+                      />
+                    ) : (
+                      <UserPanel />
+                    )
                   ) : (
                     <Navigate
-                      to="/user"
+                      to="/"
                       replace
                     />
                   )
-                ) : (
-                  <Navigate
-                    to="/"
-                    replace
-                  />
-                )
-              }
-            />
-            <Route
-              path="/checkout"
-              element={<Checkout />}
-            />
-          </Routes>
-        </BrowserRouter>
+                }
+              />
+              <Route
+                path="/"
+                element={<Dashboard />}
+              />
+              <Route
+                path="/admin"
+                element={
+                  sessionState.isLogged ? (
+                    userData?.admin ? (
+                      <Admin />
+                    ) : (
+                      <Navigate
+                        to="/user"
+                        replace
+                      />
+                    )
+                  ) : (
+                    <Navigate
+                      to="/"
+                      replace
+                    />
+                  )
+                }
+              />
+              <Route
+                path="/checkout"
+                element={<Checkout />}
+              />
+              <Route
+                path="/sales"
+                element={<SalesPage />}
+              />
+            </Routes>
+          </BrowserRouter>
         </CartProvider>
       </SearchContext.Provider>
     </SessionContext.Provider>

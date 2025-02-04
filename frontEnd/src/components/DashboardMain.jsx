@@ -18,31 +18,32 @@ export default function DashboardMain() {
   const [page, setPage] = useState(0); // dabartinis page 0
   const [itemsPerPage, setItemsPerPage] = useState(12);
   const { toggleWishList, isInWishList, wishListItems } = useWishList();
-  const [sortName, setSortName] = useState('');
+  const [sortBy, setSortBy] = useState('');
 
   function sortItemsBy(name) {
-    setSortName(name);
+    setSortBy(name);
+    setPage(0);
   }
-  function sortProducts(data) {
-    const productsToSort = [...data];
-    if (sortName == 'priceAscending') {
-      productsToSort.sort((a, b) => a.price - b.price);
-    }
-    if (sortName == 'priceDescending') {
-      productsToSort.sort((a, b) => b.price - a.price);
-    }
-    if (sortName == 'sortByName') {
-      productsToSort.sort((a, b) => a.name.localeCompare(b.name));
-    }
-    if (sortName == 'sortByRating') {
-      productsToSort.sort((a, b) => b.rating - a.rating);
-    }
-    return productsToSort;
-  }
+  // function sortProducts(data) {
+  //   const productsToSort = [...data];
+  //   if (sortName == 'priceAscending') {
+  //     productsToSort.sort((a, b) => a.price - b.price);
+  //   }
+  //   if (sortName == 'priceDescending') {
+  //     productsToSort.sort((a, b) => b.price - a.price);
+  //   }
+  //   if (sortName == 'sortByName') {
+  //     productsToSort.sort((a, b) => a.name.localeCompare(b.name));
+  //   }
+  //   if (sortName == 'sortByRating') {
+  //     productsToSort.sort((a, b) => b.rating - a.rating);
+  //   }
+  //   return productsToSort;
+  // }
 
   useEffect(() => {
-    getAllProducts({ page, itemsPerPage });
-  }, [page, itemsPerPage]);
+    getAllProducts({ page, itemsPerPage, sortBy });
+  }, [page, itemsPerPage, sortBy]);
 
   function handleListChange(e, newPage) {
     setPage(newPage);
@@ -63,9 +64,8 @@ export default function DashboardMain() {
   }
   // Using useMemo to prevent not needed rerenders
   const productsToDisplay = useMemo(() => {
-    const baseProducts = searchTerm ? filteredProducts : products;
-    return baseProducts.length > 0 ? sortProducts(baseProducts) : [];
-  }, [searchTerm, filteredProducts, products, sortName]);
+    return searchTerm ? filteredProducts : products;
+  }, [searchTerm, filteredProducts, products]);
 
   return (
     <div className="mb-20 mt-16">
