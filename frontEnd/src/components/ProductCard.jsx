@@ -5,6 +5,7 @@ import ProductOverview from "./ProductOverview";
 import SessionContext from "./../context/SessionContext";
 import { useProductRating } from "../custom-hooks/useProductRating";
 import { useCart } from "../context/CartContext";
+import SnackbarComponent from "../components/SnackBarComponent";
 
 export default function ProductCard({
   data,
@@ -36,6 +37,7 @@ export default function ProductCard({
   //Discount state
   const [discountedPrice, setDiscountedPrice] = useState(0);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
+  const { setErrorHandler } = useContext(SessionContext);
   //UseEffect only calclulate the discount when it changes
   useEffect(() => {
     setDiscountedPrice(data.price * (1 - data.discount / 100));
@@ -76,6 +78,12 @@ export default function ProductCard({
       });
 
       const responseData = await response.json();
+
+      setErrorHandler({
+        isSnackbarOpen: true,
+        snackbarMessage: "Product added to cart",
+        alertColor: "success",
+      });
 
       if (!response.ok) {
         throw new Error(
@@ -208,6 +216,7 @@ export default function ProductCard({
           />
         </Box>
       </Modal>
+      <SnackbarComponent />
     </div>
   );
 }

@@ -14,6 +14,7 @@ import { Box, Modal } from "@mui/material";
 import ReactMarkdown from "react-markdown";
 import { useCart } from "../context/CartContext";
 import SessionContext from "./../context/SessionContext";
+import SnackbarComponent from "../components/SnackBarComponent";
 
 const ProductOverview = ({ data, onRatingUpdate }) => {
   const [imageOpen, setImageOpen] = useState(false);
@@ -38,6 +39,7 @@ const ProductOverview = ({ data, onRatingUpdate }) => {
 
   const { session } = useContext(SessionContext);
   const { dispatch } = useCart();
+  const { setErrorHandler } = useContext(SessionContext);
 
   const handleQuantityChange = (newValue) => {
     const validValue = Math.max(1, Number(newValue) || 1);
@@ -68,6 +70,12 @@ const ProductOverview = ({ data, onRatingUpdate }) => {
       });
 
       const responseData = await response.json();
+
+      setErrorHandler({
+        isSnackbarOpen: true,
+        snackbarMessage: "Added product to cart.",
+        alertColor: "success",
+      });
 
       if (!response.ok) {
         throw new Error(
