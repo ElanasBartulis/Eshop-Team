@@ -9,7 +9,7 @@ import frown from '../assets/Public/frown.svg';
 import { CircularProgress, Stack, TablePagination } from '@mui/material';
 import { useWishList } from '../custom-hooks/useWishList';
 //tevinis elementas DASHBOARD
-export default function DashboardMain() {
+export default function DashboardMain({ salesOnly = false }) {
   const { products, setProducts, getAllProducts, count, isLoading } =
     useProductList();
   const { setFilteredProducts } = useContext(SearchContext);
@@ -24,22 +24,6 @@ export default function DashboardMain() {
     setSortBy(name);
     setPage(0);
   }
-  // function sortProducts(data) {
-  //   const productsToSort = [...data];
-  //   if (sortName == 'priceAscending') {
-  //     productsToSort.sort((a, b) => a.price - b.price);
-  //   }
-  //   if (sortName == 'priceDescending') {
-  //     productsToSort.sort((a, b) => b.price - a.price);
-  //   }
-  //   if (sortName == 'sortByName') {
-  //     productsToSort.sort((a, b) => a.name.localeCompare(b.name));
-  //   }
-  //   if (sortName == 'sortByRating') {
-  //     productsToSort.sort((a, b) => b.rating - a.rating);
-  //   }
-  //   return productsToSort;
-  // }
 
   useEffect(() => {
     getAllProducts({ page, itemsPerPage, sortBy });
@@ -63,15 +47,27 @@ export default function DashboardMain() {
     );
   }
   // Using useMemo to prevent not needed rerenders
+
   const productsToDisplay = useMemo(() => {
-    return searchTerm ? filteredProducts : products;
-  }, [searchTerm, filteredProducts, products]);
+    //BaseProducts defines wich product to display if search bar is active "Search term" is trigered,
+    //it will display filtered products, if its not then only fetched products
+    const basePoroducts = searchTerm ? filteredProducts : products;
+    //If salesOnly props in dashboardMain is true, filter products that has only has discount or its discount is more than 0
+    if (salesOnly) {
+      const filtered = basePoroducts.filter(
+        (product) => product.discount && product.discount > 0
+      );
+      return filtered;
+    }
+    //if salesOnly = flase return base product that will be displayed
+    return basePoroducts;
+  }, [searchTerm, filteredProducts, products, salesOnly]);
 
   return (
     <div className="mb-20 mt-16">
       <div className="grid lg:grid-cols-2 lg:grid-rows-1 md:grid-cols-1 md:grid-rows-2 gap-4 my-6">
         <div className="self-end text-3xl font-semibold text-gray-900">
-          Board games!
+          {salesOnly ? 'Special discounts!' : 'Board games!'}
         </div>
         <div className="lg:place-items-end md:place-items-start">
           <Sorting sortName={sortItemsBy} />
