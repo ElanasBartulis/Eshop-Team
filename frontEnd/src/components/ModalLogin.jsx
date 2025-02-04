@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { useContext } from "react";
-import { Button, Modal, Box } from "@mui/material";
+import { Button, Modal, Box, Stack, CircularProgress } from "@mui/material";
 import Logo from "../assets/Public/logo.png";
 import useLogin from "../custom-hooks/useLogin";
 import SessionContext from "../context/SessionContext.js";
 import useRegister from "../custom-hooks/useRegister.js";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import SnackbarComponent from "../components/SnackBarComponent.jsx";
 
 const style = {
@@ -19,8 +19,10 @@ const style = {
 
 export default function ModalSwitcher() {
   const [activeModal, setActiveModal] = useState("login");
+  const [isLoading, setIsLoading] = useState();
 
-  const { sessionState, open, setOpen, userData, setErrorHandler } = useContext(SessionContext);
+  const { sessionState, open, setOpen, userData, setErrorHandler } =
+    useContext(SessionContext);
 
   const { onLogin } = useLogin();
   const { onRegister } = useRegister();
@@ -28,16 +30,24 @@ export default function ModalSwitcher() {
 
   const handleOpen = () => {
     if (sessionState.isLogged) {
-      if (userData.admin) {
-        navigate('/admin');
-      } else {
-        navigate('/user');
-      }
+      setIsLoading(true);
+      //Navigate with small delay
+      setTimeout(() => {
+        if (userData.admin) {
+          navigate("/admin");
+        } else {
+          navigate("/user");
+        }
+
+        setTimeout(() => {
+          setIsLoading(false);
+        }, 300);
+      }, 400);
     } else {
       setOpen(true);
     }
   };
-  
+
   const handleClose = () => {
     setOpen(false);
     setActiveModal("login");
@@ -58,6 +68,25 @@ export default function ModalSwitcher() {
 
   return (
     <div>
+      {isLoading && (
+        <div className="fixed inset-0 bg-white z-50">
+          <Stack
+            sx={{
+              color: "grey.500",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              minHeight: "100vh",
+              gap: "20px",
+            }}
+            spacing={2}
+            direction="row"
+          >
+            <CircularProgress sx={{ color: "rgb(153 27 27)" }} />
+            Loading...
+          </Stack>
+        </div>
+      )}
       <Button className="hover:text-red-800 text-gray-900" onClick={handleOpen}>
         {/* Session.Login ? Vardas : Account */}
         {sessionState.isLogged ? userData.firstName : "Account"}
@@ -104,7 +133,7 @@ export default function ModalSwitcher() {
                           className="mt-1 w-full border border-gray-900 bg-white text-sm text-gray-700 shadow-sm h-8 px-1"
                         />
                       </div>
-                      <div className="col-span-6 sm:col-span-3">
+                      <div className="col-span-6">
                         <label
                           htmlFor="Password"
                           className="block text-sm font-medium text-gray-700"

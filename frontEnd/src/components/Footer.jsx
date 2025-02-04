@@ -17,7 +17,7 @@ export default function Footer() {
           <ul className="mt-5 flex flex-wrap justify-center gap-6 md:gap-8 lg:gap-12">
             <li>
               <a
-                className="text-gray-50 transition hover:text-customRed dark:text-gray-50 dark:hover:text-customRed"
+                className="text-gray-50 transition hover:text-customRed dark:text-gray-50 hover:text-red-800"
                 href="#"
               >
                 About
@@ -26,7 +26,7 @@ export default function Footer() {
 
             <li>
               <a
-                className="text-gray-50 transition hover:text-customRed dark:text-gray-50 dark:hover:text-customRed"
+                className="text-gray-50 transition hover:text-customRed dark:text-gray-50 hover:text-red-800"
                 href="#"
               >
                 History
@@ -35,7 +35,7 @@ export default function Footer() {
 
             <li>
               <a
-                className="text-gray-50 transition hover:text-customRed dark:text-gray-50 dark:hover:text-customRed"
+                className="text-gray-50 transition hover:text-customRed dark:text-gray-50 hover:text-red-800"
                 href="#"
               >
                 Projects
@@ -44,7 +44,7 @@ export default function Footer() {
 
             <li>
               <a
-                className="text-gray-50 transition hover:text-customRed dark:text-gray-50 dark:hover:text-customRed"
+                className="text-gray-50 transition hover:text-customRed dark:text-gray-50 hover:text-red-800"
                 href="#"
               >
                 Blog
@@ -55,7 +55,7 @@ export default function Footer() {
           <ul className="mt-5 flex justify-center gap-6 md:gap-8">
             <li>
               <a
-                className="text-gray-50 transition hover:text-customRed dark:text-gray-50 dark:hover:text-customRed"
+                className="text-gray-50 transition hover:text-customRed dark:text-gray-50 hover:text-red-800"
                 href="#"
               >
                 <span className="sr-only">Facebook</span>
@@ -76,7 +76,7 @@ export default function Footer() {
 
             <li>
               <a
-                className="text-gray-50 transition hover:text-customRed dark:text-gray-50 dark:hover:text-customRed"
+                className="text-gray-50 transition hover:text-customRed dark:text-gray-50 hover:text-red-800"
                 href="#"
               >
                 <span className="sr-only">Instagram</span>
@@ -97,7 +97,7 @@ export default function Footer() {
 
             <li>
               <a
-                className="text-gray-50 transition hover:text-customRed dark:text-gray-50 dark:hover:text-customRed"
+                className="text-gray-50 transition hover:text-customRed dark:text-gray-50 hover:text-red-800"
                 href="#"
               >
                 <span className="sr-only">Twitter</span>
@@ -114,7 +114,7 @@ export default function Footer() {
 
             <li>
               <a
-                className="text-gray-50 transition hover:text-customRed dark:text-gray-50 dark:hover:text-customRed"
+                className="text-gray-50 transition hover:text-customRed dark:text-gray-50 hover:text-red-800"
                 href="#"
               >
                 <span className="sr-only">GitHub</span>

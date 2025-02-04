@@ -14,7 +14,7 @@ export function useProductList() {
         `/server/api/product?page=${page}&rowsPerPage=${itemsPerPage}`
       );
       const { allProducts, count } = await productPromise.json();
-      
+
       setcount(count);
       setProducts(allProducts);
       setFilteredProducts(allProducts);

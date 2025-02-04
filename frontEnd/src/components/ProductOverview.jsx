@@ -81,7 +81,7 @@ const ProductOverview = ({ data, onRatingUpdate }) => {
 
   return (
     // Container
-    <div className="container mx-auto px-4 my-16">
+    <div className="container px-4 my-16">
       <div className="flex flex-col lg:flex-row gap-8 items-center">
         {/* left image */}
         <div className="lg:w-1/2 relative">
@@ -177,7 +177,7 @@ const ProductOverview = ({ data, onRatingUpdate }) => {
             </div>
           </div>
 
-          <div className="grid grid-cols-3 grid-rows-2 gap-4 mt-auto inset-x-0 bottom-0">
+          <div className="grid grid-cols-3 grid-rows-2 gap-4 mt-auto inset-x-0 bottom-0 w-4/5">
             <Button
               size="sm"
               className="rounded"
@@ -195,7 +195,7 @@ const ProductOverview = ({ data, onRatingUpdate }) => {
               value={value}
               onChange={handleInputChange}
               className=" !border-t-blue-gray-400 placeholder:text-blue-gray-400 placeholder:opacity-100  focus:!border-t-gray-900 appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none w-10 row-start-2 text-center mx-3"
-              style={{ width: "70px", height: "50px" }}
+              style={{ width: "90px", height: "50px" }}
               labelProps={{
                 className: "before:content-none after:content-none",
               }}
