@@ -12,19 +12,15 @@ import SearchContext from "../context/SearchContext";
 import { useCart } from "../context/CartContext";
 
 export default function Nav({ children }) {
-  const [open, setOpen] = useState(false);
-  const { state } = useCart();
+  const [openShopingCartModal, setOpenShopingCartModal] = useState(false);
 
-  console.log("Cart state:", state);
-  console.log("Cart items:", state?.cartItems);
+  const { state } = useCart();
 
   const totalItems =
     state?.items?.reduce((total, item) => total + item.quantity, 0) || 0;
 
-  console.log("Total items:", totalItems);
-
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const handleOpen = () => setOpenShopingCartModal(true);
+  const handleClose = () => setOpenShopingCartModal(false);
 
   return (
     <nav className="flex justify-between items-center pt-4">
@@ -45,7 +41,7 @@ export default function Nav({ children }) {
           <img src={userIcon} alt="" className="size-4 hover:text-red-800" />
           <ModalLogin />
           <Modal
-            open={open}
+            open={openShopingCartModal}
             onClose={handleClose}
             aria-labelledby="modal-modal-title"
             aria-describedby="modal-modal-description"

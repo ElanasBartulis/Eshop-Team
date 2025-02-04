@@ -1,12 +1,13 @@
 import { useCart } from "../context/CartContext.jsx";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 export default function ShoppingCartModal(data) {
   const { state, dispatch } = useCart();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const location = useLocation();
 
   const handleClick = () => {
     navigate("/checkout");
@@ -141,8 +142,6 @@ export default function ShoppingCartModal(data) {
                     }
                     id="Line1Qty"
                     className="w-12 h-8 text-center focus:outline-none"
-
-                    // className="h-8 w-12 rounded border-gray-200 bg-gray-50 p-0 text-center text-xs text-gray-600 [-moz-appearance:_textfield] focus:outline-none [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none"
                   />
                 </form>
 
@@ -173,16 +172,22 @@ export default function ShoppingCartModal(data) {
         </ul>
 
         <div className="space-y-4 text-center">
-          <button
-            className="block w-full rounded bg-gray-900 p-4 text-gray-50 text-sm font-medium transition hover:scale-105 hover:text-red-800"
-            onClick={handleClick}
-          >
-            Checkout
-          </button>
+          {location.pathname === "/checkout" ? (
+            <button className="block w-full rounded bg-gray-600 p-4 text-gray-50 text-sm font-medium transition">
+              Checkout
+            </button>
+          ) : (
+            <button
+              className="block w-full rounded bg-gray-900 p-4 text-gray-50 text-sm font-medium transition hover:scale-105 hover:text-red-800"
+              onClick={handleClick}
+            >
+              Checkout
+            </button>
+          )}
 
           <a
-            href="#"
-            className="inline-block text-sm text-gray-500 underline underline-offset-4 transition hover:text-gray-600"
+            className="inline-block text-sm text-gray-500 underline underline-offset-4 transition hover:text-gray-600 pointer"
+            // onClick={() => navigate("/")}
           >
             Continue shopping
           </a>
