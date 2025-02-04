@@ -194,11 +194,12 @@ const ProductOverview = ({ data, onRatingUpdate }) => {
               type="number"
               value={value}
               onChange={handleInputChange}
-              className=" !border-t-blue-gray-400 placeholder:text-blue-gray-400 placeholder:opacity-100  focus:!border-t-gray-900 appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none w-10 row-start-2 text-center mx-3"
-              style={{ width: "90px", height: "50px" }}
+              className=" border border-blue-gray-400 placeholder:text-blue-gray-400 placeholder:opacity-100  focus:!border-t-gray-900 appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none w-10 row-start-2 text-center mx-3"
+              style={{ width: "90px", height: "50px", paddingBottom: "15px" }}
               labelProps={{
                 className: "before:content-none after:content-none",
               }}
+              variant="static"
             />
             <Button
               size="sm"

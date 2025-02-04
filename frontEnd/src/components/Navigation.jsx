@@ -1,18 +1,28 @@
-import Logo from '../assets/Public/logo.png';
-import userIcon from '../assets/Public/user-icon.svg';
-import shoppingCart from '../assets/Public/shopping-cart.svg';
-import ModalLogin from './ModalLogin';
-import { Link } from 'react-router-dom';
-import Logout from './Logout';
-import ShoppingCartModal from './ShoppingCartModal';
+import Logo from "../assets/Public/logo.png";
+import userIcon from "../assets/Public/user-icon.svg";
+import shoppingCart from "../assets/Public/shopping-cart.svg";
+import ModalLogin from "./ModalLogin";
+import { Link } from "react-router-dom";
+import Logout from "./Logout";
+import ShoppingCartModal from "./ShoppingCartModal";
 import { useState } from "react";
 import { Modal, Box } from "@mui/material";
-import  SearchComponent  from '../components/SearchComponent';
-import SearchContext from '../context/SearchContext';
+import SearchComponent from "../components/SearchComponent";
+import SearchContext from "../context/SearchContext";
+import { useCart } from "../context/CartContext";
 
 export default function Nav({ children }) {
   const [open, setOpen] = useState(false);
-  
+  const { state } = useCart();
+
+  console.log("Cart state:", state);
+  console.log("Cart items:", state?.cartItems);
+
+  const totalItems =
+    state?.items?.reduce((total, item) => total + item.quantity, 0) || 0;
+
+  console.log("Total items:", totalItems);
+
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
@@ -24,32 +34,15 @@ export default function Nav({ children }) {
             src={Logo}
             alt="logo image"
             className="size-16"
-            style={{ cursor: 'pointer' }}
+            style={{ cursor: "pointer" }}
           />
         </Link>
       </div>
 
       <div className="flex justify-evenly gap-8">
         <SearchComponent />
-        {/* <div className="relative max-w-md mx-auto">
-          {children}
-          <input
-            type="text"
-            placeholder="Search..."
-            className="w-full px-4 py-2 pr-12 border rounded focus:outline-none focus:ring-2 focus:ring-gray-900"
-          />
-          <button className="absolute top-1/2 right-2 -translate-y-1/2 px-3 py-1 text-gray-50 bg-gray-900 rounded hover:bg-red-800 hover:text-gray-50">
-            Go
-          </button>
-        </div> */}
-
         <div className="flex gap-2 items-center">
-          <img
-            src={userIcon}
-            alt=""
-            className="size-4 hover:text-red-800"
-          />
-          {/* Ar prisijunges? <ZilvinoAccountSettings/> : <ModalLogin/> */}
+          <img src={userIcon} alt="" className="size-4 hover:text-red-800" />
           <ModalLogin />
           <Modal
             open={open}
@@ -68,23 +61,27 @@ export default function Nav({ children }) {
                 borderRadius: 1,
               }}
             >
-              <ShoppingCartModal/>
+              <ShoppingCartModal />
             </Box>
           </Modal>
         </div>
 
         <Logout />
 
-        <div className="flex gap-2 items-center" onClick={handleOpen} >
-          <img
-            src={shoppingCart}
-            alt=""
-            className="size-4 hover:text-red-800"
-          />
-          <a
-            href="#"
-            className="hover:text-red-800"
-          >
+        <div className="flex gap-2 items-center relative" onClick={handleOpen}>
+          <div className="relative">
+            <img
+              src={shoppingCart}
+              alt=""
+              className="size-4 hover:text-red-800"
+            />
+            {totalItems > 0 && (
+              <span className="absolute -top-2 -right-2 bg-red-800 text-white text-xs font-bold rounded-full h-4 w-4 flex items-center justify-center">
+                {totalItems}
+              </span>
+            )}
+          </div>
+          <a href="#" className="hover:text-red-800">
             Cart
           </a>
         </div>

@@ -18,11 +18,12 @@ const cartReducer = (state, action) => {
       );
 
       if (existingItemIndex !== -1) {
+        // Use the server response quantity instead of adding
         const updatedItems = state.items.map((item) => {
           if (item.productId === action.payload.productId) {
             return {
               ...item,
-              quantity: item.quantity + action.payload.quantity,
+              quantity: action.payload.quantity, // Use server response quantity
             };
           }
           return item;

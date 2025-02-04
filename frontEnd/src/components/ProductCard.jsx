@@ -1,20 +1,20 @@
-import { useContext, useEffect, useState } from 'react';
-import { Modal, Box } from '@mui/material';
-import Rating from '@mui/material/Rating';
-import ProductOverview from './ProductOverview';
-import SessionContext from './../context/SessionContext';
-import { useProductRating } from '../custom-hooks/useProductRating';
-import { useCart } from '../context/CartContext';
+import { useContext, useEffect, useState } from "react";
+import { Modal, Box } from "@mui/material";
+import Rating from "@mui/material/Rating";
+import ProductOverview from "./ProductOverview";
+import SessionContext from "./../context/SessionContext";
+import { useProductRating } from "../custom-hooks/useProductRating";
+import { useCart } from "../context/CartContext";
 
 export default function ProductCard({
   data,
   onRatingUpdate,
   toggleWishList,
   isInWishList,
-  imageHeight = 'h-64 sm:h-72',
-  containerStyles = '',
-  imageStyles = '',
-  contentStyles = '',
+  imageHeight = "h-64 sm:h-72",
+  containerStyles = "",
+  imageStyles = "",
+  contentStyles = "",
 }) {
   const [open, setOpen] = useState(false);
   const {
@@ -35,6 +35,7 @@ export default function ProductCard({
   } = useProductRating(id, initialRating, initialRatingCount, onRatingUpdate);
   //Discount state
   const [discountedPrice, setDiscountedPrice] = useState(0);
+  const [isAddingToCart, setIsAddingToCart] = useState(false);
   //UseEffect only calclulate the discount when it changes
   useEffect(() => {
     setDiscountedPrice(data.price * (1 - data.discount / 100));
@@ -52,19 +53,25 @@ export default function ProductCard({
 
   const handleAddToCart = async (e) => {
     e.preventDefault();
+
+    // Prevent multiple clicks while processing
+    if (isAddingToCart) return;
+
     try {
+      setIsAddingToCart(true);
+
       const requestBody = {
         productId: data.id,
         quantity: 1,
         userId: session?.user?.id,
       };
 
-      const response = await fetch('/server/api/cart/add', {
-        method: 'POST',
+      const response = await fetch("/server/api/cart/add", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        credentials: 'include',
+        credentials: "include",
         body: JSON.stringify(requestBody),
       });
 
@@ -76,9 +83,12 @@ export default function ProductCard({
         );
       }
 
-      dispatch({ type: 'ADD_ITEM', payload: responseData });
+      // Only dispatch after successful server response
+      dispatch({ type: "ADD_ITEM", payload: responseData });
     } catch (error) {
-      console.error('Error adding product to cart:', error);
+      console.error("Error adding product to cart:", error);
+    } finally {
+      setIsAddingToCart(false);
     }
   };
 
@@ -88,13 +98,13 @@ export default function ProductCard({
         <button
           onClick={handleWishlistClick}
           className={`absolute end-4 top-4 z-10 rounded-full bg-white p-1.5 text-gray-900 transition hover:text-gray-900/75 ${
-            isWishlisted ? `text-red-500` : ''
+            isWishlisted ? `text-red-500` : ""
           }`}
         >
           <span className="sr-only">Wishlist</span>
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            fill={isWishlisted ? 'currentColor' : 'none'}
+            fill={isWishlisted ? "currentColor" : "none"}
             viewBox="0 0 24 24"
             strokeWidth="1.5"
             stroke="currentColor"
@@ -162,8 +172,9 @@ export default function ProductCard({
             <button
               className="block w-full rounded bg-gray-900 p-4 text-gray-50 text-sm font-medium transition hover:scale-105 hover:text-red-800"
               onClick={handleAddToCart}
+              disabled={isAddingToCart}
             >
-              Add to Cart
+              {isAddingToCart ? "Adding..." : "Add to Cart"}
             </button>
           </form>
         </div>
@@ -176,12 +187,12 @@ export default function ProductCard({
       >
         <Box
           sx={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
             width: 1200,
-            bgcolor: 'background.paper',
+            bgcolor: "background.paper",
             p: 4,
             borderRadius: 1,
           }}
