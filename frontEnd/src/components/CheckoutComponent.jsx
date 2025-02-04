@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom";
 export default function CheckoutComponent() {
   const { state, dispatch } = useCart();
   const [isLoading, setIsLoading] = useState(true);
+  // const [itemCalculations, setItemCalculations] = useState({});
+  // const [totals, setTotals] = useState({});
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -20,7 +22,6 @@ export default function CheckoutComponent() {
         if (cart && cart.CartItems) {
           dispatch({ type: "SET_CART", payload: cart.CartItems });
         }
-        console.log(state.items.map((product) => product.quantity));
       } catch (error) {
         console.error("Error fetching cart:", error);
       } finally {
@@ -29,6 +30,44 @@ export default function CheckoutComponent() {
     };
     fetchCart();
   }, [dispatch]);
+
+  // useEffect(() => {
+  //   if (state.items) {
+  //     const calculations = state.items.map((product) => ({
+  //       totalPrice: product.quantity * product.Product.price,
+  //       vat: product.quantity * product.Product.price * (21 / 100),
+  //       discount:
+  //         product.quantity *
+  //         product.Product.price *
+  //         (product.Product.discount / 100),
+  //     }));
+
+  //     setItemCalculations(calculations);
+
+  //     const totalsCalculation = calculations.reduce(
+  //       (sum, item) => ({
+  //         totalPrice: sum.totalPrice + item.totalPrice,
+  //         vat: sum.vat + item.vat,
+  //         discount: sum.discount + item.discount,
+  //       }),
+  //       {
+  //         totalPrice: 0,
+  //         vat: 0,
+  //         discount: 0,
+  //       }
+  //     );
+
+  //     setTotals(totalsCalculation);
+  //   } else {
+  //     // Reset calculations when cart is empty
+  //     setItemCalculations([]);
+  //     setTotals({
+  //       totalPrice: 0,
+  //       vat: 0,
+  //       discount: 0,
+  //     });
+  //   }
+  // }, [state.items]);
 
   if (isLoading) {
     return <div>Loading cart...</div>;
@@ -84,7 +123,6 @@ export default function CheckoutComponent() {
       });
     } catch (error) {
       console.error("Error removing item:", error);
-      setError("Failed to remove item from cart");
     }
   }
 
@@ -117,7 +155,6 @@ export default function CheckoutComponent() {
       });
     } catch (error) {
       console.error("Error updating quantity:", error);
-      setError("Failed to update quantity");
     }
   }
 
@@ -206,22 +243,34 @@ export default function CheckoutComponent() {
                 <dl className="space-y-0.5 text-sm text-gray-700">
                   <div className="flex justify-between">
                     <dt>Subtotal</dt>
-                    <dd>85.99€</dd>
+                    {/* <dd>{+totals.totalPrice.toFixed(2)}€</dd> */}
+                    <dd>0€</dd>
                   </div>
 
                   <div className="flex justify-between">
                     <dt>VAT</dt>
-                    <dd>20.56€</dd>
+                    {/* <dd>{+totals.vat.toFixed(2)}€</dd> */}
+                    <dd>{0}€</dd>
                   </div>
 
                   <div className="flex justify-between">
                     <dt>Discount</dt>
-                    <dd>10€</dd>
+                    {/* <dd>-{+totals.discount.toFixed(2)}€</dd> */}
+                    <dd>0€</dd>
                   </div>
 
                   <div className="flex justify-between !text-base font-medium">
                     <dt>Total</dt>
-                    <dd>75.99€</dd>
+                    <dd>
+                      {/* {
+                        +(
+                          totals.totalPrice +
+                          totals.vat -
+                          totals.discount
+                        ).toFixed(2)
+                      } */}
+                      0€
+                    </dd>
                   </div>
                 </dl>
 

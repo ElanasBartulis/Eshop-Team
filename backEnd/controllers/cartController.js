@@ -16,7 +16,7 @@ export async function getCart(req, res) {
             {
               model: Product,
               as: "Product",
-              attributes: ["id", "name", "price", "image"],
+              attributes: ["id", "name", "price", "image", "discount"],
             },
           ],
         },
