@@ -5,8 +5,8 @@ import { useNavigate } from "react-router-dom";
 export default function CheckoutComponent() {
   const { state, dispatch } = useCart();
   const [isLoading, setIsLoading] = useState(true);
-  // const [itemCalculations, setItemCalculations] = useState({});
-  // const [totals, setTotals] = useState({});
+  const [itemCalculations, setItemCalculations] = useState({});
+  const [totals, setTotals] = useState({});
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -31,43 +31,49 @@ export default function CheckoutComponent() {
     fetchCart();
   }, [dispatch]);
 
-  // useEffect(() => {
-  //   if (state.items) {
-  //     const calculations = state.items.map((product) => ({
-  //       totalPrice: product.quantity * product.Product.price,
-  //       vat: product.quantity * product.Product.price * (21 / 100),
-  //       discount:
-  //         product.quantity *
-  //         product.Product.price *
-  //         (product.Product.discount / 100),
-  //     }));
+  useEffect(() => {
+    if (state.items) {
+      const calculations = state.items.map((product) => {
+        const basePrice = product.quantity * product.Product.price;
+        const discount = product.Product.discount
+          ? basePrice * (product.Product.discount / 100)
+          : 0;
 
-  //     setItemCalculations(calculations);
+        const totalPrice = basePrice - discount;
+        const vat = totalPrice * (21 / 100);
 
-  //     const totalsCalculation = calculations.reduce(
-  //       (sum, item) => ({
-  //         totalPrice: sum.totalPrice + item.totalPrice,
-  //         vat: sum.vat + item.vat,
-  //         discount: sum.discount + item.discount,
-  //       }),
-  //       {
-  //         totalPrice: 0,
-  //         vat: 0,
-  //         discount: 0,
-  //       }
-  //     );
+        return {
+          totalPrice: totalPrice,
+          vat: vat,
+          discount: discount,
+        };
+      });
 
-  //     setTotals(totalsCalculation);
-  //   } else {
-  //     // Reset calculations when cart is empty
-  //     setItemCalculations([]);
-  //     setTotals({
-  //       totalPrice: 0,
-  //       vat: 0,
-  //       discount: 0,
-  //     });
-  //   }
-  // }, [state.items]);
+      setItemCalculations(calculations);
+
+      const totalCalculation = calculations.reduce(
+        (sum, item) => ({
+          totalPrice: sum.totalPrice + item.totalPrice,
+          vat: sum.vat + item.vat,
+          discount: sum.discount + item.discount,
+        }),
+        {
+          totalPrice: 0,
+          vat: 0,
+          discount: 0,
+        }
+      );
+
+      setTotals(totalCalculation);
+    } else {
+      setItemCalculations([]);
+      setTotals({
+        totalPrice: 0,
+        vat: 0,
+        discount: 0,
+      });
+    }
+  }, [state.items]);
 
   if (isLoading) {
     return <div>Loading cart...</div>;
@@ -243,59 +249,63 @@ export default function CheckoutComponent() {
                 <dl className="space-y-0.5 text-sm text-gray-700">
                   <div className="flex justify-between">
                     <dt>Subtotal</dt>
-                    {/* <dd>{+totals.totalPrice.toFixed(2)}€</dd> */}
-                    <dd>0€</dd>
+                    <dd>{+totals.totalPrice.toFixed(2)}€</dd>
+                    {/* <dd>0€</dd> */}
                   </div>
 
                   <div className="flex justify-between">
                     <dt>VAT</dt>
-                    {/* <dd>{+totals.vat.toFixed(2)}€</dd> */}
-                    <dd>{0}€</dd>
+                    <dd>{+totals.vat.toFixed(2)}€</dd>
+                    {/* <dd>{0}€</dd> */}
                   </div>
 
                   <div className="flex justify-between">
                     <dt>Discount</dt>
-                    {/* <dd>-{+totals.discount.toFixed(2)}€</dd> */}
-                    <dd>0€</dd>
+                    <dd>{+totals.discount.toFixed(2)}€</dd>
+                    {/* <dd>0€</dd> */}
                   </div>
 
                   <div className="flex justify-between !text-base font-medium">
                     <dt>Total</dt>
                     <dd>
-                      {/* {
+                      {
                         +(
                           totals.totalPrice +
                           totals.vat -
                           totals.discount
                         ).toFixed(2)
-                      } */}
-                      0€
+                      }
+                      {/* 0€ */}
                     </dd>
                   </div>
                 </dl>
 
-                <div className="flex justify-end">
-                  <span className="inline-flex items-center justify-center rounded-full bg-indigo-100 px-2.5 py-0.5 text-indigo-700">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth="1.5"
-                      stroke="currentColor"
-                      className="-ms-1 me-1.5 size-4"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M16.5 6v.75m0 3v.75m0 3v.75m0 3V18m-9-5.25h5.25M7.5 15h3M3.375 5.25c-.621 0-1.125.504-1.125 1.125v3.026a2.999 2.999 0 010 5.198v3.026c0 .621.504 1.125 1.125 1.125h17.25c.621 0 1.125-.504 1.125-1.125v-3.026a2.999 2.999 0 010-5.198V6.375c0-.621-.504-1.125-1.125-1.125H3.375z"
-                      />
-                    </svg>
+                {totals.discount ? (
+                  <div className="flex justify-end">
+                    <span className="inline-flex items-center justify-center rounded-full bg-indigo-100 px-2.5 py-0.5 text-indigo-700">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth="1.5"
+                        stroke="currentColor"
+                        className="-ms-1 me-1.5 size-4"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M16.5 6v.75m0 3v.75m0 3v.75m0 3V18m-9-5.25h5.25M7.5 15h3M3.375 5.25c-.621 0-1.125.504-1.125 1.125v3.026a2.999 2.999 0 010 5.198v3.026c0 .621.504 1.125 1.125 1.125h17.25c.621 0 1.125-.504 1.125-1.125v-3.026a2.999 2.999 0 010-5.198V6.375c0-.621-.504-1.125-1.125-1.125H3.375z"
+                        />
+                      </svg>
 
-                    <p className="whitespace-nowrap text-xs">
-                      1 Discount Applied
-                    </p>
-                  </span>
-                </div>
+                      <p className="whitespace-nowrap text-xs">
+                        Discounts Applied
+                      </p>
+                    </span>
+                  </div>
+                ) : (
+                  ""
+                )}
 
                 <div className="flex justify-end">
                   <button className="block w-full rounded bg-gray-900 p-4 text-gray-50 text-sm font-medium transition hover:scale-105 hover:text-red-800">

@@ -91,6 +91,10 @@ export async function updateCart(req, res) {
     const sessionId = req.session.id;
     const userId = req.user?.id || null;
 
+    if (!quantity || quantity < 1) {
+      return res.status(400).json({ error: "Quantity must be at least 1" });
+    }
+
     const cart = await Cart.findOne({
       where: userId ? { userId } : { sessionId },
     });

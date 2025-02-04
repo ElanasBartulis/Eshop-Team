@@ -1,20 +1,20 @@
-import Logo from '../assets/Public/logo.png';
-import userIcon from '../assets/Public/user-icon.svg';
-import shoppingCart from '../assets/Public/shopping-cart.svg';
-import ModalLogin from './ModalLogin';
-import { Link } from 'react-router-dom';
-import Logout from './Logout';
-import ShoppingCartModal from './ShoppingCartModal';
+import Logo from "../assets/Public/logo.png";
+import userIcon from "../assets/Public/user-icon.svg";
+import shoppingCart from "../assets/Public/shopping-cart.svg";
+import ModalLogin from "./ModalLogin";
+import { Link } from "react-router-dom";
+import Logout from "./Logout";
+import ShoppingCartModal from "./ShoppingCartModal";
 import { useState } from "react";
 import { Modal, Box } from "@mui/material";
-import  SearchComponent  from '../components/SearchComponent';
-import SearchContext from '../context/SearchContext';
+import SearchComponent from "../components/SearchComponent";
+import SearchContext from "../context/SearchContext";
 
 export default function Nav({ children }) {
-  const [open, setOpen] = useState(false);
-  
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const [openShopingCartModal, setOpenShopingCartModal] = useState(false);
+
+  const handleOpen = () => setOpenShopingCartModal(true);
+  const handleClose = () => setOpenShopingCartModal(false);
 
   return (
     <nav className="flex justify-between items-center pt-4">
@@ -24,7 +24,7 @@ export default function Nav({ children }) {
             src={Logo}
             alt="logo image"
             className="size-16"
-            style={{ cursor: 'pointer' }}
+            style={{ cursor: "pointer" }}
           />
         </Link>
       </div>
@@ -44,15 +44,11 @@ export default function Nav({ children }) {
         </div> */}
 
         <div className="flex gap-2 items-center">
-          <img
-            src={userIcon}
-            alt=""
-            className="size-4 hover:text-red-800"
-          />
+          <img src={userIcon} alt="" className="size-4 hover:text-red-800" />
           {/* Ar prisijunges? <ZilvinoAccountSettings/> : <ModalLogin/> */}
           <ModalLogin />
           <Modal
-            open={open}
+            open={openShopingCartModal}
             onClose={handleClose}
             aria-labelledby="modal-modal-title"
             aria-describedby="modal-modal-description"
@@ -68,23 +64,20 @@ export default function Nav({ children }) {
                 borderRadius: 1,
               }}
             >
-              <ShoppingCartModal/>
+              <ShoppingCartModal />
             </Box>
           </Modal>
         </div>
 
         <Logout />
 
-        <div className="flex gap-2 items-center" onClick={handleOpen} >
+        <div className="flex gap-2 items-center" onClick={handleOpen}>
           <img
             src={shoppingCart}
             alt=""
             className="size-4 hover:text-red-800"
           />
-          <a
-            href="#"
-            className="hover:text-red-800"
-          >
+          <a href="#" className="hover:text-red-800">
             Cart
           </a>
         </div>

@@ -1,12 +1,13 @@
 import { useCart } from "../context/CartContext.jsx";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 export default function ShoppingCartModal(data) {
   const { state, dispatch } = useCart();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const location = useLocation();
 
   const handleClick = () => {
     navigate("/checkout");
@@ -171,16 +172,22 @@ export default function ShoppingCartModal(data) {
         </ul>
 
         <div className="space-y-4 text-center">
-          <button
-            className="block w-full rounded bg-gray-900 p-4 text-gray-50 text-sm font-medium transition hover:scale-105 hover:text-red-800"
-            onClick={handleClick}
-          >
-            Checkout
-          </button>
+          {location.pathname === "/checkout" ? (
+            <button className="block w-full rounded bg-gray-600 p-4 text-gray-50 text-sm font-medium transition">
+              Checkout
+            </button>
+          ) : (
+            <button
+              className="block w-full rounded bg-gray-900 p-4 text-gray-50 text-sm font-medium transition hover:scale-105 hover:text-red-800"
+              onClick={handleClick}
+            >
+              Checkout
+            </button>
+          )}
 
           <a
-            href="#"
-            className="inline-block text-sm text-gray-500 underline underline-offset-4 transition hover:text-gray-600"
+            className="inline-block text-sm text-gray-500 underline underline-offset-4 transition hover:text-gray-600 pointer"
+            // onClick={() => navigate("/")}
           >
             Continue shopping
           </a>
