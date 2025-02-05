@@ -1,12 +1,10 @@
-import { Link } from 'react-router-dom';
-import boardGame from '../assets/Public/board-game.png';
-import Nav from '../components/Navigation';
+import { Link } from "react-router-dom";
+import boardGame from "../assets/Public/board-game.png";
 
 export default function DashboardHeader() {
   return (
     <header>
-      <Nav />
-      <div className=" w-full bg-gray-900 size-px min-h-96 mt-4 mb-8 flex justify-between px-20 items-center">
+      <div className=" w-full bg-gray-900 size-px min-h-96 mb-8 flex justify-between px-20 items-center">
         <div className="max-w-screen-md min-h-full flex flex-col justify-center items-center pl-20">
           <h2 className="text-gray-50 text-5xl font-semibold pb-14">
             Holiday sale up to 50% off
@@ -20,11 +18,7 @@ export default function DashboardHeader() {
         </div>
 
         <span className="pr-20">
-          <img
-            src={boardGame}
-            alt="board-game-image"
-            className="size-80"
-          />
+          <img src={boardGame} alt="board-game-image" className="size-80" />
         </span>
       </div>
     </header>

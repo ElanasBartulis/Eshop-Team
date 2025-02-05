@@ -23,7 +23,7 @@ export default function Nav({ children }) {
   const handleClose = () => setOpenShopingCartModal(false);
 
   return (
-    <nav className="flex justify-between items-center pt-4">
+    <nav className="sticky top-0 z-50 flex justify-between items-center pt-4 bg-gray-100 border-b border-gray-200">
       <div>
         <Link to="/">
           <img
