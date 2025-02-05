@@ -1,10 +1,10 @@
-import { createContext, useReducer, useContext } from "react";
+import { createContext, useReducer, useContext } from 'react';
 
 const CartContext = createContext();
 
 const cartReducer = (state, action) => {
   switch (action.type) {
-    case "SET_CART":
+    case 'SET_CART':
       return {
         ...state,
         items: action.payload.map((item) => ({
@@ -12,7 +12,7 @@ const cartReducer = (state, action) => {
           Product: item.Product,
         })),
       };
-    case "ADD_ITEM":
+    case 'ADD_ITEM':
       const existingItemIndex = state.items.findIndex(
         (item) => item.productId === action.payload.productId
       );
@@ -40,7 +40,7 @@ const cartReducer = (state, action) => {
         items: [...state.items, action.payload],
       };
 
-    case "UPDATE_QUANTITY":
+    case 'UPDATE_QUANTITY':
       return {
         ...state,
         items: state.items.map((item) =>
@@ -50,10 +50,15 @@ const cartReducer = (state, action) => {
         ),
       };
 
-    case "REMOVE_ITEM":
+    case 'REMOVE_ITEM':
       return {
         ...state,
         items: state.items.filter((item) => item.productId !== action.payload),
+      };
+    case 'CLEAR_CART':
+      return {
+        ...state,
+        items: [],
       };
 
     default:

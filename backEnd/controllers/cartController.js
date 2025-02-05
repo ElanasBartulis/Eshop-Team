@@ -1,4 +1,4 @@
-import { Cart, CartItem, Product } from "../models/indexModel.js";
+import { Cart, CartItem, Product } from '../models/indexModel.js';
 
 // Get cart
 export async function getCart(req, res) {
@@ -11,12 +11,12 @@ export async function getCart(req, res) {
       include: [
         {
           model: CartItem,
-          as: "CartItems",
+          as: 'CartItems',
           include: [
             {
               model: Product,
-              as: "Product",
-              attributes: ["id", "name", "price", "image", "discount"],
+              as: 'Product',
+              attributes: ['id', 'name', 'price', 'image', 'discount'],
             },
           ],
         },
@@ -26,7 +26,7 @@ export async function getCart(req, res) {
     res.status(200).json(cart);
   } catch (error) {
     res.status(500).json({
-      error: "Failed to retrieve cart",
+      error: 'Failed to retrieve cart',
       details: error.message,
     });
   }
@@ -72,15 +72,15 @@ export async function addToCart(req, res) {
       include: [
         {
           model: Product,
-          as: "Product",
-          attributes: ["id", "name", "price", "image"],
+          as: 'Product',
+          attributes: ['id', 'name', 'price', 'image'],
         },
       ],
     });
 
     res.json(updatedCartItem);
   } catch (error) {
-    console.error("Error in POST /cart/add:", error);
+    console.error('Error in POST /cart/add:', error);
     res.status(500).json({ error: error.message });
   }
 }
@@ -89,31 +89,31 @@ export async function updateCart(req, res) {
   try {
     const { productId, quantity } = req.body;
     const sessionId = req.session.id;
-    const userId = req.user?.id || null;
+    const userId = req.session.user?.id || null;
 
     if (!quantity || quantity < 1) {
-      return res.status(400).json({ error: "Quantity must be at least 1" });
+      return res.status(400).json({ error: 'Quantity must be at least 1' });
     }
 
     const cart = await Cart.findOne({
       where: userId ? { userId } : { sessionId },
     });
-    if (!cart) return res.status(404).json({ error: "Cart not found" });
+    if (!cart) return res.status(404).json({ error: 'Cart not found' });
 
     const cartItem = await CartItem.findOne({
       where: { cartId: cart.id, productId },
     });
 
     if (!cartItem)
-      return res.status(404).json({ error: "Item not found in cart" });
+      return res.status(404).json({ error: 'Item not found in cart' });
 
     cartItem.quantity = quantity;
     await cartItem.save();
 
     res.json(cartItem);
   } catch (error) {
-    console.error("Error in PUT /cart/update:", error);
-    res.status(500).json({ error: "Failed to update item quantity" });
+    console.error('Error in PUT /cart/update:', error);
+    res.status(500).json({ error: 'Failed to update item quantity' });
   }
 }
 
@@ -121,12 +121,12 @@ export async function deleteCartItem(req, res) {
   try {
     const { productId } = req.body;
     const sessionId = req.session.id;
-    const userId = req.user?.id || null;
+    const userId = req.session.user?.id || null;
 
     const cart = await Cart.findOne({
       where: userId ? { userId } : { sessionId },
     });
-    if (!cart) return res.status(404).json({ error: "Cart not found" });
+    if (!cart) return res.status(404).json({ error: 'Cart not found' });
 
     const deleted = await CartItem.destroy({
       where: { cartId: cart.id, productId },
@@ -135,10 +135,10 @@ export async function deleteCartItem(req, res) {
     if (deleted) {
       res.json({ success: true });
     } else {
-      res.status(404).json({ error: "Item not found in cart" });
+      res.status(404).json({ error: 'Item not found in cart' });
     }
   } catch (error) {
-    console.error("Error in DELETE /cart/remove:", error);
-    res.status(500).json({ error: "Failed to remove item from cart" });
+    console.error('Error in DELETE /cart/remove:', error);
+    res.status(500).json({ error: 'Failed to remove item from cart' });
   }
 }
