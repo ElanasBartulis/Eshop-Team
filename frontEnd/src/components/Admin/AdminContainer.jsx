@@ -24,7 +24,7 @@ export default function AdminContainer() {
   }
   return (
     <div className="w-full">
-      <div className="ml-20 mb-10">{changePage()}</div>
+      <div className="mx-4 lg:ml-20 mb-10">{changePage()}</div>
     </div>
   );
 }

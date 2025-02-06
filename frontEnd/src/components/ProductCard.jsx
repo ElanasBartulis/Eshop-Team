@@ -130,7 +130,7 @@ export default function ProductCard({
           onClick={handleOpen}
           src={`/server/api/upload/image/${image[0]}`}
           alt=""
-          className={`w-full object-cover transition duration-500 group-hover:scale-105 ${imageHeight} ${imageStyles}`}
+          className={`w-full object-cover transition duration-500 group-hover:scale-105 sm:height-358`}
         />
 
         <div
@@ -199,9 +199,22 @@ export default function ProductCard({
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
-            width: 1200,
             bgcolor: "background.paper",
-            p: 4,
+            boxShadow: 24,
+            p: { xs: 1, sm: 2 },
+            width: {
+              xs: "95vw",
+              sm: "85vw",
+              md: "75vw",
+              lg: "65vw",
+            },
+            height: {
+              xs: "80vh",
+              sm: "85vh",
+              md: "90vh",
+            },
+            overflow: "auto",
+            outline: "none",
             borderRadius: 1,
           }}
         >
@@ -216,7 +229,6 @@ export default function ProductCard({
           />
         </Box>
       </Modal>
-      <SnackbarComponent />
     </div>
   );
 }

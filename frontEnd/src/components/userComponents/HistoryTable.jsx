@@ -1,5 +1,5 @@
-import React, { useState, useContext, useEffect } from 'react';
-import SessionContext from '../../context/SessionContext';
+import React, { useState, useContext, useEffect } from "react";
+import SessionContext from "../../context/SessionContext";
 import {
   CircularProgress,
   Collapse,
@@ -15,9 +15,9 @@ import {
   TablePagination,
   TableRow,
   Typography,
-} from '@mui/material';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+} from "@mui/material";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 
 export default function HistoryTable() {
   const [selectedHistoryId, setSelectedHistoryId] = useState(null);
@@ -69,17 +69,17 @@ export default function HistoryTable() {
         <div>
           <Stack
             sx={{
-              color: 'grey.500',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              minHeight: '200px',
-              gap: '20px',
+              color: "grey.500",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              minHeight: "200px",
+              gap: "20px",
             }}
             spacing={2}
             direction="row"
           >
-            <CircularProgress sx={{ color: 'rgb(153 27 27)' }} />
+            <CircularProgress sx={{ color: "rgb(153 27 27)" }} />
             Loading...
           </Stack>
         </div>
@@ -120,8 +120,8 @@ export default function HistoryTable() {
   );
 
   function showDate(date) {
-    if (!date) return 'Date not found';
-    return new Date(date).toLocaleDateString('lt-LT');
+    if (!date) return "Date not found";
+    return new Date(date).toLocaleDateString("lt-LT");
   }
 
   function Row({ data, isOpen, toggleRow }) {
@@ -143,20 +143,9 @@ export default function HistoryTable() {
           <TableCell align="center">{showDate(createdAt)}</TableCell>
         </TableRow>
         <TableRow>
-          <TableCell
-            style={{ paddingBottom: 0, paddingTop: 0 }}
-            colSpan={4}
-          >
-            <Collapse
-              in={isOpen}
-              timeout="auto"
-              unmountOnExit
-            >
-              <Typography
-                variant="h6"
-                gutterBottom
-                align="center"
-              >
+          <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={4}>
+            <Collapse in={isOpen} timeout="auto" unmountOnExit>
+              <Typography variant="h6" gutterBottom align="center">
                 Purchased Items
               </Typography>
               <div>

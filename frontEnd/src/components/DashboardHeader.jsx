@@ -4,9 +4,9 @@ import boardGame from "../assets/Public/board-game.png";
 export default function DashboardHeader() {
   return (
     <header>
-      <div className=" w-full bg-gray-900 size-px min-h-96 mb-8 flex justify-between px-20 items-center">
-        <div className="max-w-screen-md min-h-full flex flex-col justify-center items-center pl-20">
-          <h2 className="text-gray-50 text-5xl font-semibold pb-14">
+      <div className="w-full bg-gray-900 min-h-[300px] mb-8 flex flex-col md:flex-row justify-between px-4 md:px-20 items-center">
+        <div className="max-w-screen-md min-h-full flex flex-col justify-center items-center md:items-start p-4 md:pl-20">
+          <h2 className="text-gray-50 text-3xl md:text-5xl font-semibold pb-8 md:pb-14 sm:pt-12 text-center md:text-left">
             Holiday sale up to 50% off
           </h2>
 
@@ -17,8 +17,12 @@ export default function DashboardHeader() {
           </Link>
         </div>
 
-        <span className="pr-20">
-          <img src={boardGame} alt="board-game-image" className="size-80" />
+        <span className="p-4 md:pr-20">
+          <img
+            src={boardGame}
+            alt="board-game-image"
+            className="w-48 md:w-80 h-auto sm:pb-12"
+          />
         </span>
       </div>
     </header>

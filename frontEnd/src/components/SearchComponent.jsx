@@ -5,11 +5,11 @@ import React, {
   useEffect,
   useCallback,
   memo,
-} from 'react';
-import { TextField } from '@mui/material';
-import SearchContext from '../context/SearchContext';
-import SessionContext from '../context/SessionContext';
-import { useProductList } from '../custom-hooks/useProductList';
+} from "react";
+import { TextField } from "@mui/material";
+import SearchContext from "../context/SearchContext";
+import SessionContext from "../context/SessionContext";
+import { useProductList } from "../custom-hooks/useProductList";
 
 const SearchComponent = memo(() => {
   const { searchTerm, setSearchTerm, setFilteredProducts, setIsSearching } =
@@ -35,7 +35,7 @@ const SearchComponent = memo(() => {
         setErrorHandler({
           isSnackbarOpen: true,
           snackbarMessage: error.message,
-          alertColor: 'error',
+          alertColor: "error",
         });
       } finally {
         setIsSearching(false);
@@ -53,14 +53,16 @@ const SearchComponent = memo(() => {
   );
 
   return (
-    <TextField
-      size="small"
-      placeholder="Search products..."
-      value={searchTerm}
-      onChange={handleSearch}
-      sx={{ width: 240 }}
-      variant="outlined"
-    />
+    <div className="w-[240px] sm:w-full">
+      <TextField
+        size="small"
+        placeholder="Search products..."
+        value={searchTerm}
+        onChange={handleSearch}
+        sx={{ width: "100%" }}
+        variant="outlined"
+      />
+    </div>
   );
 });
 export default SearchComponent;

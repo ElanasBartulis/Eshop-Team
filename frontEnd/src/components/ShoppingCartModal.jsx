@@ -1,17 +1,21 @@
-import { useCart } from '../context/CartContext.jsx';
-import { useContext, useEffect, useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import SessionContext from '../context/SessionContext.js';
+import { useCart } from "../context/CartContext.jsx";
+import { useContext, useEffect, useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import SessionContext from "../context/SessionContext.js";
 
-export default function ShoppingCartModal(data) {
+export default function ShoppingCartModal({ closeModal }) {
   const { state, dispatch } = useCart();
   const navigate = useNavigate();
 
   const [error, setError] = useState(null);
   const location = useLocation();
 
+  const handleContinueShopping = () => {
+    closeModal();
+  };
+
   const handleClick = () => {
-    navigate('/checkout');
+    navigate("/checkout");
   };
 
   if (state.isLoading) {
@@ -24,37 +28,37 @@ export default function ShoppingCartModal(data) {
 
   async function handleRemoveItem(productId) {
     try {
-      const response = await fetch('/server/api/cart/remove', {
-        method: 'DELETE',
+      const response = await fetch("/server/api/cart/remove", {
+        method: "DELETE",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        credentials: 'include',
+        credentials: "include",
         body: JSON.stringify({ productId }),
       });
 
       if (!response.ok) {
-        throw new Error('Failed to remove item');
+        throw new Error("Failed to remove item");
       }
 
       dispatch({
-        type: 'REMOVE_ITEM',
+        type: "REMOVE_ITEM",
         payload: productId,
       });
     } catch (error) {
-      console.error('Error removing item:', error);
-      setError('Failed to remove item from cart');
+      console.error("Error removing item:", error);
+      setError("Failed to remove item from cart");
     }
   }
 
   async function handleQuantityChange(productId, newQuantity) {
     try {
-      const response = await fetch('/server/api/cart/update', {
-        method: 'PUT',
+      const response = await fetch("/server/api/cart/update", {
+        method: "PUT",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        credentials: 'include',
+        credentials: "include",
         body: JSON.stringify({
           productId,
           quantity: parseInt(newQuantity),
@@ -62,21 +66,21 @@ export default function ShoppingCartModal(data) {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to update quantity');
+        throw new Error("Failed to update quantity");
       }
 
       const updatedItem = await response.json();
 
       dispatch({
-        type: 'UPDATE_QUANTITY',
+        type: "UPDATE_QUANTITY",
         payload: {
           productId,
           quantity: parseInt(newQuantity),
         },
       });
     } catch (error) {
-      console.error('Error updating quantity:', error);
-      setError('Failed to update quantity');
+      console.error("Error updating quantity:", error);
+      setError("Failed to update quantity");
     }
   }
 
@@ -85,13 +89,10 @@ export default function ShoppingCartModal(data) {
       <div className="mt-4 space-y-6">
         <ul className="space-y-4">
           {state.items.map((item) => (
-            <li
-              key={item.id}
-              className="flex items-center gap-4"
-            >
+            <li key={item.id} className="flex items-center gap-4">
               <img
                 src={`/server/api/upload/image/${item.Product?.image?.[0]}`}
-                alt={item.Product?.name || 'Product image'}
+                alt={item.Product?.name || "Product image"}
                 className="size-16 rounded object-cover"
               />
 
@@ -110,12 +111,9 @@ export default function ShoppingCartModal(data) {
 
               <div className="flex flex-1 items-center justify-end gap-2">
                 <form>
-                  <label
-                    htmlFor="Line1Qty"
-                    className="sr-only"
-                  >
-                    {' '}
-                    Quantity{' '}
+                  <label htmlFor="Line1Qty" className="sr-only">
+                    {" "}
+                    Quantity{" "}
                   </label>
 
                   <input
@@ -157,7 +155,7 @@ export default function ShoppingCartModal(data) {
         </ul>
 
         <div className="space-y-4 text-center">
-          {location.pathname === '/checkout' ? (
+          {location.pathname === "/checkout" ? (
             <button className="block w-full rounded bg-gray-600 p-4 text-gray-50 text-sm font-medium transition">
               Checkout
             </button>
@@ -171,8 +169,8 @@ export default function ShoppingCartModal(data) {
           )}
 
           <a
-            className="inline-block text-sm text-gray-500 underline underline-offset-4 transition hover:text-gray-600 pointer"
-            // onClick={() => navigate("/")}
+            className="inline-block text-sm text-gray-500 underline underline-offset-4 transition hover:text-gray-600 cursor-pointer"
+            onClick={handleContinueShopping}
           >
             Continue shopping
           </a>

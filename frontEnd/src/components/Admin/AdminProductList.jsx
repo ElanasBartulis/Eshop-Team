@@ -28,7 +28,7 @@ export default function ProductList() {
   const [loading, setLoading] = useState(true);
   const [paginationModel, setPaginationModel] = useState({
     page: 0,
-    pageSize: 5,
+    pageSize: 10,
   });
   const [allUsersCount, setAllUsersCount] = useState(0);
   const [deleteConfirmation, setDeleteConfirmation] = useState({

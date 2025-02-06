@@ -10,11 +10,22 @@ import SnackbarComponent from "../components/SnackBarComponent.jsx";
 
 const style = {
   position: "absolute",
-  top: "15%",
+  top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: 1200,
-  height: 200,
+  width: {
+    xs: "95%",
+    sm: "80%",
+    md: "70%",
+    lg: "1200px",
+  },
+  maxHeight: {
+    xs: "90vh",
+    sm: "80vh",
+    md: "90vh",
+  },
+  overflowY: "auto",
+  bgcolor: "background.paper",
 };
 
 export default function ModalSwitcher() {
@@ -102,21 +113,25 @@ export default function ModalSwitcher() {
           <Box sx={style}>
             <section className="bg-white">
               <div className="lg:grid lg:grid-cols-12">
-                <aside className="relative block h-16 lg:order-last lg:col-span-5 lg:h-full xl:col-span-6">
+                <aside className="lg:block relative h-16 lg:order-last lg:col-span-5 lg:h-full xl:col-span-6">
                   <img
                     alt=""
                     src="https://as2.ftcdn.net/v2/jpg/11/07/08/39/1000_F_1107083939_966YkM6xT5jjtX1bwXyxf1e8LHVhXmQn.jpg"
                     className="absolute inset-0 h-full w-full object-cover"
                   />
                 </aside>
-                <main className="flex items-center justify-center px-8 py-8 sm:px-12 lg:col-span-7 lg:px-16 lg:py-12 xl:col-span-6">
-                  <div className="max-w-xl lg:max-w-3xl">
-                    <img src={Logo} alt="Logo" className="h-20 w-auto" />
-                    <h1 className="mt-6 text-2xl font-bold text-gray-900 sm:text-3xl md:text-4xl">
+                <main className="flex items-center justify-center px-4 py-4 sm:px-8 lg:col-span-7 lg:px-16 lg:py-12 xl:col-span-6">
+                  <div className="w-full max-w-xl lg:max-w-3xl">
+                    <img
+                      src={Logo}
+                      alt="Logo"
+                      className="h-12 sm:h-20 w-auto"
+                    />
+                    <h1 className="mt-4 sm:mt-6 text-xl sm:text-2xl md:text-3xl font-bold text-gray-900">
                       Welcome Back! Login
                     </h1>
                     <form
-                      className="mt-8 grid grid-cols-6 gap-6"
+                      className="mt-4 sm:mt-8 grid grid-cols-6 gap-4 sm:gap-6"
                       onSubmit={handleLogin}
                     >
                       <div className="col-span-6">
@@ -130,7 +145,7 @@ export default function ModalSwitcher() {
                           type="email"
                           id="Email"
                           name="email"
-                          className="mt-1 w-full border border-gray-900 bg-white text-sm text-gray-700 shadow-sm h-8 px-1"
+                          className="mt-1 w-full border border-gray-900 bg-white text-sm text-gray-700 shadow-sm h-8 sm:h-10 px-2"
                         />
                       </div>
                       <div className="col-span-6">
@@ -144,14 +159,14 @@ export default function ModalSwitcher() {
                           type="password"
                           id="Password"
                           name="password"
-                          className="mt-1 w-full border border-gray-900 bg-white text-sm text-gray-700 shadow-sm h-8 px-1"
+                          className="mt-1 w-full border border-gray-900 bg-white text-sm text-gray-700 shadow-sm h-8 sm:h-10 px-2"
                         />
                       </div>
-                      <div className="col-span-6 sm:flex sm:items-center sm:gap-4">
-                        <button className="inline-block shrink-0 rounded-md border bg-gray-900 px-12 py-3 text-sm font-medium text-white transition hover:bg-red-800 hover:text-white focus:outline-none">
+                      <div className="col-span-6 flex flex-col sm:flex-row sm:items-center sm:gap-4">
+                        <button className="w-full sm:w-auto inline-block shrink-0 rounded-md border bg-gray-900 px-8 sm:px-12 py-2 sm:py-3 text-sm font-medium text-white transition hover:bg-red-800 hover:text-white focus:outline-none">
                           Login
                         </button>
-                        <p className="mt-4 text-sm text-gray-500 sm:mt-0">
+                        <p className="mt-3 sm:mt-0 text-sm text-gray-500">
                           First time here?{" "}
                           <button
                             onClick={() => openModal("register")}

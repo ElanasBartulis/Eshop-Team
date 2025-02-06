@@ -10,7 +10,7 @@ export default function Admin() {
     <AdminSettingsContext.Provider value={{ isActive, setIsActive }}>
       <div className="container mx-auto px-4">
         <Nav />
-        <div className="flex mt-16">
+        <div className="md:flex mt-16">
           <Settings />
           <AdminContainer />
         </div>
