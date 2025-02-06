@@ -1,6 +1,6 @@
 import { useCart } from "../context/CartContext";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function CheckoutComponent() {
   const { state, dispatch } = useCart();
@@ -308,9 +308,11 @@ export default function CheckoutComponent() {
                 )}
 
                 <div className="flex justify-end">
-                  <button className="block w-full rounded bg-gray-900 p-4 text-gray-50 text-sm font-medium transition hover:scale-105 hover:text-red-800">
-                    Checkout
-                  </button>
+                  <Link to="/payment">
+                    <button className="block w-full rounded bg-gray-900 p-4 text-gray-50 text-sm font-medium transition hover:scale-105 hover:text-red-800">
+                      Proceed to payment
+                    </button>
+                  </Link>
                 </div>
               </div>
             </div>

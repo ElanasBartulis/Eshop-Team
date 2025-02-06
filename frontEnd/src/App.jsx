@@ -10,6 +10,7 @@ import Checkout from "./pages/Checkout.jsx";
 import SearchContext from "./context/SearchContext";
 import { CartProvider } from "./context/CartContext.jsx";
 import SalesPage from "./pages/Sales.jsx";
+import Payment from "./pages/Payment.jsx";
 
 function App() {
   const [sessionState, setSessionState] = useState({ isLogged: false });
@@ -99,6 +100,7 @@ function App() {
               />
               <Route path="/checkout" element={<Checkout />} />
               <Route path="/sales" element={<SalesPage />} />
+              <Route path="/payment" element={<Payment />} />
             </Routes>
           </BrowserRouter>
         </CartProvider>
