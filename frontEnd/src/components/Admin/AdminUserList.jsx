@@ -1,9 +1,25 @@
 import React, { useEffect, useState } from "react";
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, CircularProgress, Button, TextField, Dialog, DialogActions, DialogContent, DialogTitle, TablePagination} from "@mui/material";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  CircularProgress,
+  Button,
+  TextField,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  TablePagination,
+} from "@mui/material";
 import SnackbarComponent from "../SnackBarComponent";
 import { useContext } from "react";
-import SessionContext from '../../context/SessionContext';
-import { registrationSchema } from '../../utils/validations/UserSchema'
+import SessionContext from "../../context/SessionContext";
+import { registrationSchema } from "../../utils/validations/UserSchema";
 import DeleteConfirmation from "../DeleteConfirm";
 
 export default function UserList() {
@@ -12,21 +28,23 @@ export default function UserList() {
   const [error, setError] = useState(null);
   const [editUser, setEditUser] = useState(null);
   const { setErrorHandler } = useContext(SessionContext);
-  const [page, setPage] = useState(0); 
-  const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [allUsersCount, setAllUsersCount] = useState(0)
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [allUsersCount, setAllUsersCount] = useState(0);
   const [deleteConfirmation, setDeleteConfirmation] = useState({
     open: false,
     userId: null,
-    userName: null
+    userName: null,
   });
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await fetch(`/server/api/users/users?page=${page}&rowsPerPage=${rowsPerPage}`);
-        const {users, count} = await response.json();
-        
+        const response = await fetch(
+          `/server/api/users/users?page=${page}&rowsPerPage=${rowsPerPage}`
+        );
+        const { users, count } = await response.json();
+
         if (!response.ok) {
           setErrorHandler({
             isSnackbarOpen: true,
@@ -36,7 +54,7 @@ export default function UserList() {
         }
 
         setUsers(users);
-        setAllUsersCount(count)
+        setAllUsersCount(count);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -46,12 +64,11 @@ export default function UserList() {
     fetchUsers();
   }, [page, rowsPerPage]);
 
-
   const handleDeleteClick = (user) => {
     setDeleteConfirmation({
       open: true,
       userId: user.id,
-      userName: `${user.firstName} ${user.lastName}`
+      userName: `${user.firstName} ${user.lastName}`,
     });
   };
 
@@ -59,16 +76,19 @@ export default function UserList() {
     setDeleteConfirmation({
       open: false,
       userId: null,
-      userName: null
+      userName: null,
     });
   };
 
   const handleConfirmDelete = async () => {
     try {
-      const response = await fetch(`/server/api/users/users/${deleteConfirmation.userId}`, {
-        method: "DELETE",
-      });
-      
+      const response = await fetch(
+        `/server/api/users/users/${deleteConfirmation.userId}`,
+        {
+          method: "DELETE",
+        }
+      );
+
       if (!response.ok) {
         setErrorHandler({
           isSnackbarOpen: true,
@@ -107,7 +127,7 @@ export default function UserList() {
         email: editUser.email,
         phoneNumber: editUser.phoneNumber,
         address: editUser.address,
-        postCode: editUser.postCode
+        postCode: editUser.postCode,
       });
 
       if (!validationResult.success) {
@@ -116,7 +136,7 @@ export default function UserList() {
           snackbarMessage: validationResult.error.issues[0].message,
           alertColor: "error",
         });
-        return; 
+        return;
       }
 
       const response = await fetch(`/server/api/users/users/${editUser.id}`, {
@@ -153,7 +173,7 @@ export default function UserList() {
         alertColor: "error",
       });
     }
-};
+  };
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -161,7 +181,7 @@ export default function UserList() {
 
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0); 
+    setPage(0);
   };
 
   if (loading) {
@@ -170,8 +190,8 @@ export default function UserList() {
 
   return (
     <>
-      <TableContainer component={Paper}>
-        <Table>
+      <TableContainer component={Paper} className="overflow-x-auto">
+        <Table className="min-w-[750px]">
           <TableHead>
             <TableRow>
               <TableCell align="center">ID</TableCell>
@@ -195,39 +215,69 @@ export default function UserList() {
                 <TableCell align="center">{user.phoneNumber}</TableCell>
                 <TableCell align="center">{user.address}</TableCell>
                 <TableCell align="center">{user.postCode}</TableCell>
-                <TableCell align="center">{user.admin ? "Yes" : "No"}</TableCell>
                 <TableCell align="center">
-                  <Button
-                    variant="contained"
-                    sx={{
-                      color: "#f9fafb",
-                      bgcolor: "#111827",
-                      alignSelf: "flex-start",
-                      mr: "1rem",
-                    }}
-                    onClick={() => handleEditClick(user)}
-                  >
-                    Update
-                  </Button>
-                  <Button
-                    variant="contained"
-                    sx={{
-                      color: "#f9fafb",
-                      bgcolor: "#991B1B",
-                      alignSelf: "flex-start",
-                    }}
-                    onClick={() => handleDeleteClick(user)}
-                  >
-                    Delete
-                  </Button>
+                  {user.admin ? "Yes" : "No"}
+                </TableCell>
+                <TableCell align="center">
+                  <div className="hidden md:flex md:flex-row md:gap-4">
+                    {" "}
+                    {/* Desktop view */}
+                    <Button
+                      variant="contained"
+                      sx={{
+                        color: "#f9fafb",
+                        bgcolor: "#111827",
+                      }}
+                      onClick={() => handleEditClick(user)}
+                    >
+                      Update
+                    </Button>
+                    <Button
+                      variant="contained"
+                      sx={{
+                        color: "#f9fafb",
+                        bgcolor: "#991B1B",
+                      }}
+                      onClick={() => handleDeleteClick(user)}
+                    >
+                      Delete
+                    </Button>
+                  </div>
+
+                  <div className="flex flex-col gap-2 md:hidden">
+                    {" "}
+                    {/* Mobile view */}
+                    <Button
+                      variant="contained"
+                      sx={{
+                        color: "#f9fafb",
+                        bgcolor: "#111827",
+                        width: "100%",
+                      }}
+                      onClick={() => handleEditClick(user)}
+                    >
+                      Update
+                    </Button>
+                    <Button
+                      variant="contained"
+                      sx={{
+                        color: "#f9fafb",
+                        bgcolor: "#991B1B",
+                        width: "100%",
+                      }}
+                      onClick={() => handleDeleteClick(user)}
+                    >
+                      Delete
+                    </Button>
+                  </div>
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
-    
-      <DeleteConfirmation 
+
+      <DeleteConfirmation
         open={deleteConfirmation.open}
         message={`Are you sure you want to delete user ${deleteConfirmation.userName}? This action cannot be undone.`}
         onClose={handleCancelDelete}
@@ -237,7 +287,7 @@ export default function UserList() {
       <TablePagination
         rowsPerPageOptions={[5, 10, 25]}
         component="div"
-        count={allUsersCount} 
+        count={allUsersCount}
         rowsPerPage={rowsPerPage}
         page={page}
         onPageChange={handleChangePage}
@@ -305,22 +355,26 @@ export default function UserList() {
             />
           </DialogContent>
           <DialogActions>
-            <Button 
+            <Button
               variant="contained"
               sx={{
                 color: "#f9fafb",
                 bgcolor: "#991B1B",
                 alignSelf: "flex-start",
               }}
-              onClick={() => setEditUser(null)}>Cancel
+              onClick={() => setEditUser(null)}
+            >
+              Cancel
             </Button>
-            <Button 
+            <Button
               variant="contained"
               sx={{
                 color: "#f9fafb",
                 bgcolor: "#111827",
                 alignSelf: "flex-start",
-              }} onClick={handleUpdate}>
+              }}
+              onClick={handleUpdate}
+            >
               Save
             </Button>
           </DialogActions>

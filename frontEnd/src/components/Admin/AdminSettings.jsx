@@ -10,9 +10,9 @@ export default function AdminSettings() {
 
   return (
     <div>
-      <div className="w-fit">
-        <div className="flex flex-col gap-3">
-          <h1 className="text-xl font-bold">Settings</h1>
+      <div className="w-full md:w-fit">
+        <div className="flex flex-row md:flex-col overflow-x-auto md:overflow-visible gap-3 p-4 md:p-0">
+          <h1 className="text-xl font-bold hidden md:block">Settings</h1>
           <button
             className={
               isActive === "Password"

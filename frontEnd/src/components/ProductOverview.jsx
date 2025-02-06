@@ -16,6 +16,30 @@ import { useCart } from "../context/CartContext";
 import SessionContext from "./../context/SessionContext";
 import SnackbarComponent from "../components/SnackBarComponent";
 
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  bgcolor: "background.paper",
+  boxShadow: 24,
+  p: { xs: 1, sm: 2 },
+  width: {
+    xs: "95vw",
+    sm: "85vw",
+    md: "75vw",
+    lg: "65vw",
+  },
+  height: {
+    xs: "80vh",
+    sm: "85vh",
+    md: "90vh",
+  },
+  overflow: "auto",
+  outline: "none",
+  borderRadius: 1,
+};
+
 const ProductOverview = ({ data, onRatingUpdate }) => {
   const [imageOpen, setImageOpen] = useState(false);
   const [value, setValue] = useState(1);
@@ -91,20 +115,20 @@ const ProductOverview = ({ data, onRatingUpdate }) => {
 
   return (
     // Container
-    <div className="container px-4 my-16">
-      <div className="flex flex-col lg:flex-row gap-8 items-center">
+    <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-12">
+      <div className="flex flex-col lg:flex-row gap-6 lg:gap-12">
         {/* left image */}
-        <div className="lg:w-1/2 relative">
+        <div className="w-full h-[300px] sm:h-[400px] md:h-[500px] lg:h-[670px] lg:w-1/2">
           <Swiper
             navigation
             pagination={{ clickable: true }}
             modules={[Navigation, Pagination]}
-            className="rounded-lg h-[670px]"
+            className="rounded-lg h-full"
           >
             {image.map((src, index) => (
               <SwiperSlide
                 key={index}
-                className="!flex items-center justify-center h-full"
+                className="flex items-center justify-center"
               >
                 <div className="w-full h-full flex items-center justify-center">
                   <img
@@ -126,25 +150,7 @@ const ProductOverview = ({ data, onRatingUpdate }) => {
           aria-labelledby="modal-modal-title"
           aria-describedby="modal-modal-description"
         >
-          <Box
-            sx={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              bgcolor: "background.paper",
-              boxShadow: 24,
-              p: 2,
-              width: "80vw",
-              height: "80vh",
-              outline: "none",
-              borderRadius: 1,
-              overflow: "hidden",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
+          <Box sx={style}>
             <Swiper
               navigation
               pagination={{ clickable: true }}
@@ -164,82 +170,95 @@ const ProductOverview = ({ data, onRatingUpdate }) => {
           </Box>
         </Modal>
         {/* rigth side */}
-        <div className="lg:w-1/2 relative flex flex-col">
+        <div className="w-full lg:w-1/2 flex flex-col">
           {/* Product name */}
-          <h1 className="text-3xl font-bold mb-4">{name}</h1>
+          <h1 className="text-xl sm:text-3xl font-bold mb-2 sm:mb-4">{name}</h1>
           {/* Rating number */}
-          <div className="flex items-center mb-4 gap-1">
+          <div className="flex items-center mb-2 sm:mb-4 gap-1">
             <Rating
               name="half-rating"
               value={currentRating}
               precision={0.5}
               onChange={handleRating}
+              size="small"
+              className="sm:scale-100 scale-90"
             />
-            <p>({ratingCount})</p>
+            <p className="text-sm sm:text-base">({ratingCount})</p>
           </div>
           {/* Price number */}
           {discount ? (
-            <div className="flex">
-              <p className="m-1.5 font-semibold text-gray-700 text-xl">
+            <div className="flex mb-4">
+              <p className="mr-2 font-semibold text-gray-700 text-lg sm:text-xl">
                 {discountedPrice.toFixed(2)}€
               </p>
-              <p className="m-1.5 font-semibold line-through text-red-800 text-lm">
+              <p className="font-semibold line-through text-red-800 text-sm sm:text-base">
                 {price.toFixed(2)}€
               </p>
             </div>
           ) : (
-            <div className="flex">
-              <p className="m-1.5 font-semibold text-gray-700 text-xl">
+            <div className="flex mb-4">
+              <p className="font-semibold text-gray-700 text-lg sm:text-xl">
                 {price.toFixed(2)}€
               </p>
             </div>
           )}
 
-          <div className="mb-6">
+          <div className="mb-4 sm:mb-6">
             {/* Description */}
-            <div className="text-gray-600 max-h-96 overflow-y-auto prose prose-sm">
+            <div className="text-gray-600 max-h-48 sm:max-h-96 overflow-y-auto prose prose-sm">
               <ReactMarkdown>{description}</ReactMarkdown>
             </div>
           </div>
 
-          <div className="grid grid-cols-3 grid-rows-2 gap-4 mt-auto inset-x-0 bottom-0 w-4/5">
-            <Button
-              size="sm"
-              className="rounded"
-              onClick={() => handleQuantityChange(value - 1)}
-            >
-              <img
-                src={Minus}
-                alt="minus image"
-                className="size-4 row-start-2"
-                style={{ cursor: "pointer" }}
+          <div className="flex flex-col w-full sm:w-4/5 gap-4 mt-auto">
+            <div className="flex justify-center  gap-4">
+              <Button
+                size="sm"
+                className="rounded min-w-[40px]"
+                onClick={() => handleQuantityChange(value - 1)}
+              >
+                <img
+                  src={Minus}
+                  alt="minus image"
+                  className="size-4"
+                  style={{ cursor: "pointer" }}
+                />
+              </Button>
+              <Input
+                type="number"
+                value={value}
+                onChange={handleInputChange}
+                className="border border-blue-gray-400 !w-16 sm:!w-20 text-center pb-4"
+                containerProps={{
+                  className: "min-w-[64px] text-center",
+                }}
+                labelProps={{
+                  className: "before:content-none after:content-none",
+                }}
+                style={{
+                  height: "40px",
+                }}
+                variant="static"
+                crossOrigin={undefined}
+                inputMode="numeric"
+                min={1}
+                pattern="[0-9]*"
               />
-            </Button>
-            <Input
-              type="number"
-              value={value}
-              onChange={handleInputChange}
-              className=" border border-blue-gray-400 placeholder:text-blue-gray-400 placeholder:opacity-100  focus:!border-t-gray-900 appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none w-10 row-start-2 text-center mx-3"
-              style={{ width: "90px", height: "50px", paddingBottom: "15px" }}
-              labelProps={{
-                className: "before:content-none after:content-none",
-              }}
-              variant="static"
-            />
-            <Button
-              size="sm"
-              className="rounded"
-              onClick={() => handleQuantityChange(value + 1)}
-            >
-              <img
-                src={Plus}
-                alt="plus image"
-                className="size-4 row-start-2"
-                style={{ cursor: "pointer" }}
-              />
-            </Button>
+              <Button
+                size="sm"
+                className="rounded min-w-[40px]"
+                onClick={() => handleQuantityChange(value + 1)}
+              >
+                <img
+                  src={Plus}
+                  alt="plus image"
+                  className="size-4"
+                  style={{ cursor: "pointer" }}
+                />
+              </Button>
+            </div>
             <button
-              className="block w-full rounded bg-gray-900 p-4 text-gray-50 text-sm font-medium transition hover:scale-105 hover:text-red-800 col-span-3"
+              className="w-full rounded bg-gray-900 p-3 sm:p-4 text-gray-50 text-sm font-medium transition hover:scale-105 hover:text-red-800"
               onClick={handleAddToCart}
             >
               Add to Cart
