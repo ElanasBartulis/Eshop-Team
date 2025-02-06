@@ -1,23 +1,24 @@
-import Logo from "../assets/Public/logo.png";
-import userIcon from "../assets/Public/user-icon.svg";
-import shoppingCart from "../assets/Public/shopping-cart.svg";
-import ModalLogin from "./ModalLogin";
-import { Link } from "react-router-dom";
-import Logout from "./Logout";
-import ShoppingCartModal from "./ShoppingCartModal";
-import { useState } from "react";
-import { Modal, Box } from "@mui/material";
-import SearchComponent from "../components/SearchComponent";
-import SearchContext from "../context/SearchContext";
-import { useCart } from "../context/CartContext";
+import Logo from '../assets/Public/logo.png';
+import userIcon from '../assets/Public/user-icon.svg';
+import shoppingCart from '../assets/Public/shopping-cart.svg';
+import ModalLogin from './ModalLogin';
+import { Link } from 'react-router-dom';
+import Logout from './Logout';
+import ShoppingCartModal from './ShoppingCartModal';
+import { useContext, useEffect, useMemo, useState } from 'react';
+import { Modal, Box } from '@mui/material';
+import SearchComponent from '../components/SearchComponent';
+import SearchContext from '../context/SearchContext';
+import { useCart } from '../context/CartContext';
 
 export default function Nav({ children }) {
   const [openShopingCartModal, setOpenShopingCartModal] = useState(false);
 
   const { state } = useCart();
 
-  const totalItems =
-    state?.items?.reduce((total, item) => total + item.quantity, 0) || 0;
+  const totalItems = useMemo(() => {
+    return state?.items?.reduce((total, item) => total + item.quantity, 0) || 0;
+  }, [state.items]);
 
   const handleOpen = () => setOpenShopingCartModal(true);
   const handleClose = () => setOpenShopingCartModal(false);
@@ -30,7 +31,7 @@ export default function Nav({ children }) {
             src={Logo}
             alt="logo image"
             className="size-16"
-            style={{ cursor: "pointer" }}
+            style={{ cursor: 'pointer' }}
           />
         </Link>
       </div>
@@ -38,7 +39,11 @@ export default function Nav({ children }) {
       <div className="flex justify-evenly gap-8">
         <SearchComponent />
         <div className="flex gap-2 items-center">
-          <img src={userIcon} alt="" className="size-4 hover:text-red-800" />
+          <img
+            src={userIcon}
+            alt=""
+            className="size-4 hover:text-red-800"
+          />
           <ModalLogin />
           <Modal
             open={openShopingCartModal}
@@ -48,11 +53,11 @@ export default function Nav({ children }) {
           >
             <Box
               sx={{
-                position: "absolute",
-                top: "10%",
-                right: "10%",
+                position: 'absolute',
+                top: '10%',
+                right: '10%',
                 width: 450,
-                bgcolor: "background.paper",
+                bgcolor: 'background.paper',
                 p: 4,
                 borderRadius: 1,
               }}
@@ -64,7 +69,10 @@ export default function Nav({ children }) {
 
         <Logout />
 
-        <div className="flex gap-2 items-center relative" onClick={handleOpen}>
+        <div
+          className="flex gap-2 items-center relative"
+          onClick={handleOpen}
+        >
           <div className="relative">
             <img
               src={shoppingCart}
@@ -77,7 +85,10 @@ export default function Nav({ children }) {
               </span>
             )}
           </div>
-          <a href="#" className="hover:text-red-800">
+          <a
+            href="#"
+            className="hover:text-red-800"
+          >
             Cart
           </a>
         </div>

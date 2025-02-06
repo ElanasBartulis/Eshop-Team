@@ -1,4 +1,5 @@
-import { createContext, useReducer, useContext } from 'react';
+import { createContext, useReducer, useContext, useEffect } from 'react';
+import SessionContext from './SessionContext';
 
 const CartContext = createContext();
 
@@ -60,6 +61,11 @@ const cartReducer = (state, action) => {
         ...state,
         items: [],
       };
+    case 'SET_LOADING':
+      return {
+        ...state,
+        isLoading: action.payload,
+      };
 
     default:
       return state;
@@ -67,7 +73,39 @@ const cartReducer = (state, action) => {
 };
 
 export const CartProvider = ({ children }) => {
-  const [state, dispatch] = useReducer(cartReducer, { items: [] });
+  const [state, dispatch] = useReducer(cartReducer, {
+    items: [],
+    isLoading: true,
+  });
+  const { userData } = useContext(SessionContext);
+
+  useEffect(() => {
+    const fetchCart = async () => {
+      try {
+        dispatch({ type: 'SET_LOADING', payload: true });
+
+        if (!userData) {
+          dispatch({ type: 'CLEAR_CART' });
+        }
+
+        const response = await fetch('/server/api/cart', {
+          credentials: 'include',
+        });
+
+        const cart = await response.json();
+
+        if (cart && cart.CartItems) {
+          dispatch({ type: 'SET_CART', payload: cart.CartItems });
+        }
+      } catch (error) {
+        console.error('Error fetching cart:', error);
+      } finally {
+        dispatch({ type: 'SET_LOADING', payload: false });
+      }
+    };
+
+    fetchCart();
+  }, [userData?.id]);
 
   return (
     <CartContext.Provider value={{ state, dispatch }}>

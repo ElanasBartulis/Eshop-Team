@@ -6,39 +6,15 @@ import SessionContext from '../context/SessionContext.js';
 export default function ShoppingCartModal(data) {
   const { state, dispatch } = useCart();
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(true);
+
   const [error, setError] = useState(null);
   const location = useLocation();
-  const { userData } = useContext(SessionContext);
 
   const handleClick = () => {
     navigate('/checkout');
   };
 
-  useEffect(() => {
-    dispatch({ type: 'CLEAR_CART' });
-    const fetchCart = async () => {
-      try {
-        setIsLoading(true);
-        const response = await fetch('/server/api/cart', {
-          credentials: 'include',
-        });
-
-        const cart = await response.json();
-
-        if (cart && cart.CartItems) {
-          dispatch({ type: 'SET_CART', payload: cart.CartItems });
-        }
-      } catch (error) {
-        console.error('Error fetching cart:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchCart();
-  }, [dispatch, userData?.id]);
-
-  if (isLoading) {
+  if (state.isLoading) {
     return <div>Loading cart...</div>;
   }
 

@@ -26,6 +26,7 @@ export default function LogoutButton() {
         snackbarMessage: 'Logged out successfully!',
         alertColor: 'success',
       });
+      window.location.reload();
     } else {
       console.error('Logout failed');
     }
