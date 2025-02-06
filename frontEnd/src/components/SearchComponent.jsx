@@ -1,10 +1,17 @@
-import React, { useContext, useState, useRef, useEffect } from 'react';
+import React, {
+  useContext,
+  useState,
+  useRef,
+  useEffect,
+  useCallback,
+  memo,
+} from 'react';
 import { TextField } from '@mui/material';
 import SearchContext from '../context/SearchContext';
 import SessionContext from '../context/SessionContext';
 import { useProductList } from '../custom-hooks/useProductList';
 
-export default function SearchComponent() {
+const SearchComponent = memo(() => {
   const { searchTerm, setSearchTerm, setFilteredProducts, setIsSearching } =
     useContext(SearchContext);
   const { setErrorHandler } = useContext(SessionContext);
@@ -38,10 +45,12 @@ export default function SearchComponent() {
     return () => clearTimeout(timer);
   }, [searchTerm]);
 
-  const handleSearch = (event) => {
-    const term = event.target.value;
-    setSearchTerm(term);
-  };
+  const handleSearch = useCallback(
+    (event) => {
+      setSearchTerm(event.target.value);
+    },
+    [setSearchTerm]
+  );
 
   return (
     <TextField
@@ -53,4 +62,5 @@ export default function SearchComponent() {
       variant="outlined"
     />
   );
-}
+});
+export default SearchComponent;

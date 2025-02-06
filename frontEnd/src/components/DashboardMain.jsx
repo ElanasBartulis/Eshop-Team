@@ -1,4 +1,11 @@
-import { useEffect, useState, useContext, useMemo } from 'react';
+import {
+  useEffect,
+  useState,
+  useContext,
+  useMemo,
+  memo,
+  useCallback,
+} from 'react';
 import ProductCard from './ProductCard';
 import Sorting from './Sorting';
 import { rating } from '@material-tailwind/react';
@@ -9,7 +16,7 @@ import frown from '../assets/Public/frown.svg';
 import { CircularProgress, Stack, TablePagination } from '@mui/material';
 import { useWishList } from '../custom-hooks/useWishList';
 //tevinis elementas DASHBOARD
-export default function DashboardMain({ salesOnly = false }) {
+const DashboardMain = memo(({ salesOnly = false }) => {
   const { products, setProducts, getAllProducts, count, isLoading } =
     useProductList();
   const { setFilteredProducts } = useContext(SearchContext);
@@ -38,14 +45,17 @@ export default function DashboardMain({ salesOnly = false }) {
     setPage(0);
   }
 
-  //UPDEITINAM PRODUKTU REITINGA
-  function updateProductRating(productId, newRating) {
-    setProducts((prevProducts) =>
-      prevProducts.map((product) =>
-        product.id === productId ? { ...product, rating: newRating } : product
-      )
-    );
-  }
+  //Call back wont recreate function everytime
+  const updateProductRating = useCallback(
+    (productId, newRating) => {
+      setProducts((prevProducts) =>
+        prevProducts.map((product) =>
+          product.id === productId ? { ...product, rating: newRating } : product
+        )
+      );
+    },
+    [setProducts]
+  );
   // Using useMemo to prevent not needed rerenders
 
   const productsToDisplay = useMemo(() => {
@@ -128,4 +138,6 @@ export default function DashboardMain({ salesOnly = false }) {
       />
     </div>
   );
-}
+});
+
+export default DashboardMain;

@@ -1,16 +1,16 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import Dashboard from "./pages/Dashboard";
-import Admin from "./pages/Admin.jsx";
-import UserPanel from "./pages/UserPanel";
-import SessionContext from "./context/SessionContext.js";
-import { useState } from "react";
-import useSessionCheck from "./custom-hooks/useSessionCheck.js";
-import { Backdrop, CircularProgress } from "@mui/material";
-import Checkout from "./pages/Checkout.jsx";
-import SearchContext from "./context/SearchContext";
-import { CartProvider } from "./context/CartContext.jsx";
-import SalesPage from "./pages/Sales.jsx";
-import Payment from "./pages/Payment.jsx";
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import Dashboard from './pages/Dashboard';
+import Admin from './pages/Admin.jsx';
+import UserPanel from './pages/UserPanel';
+import SessionContext from './context/SessionContext.js';
+import { useCallback, useMemo, useState } from 'react';
+import useSessionCheck from './custom-hooks/useSessionCheck.js';
+import { Backdrop, CircularProgress } from '@mui/material';
+import Checkout from './pages/Checkout.jsx';
+import SearchContext from './context/SearchContext';
+import { CartProvider } from './context/CartContext.jsx';
+import SalesPage from './pages/Sales.jsx';
+import Payment from './pages/Payment.jsx';
 
 function App() {
   const [sessionState, setSessionState] = useState({ isLogged: false });
@@ -18,24 +18,53 @@ function App() {
   const [open, setOpen] = useState(false);
   const [errorHandler, setErrorHandler] = useState({
     isSnackbarOpen: false,
-    snackbarMessage: "",
-    alertColor: "error",
+    snackbarMessage: '',
+    alertColor: 'error',
   });
   const [isCheckingSession, setIsCheckingSession] = useState(true);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState('');
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
-  ///Naujai informacijai, po updeito gauti skirta funkcija
-  const updateUserData = (newData) => {
+  ///Function to update user data, after changes are made.
+  //
+  const updateUserData = useCallback((newData) => {
     setUserData((prev) => ({ ...prev, ...newData }));
-  };
+  }, []);
+  //
+  //Memoize Session Context Value;
+  const sessionContextValue = useMemo(
+    () => ({
+      sessionState,
+      setSessionState,
+      userData,
+      setUserData,
+      open,
+      setOpen,
+      errorHandler,
+      setErrorHandler,
+      updateUserData,
+    }),
+    [sessionState, userData, open, errorHandler]
+  );
+  ///
+  const searchContextValue = useMemo(
+    () => ({
+      searchTerm,
+      setSearchTerm,
+      filteredProducts,
+      setFilteredProducts,
+      isSearching,
+      setIsSearching,
+    }),
+    [searchTerm, filteredProducts, isSearching]
+  );
 
   useSessionCheck({ setSessionState, setUserData, setIsCheckingSession });
 
   if (isCheckingSession) {
     return (
       <Backdrop
-        sx={(theme) => ({ color: "#fff", zIndex: theme.zIndex.drawer + 1 })}
+        sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}
         open={true}
       >
         <CircularProgress color="inherit" />
@@ -43,29 +72,8 @@ function App() {
     );
   }
   return (
-    <SessionContext.Provider
-      value={{
-        sessionState,
-        setSessionState,
-        userData,
-        setUserData,
-        open,
-        setOpen,
-        errorHandler,
-        setErrorHandler,
-        updateUserData,
-      }}
-    >
-      <SearchContext.Provider
-        value={{
-          searchTerm,
-          setSearchTerm,
-          filteredProducts,
-          setFilteredProducts,
-          isSearching,
-          setIsSearching,
-        }}
-      >
+    <SessionContext.Provider value={sessionContextValue}>
+      <SearchContext.Provider value={searchContextValue}>
         <CartProvider>
           <BrowserRouter>
             <Routes>
@@ -74,16 +82,25 @@ function App() {
                 element={
                   sessionState.isLogged ? (
                     userData?.admin ? (
-                      <Navigate to="/admin" replace />
+                      <Navigate
+                        to="/admin"
+                        replace
+                      />
                     ) : (
                       <UserPanel />
                     )
                   ) : (
-                    <Navigate to="/" replace />
+                    <Navigate
+                      to="/"
+                      replace
+                    />
                   )
                 }
               />
-              <Route path="/" element={<Dashboard />} />
+              <Route
+                path="/"
+                element={<Dashboard />}
+              />
               <Route
                 path="/admin"
                 element={
@@ -91,16 +108,31 @@ function App() {
                     userData?.admin ? (
                       <Admin />
                     ) : (
-                      <Navigate to="/user" replace />
+                      <Navigate
+                        to="/user"
+                        replace
+                      />
                     )
                   ) : (
-                    <Navigate to="/" replace />
+                    <Navigate
+                      to="/"
+                      replace
+                    />
                   )
                 }
               />
-              <Route path="/checkout" element={<Checkout />} />
-              <Route path="/sales" element={<SalesPage />} />
-              <Route path="/payment" element={<Payment />} />
+              <Route
+                path="/checkout"
+                element={<Checkout />}
+              />
+              <Route
+                path="/sales"
+                element={<SalesPage />}
+              />
+              <Route
+                path="/payment"
+                element={<Payment />}
+              />
             </Routes>
           </BrowserRouter>
         </CartProvider>
