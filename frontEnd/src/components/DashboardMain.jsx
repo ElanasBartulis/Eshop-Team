@@ -135,6 +135,7 @@ const DashboardMain = memo(({ salesOnly = false }) => {
         page={page}
         onPageChange={handleListChange}
         onRowsPerPageChange={handleChangeRowsPerPage}
+        labelRowsPerPage="Products per page:"
       />
     </div>
   );

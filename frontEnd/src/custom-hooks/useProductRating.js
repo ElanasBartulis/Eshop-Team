@@ -12,7 +12,7 @@ export function useProductRating(
 
   const [rating, setRating] = useState(initialRating);
   const [ratingCount, setRatingCount] = useState(initialRatingCount);
-
+  //Rating function
   async function handleRating(event, newValue) {
     if (!sessionState.isLogged) {
       return setErrorHandler({
@@ -28,7 +28,7 @@ export function useProductRating(
         alertColor: 'error',
       });
     }
-
+    //On rating submision creating rating for product
     try {
       const promise = await fetch('/server/api/rating/create', {
         method: 'POST',

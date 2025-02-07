@@ -73,12 +73,24 @@ export async function createHistory(req, res) {
     if (item.quantity < 0 || item.quantity % 1 !== 0) {
       return res.status(404).json({ message: `Quantity not valid` });
     }
+    // making one product price
+    let itemPrice = product.price;
+    //if there is discount calculate price with it
+    if (product.discount > 0) {
+      const itemPriceWithDiscount = product.price * (product.discount / 100);
+      itemPrice = product.price - itemPriceWithDiscount;
+    }
+    //If there is no discount calculate it without
+    const totalItemPrice = itemPrice * item.quantity;
 
-    const totalItemPrice = product.price * item.quantity;
-    totalPrice += totalItemPrice;
+    totalPrice += totalItemPrice + vat;
+    //Add product names
     productList.push(product.name);
   }
-
+  //vat calculation for total price
+  const vat = totalPrice * (21 / 100);
+  //total price with vat and shipping
+  totalPrice = totalPrice + vat + 10;
   // Make purchase history
   const history = await userHistoryModel.create({
     userId,

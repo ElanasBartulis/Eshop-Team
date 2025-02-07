@@ -7,6 +7,8 @@ export function useProductList() {
   const { setFilteredProducts } = useContext(SearchContext);
   const [count, setcount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+
+  //Function to get products from database, with pagination
   async function getAllProducts({ page = 0, itemsPerPage = 12, sortBy }) {
     try {
       setIsLoading(true);
