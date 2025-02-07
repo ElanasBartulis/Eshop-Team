@@ -1,3 +1,4 @@
+import AboutUs from "../components/AboutUs";
 import Header from "../components/DashboardHeader";
 import Main from "../components/DashboardMain";
 import Footer from "../components/Footer";
@@ -9,6 +10,7 @@ export default function Dashboard() {
       <Nav />
       <Header />
       <Main />
+      <AboutUs />
       <Footer />
     </div>
   );

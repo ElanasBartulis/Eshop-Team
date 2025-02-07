@@ -1,4 +1,4 @@
-import Logo from "../assets/Public/logo.png";
+import logoWhite from "../assets/Public/logoWhite.png";
 
 export default function Footer() {
   return (
@@ -6,7 +6,7 @@ export default function Footer() {
       <footer className="bg-gray-900">
         <div className="mx-auto max-w-5xl px-4 py-1 sm:px-6 lg:px-8 ">
           <div className="flex justify-center text-teal-600 dark:text-teal-300 mt-5">
-            <img src={Logo} alt="Logo" className="h-20 w-auto mx-20" />
+            <img src={logoWhite} alt="Logo" className="h-20 w-auto mx-20" />
           </div>
 
           <p className="mx-auto mt-6 max-w-md text-center leading-relaxed text-gray-50">
@@ -135,8 +135,8 @@ export default function Footer() {
           </ul>
 
           <div className="mt-12 border-t border-gray-100 pt-6 dark:border-gray-800 pb-5">
-            <div className="text-center sm:flex sm:justify-between sm:text-left">
-              <p className="text-sm text-gray-500 dark:text-gray-400">
+            <div className="text-center">
+              <div className="text-sm text-gray-500 dark:text-gray-400">
                 <span className="block px-2 sm:inline">
                   All rights reserved.
                 </span>
@@ -156,11 +156,7 @@ export default function Footer() {
                 >
                   Privacy Policy
                 </a>
-              </p>
-
-              <p className="mt-4 text-sm text-gray-500 sm:order-first sm:mt-0 dark:text-gray-400">
-                &copy; 2025 UAB "NeScaminam"
-              </p>
+              </div>
             </div>
           </div>
         </div>
