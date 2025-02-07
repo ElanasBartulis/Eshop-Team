@@ -142,3 +142,28 @@ export async function deleteCartItem(req, res) {
     res.status(500).json({ error: 'Failed to remove item from cart' });
   }
 }
+
+export async function removeAllItems(req, res) {
+  try {
+    const sessionId = req.session.id;
+    const userId = req.session.user?.id || null;
+
+    // Find the cart using either userId or sessionId
+    const cart = await Cart.findOne({
+      where: userId ? { userId } : { sessionId },
+    });
+
+    if (cart) {
+      // Delete all items in this cart
+      await CartItem.destroy({
+        where: { cartId: cart.id },
+      });
+      res.status(200).json({ message: 'Cart cleared successfully' });
+    } else {
+      res.status(404).json({ message: 'Cart not found' });
+    }
+  } catch (error) {
+    console.error('Error clearing cart:', error);
+    res.status(500).json({ message: 'Failed to clear cart' });
+  }
+}

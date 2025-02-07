@@ -93,11 +93,12 @@ export async function createHistory(req, res) {
     totalPrice += totalItemPrice;
     totalVat += itemVat;
     totalDiscount += itemDiscount;
-    productList.push(product.name);
+    productList.push({
+      name: product.name,
+      image: product.image[0], // Assuming image is stored as an array like in your checkout
+    });
   }
 
-  // Calculate final total exactly like frontend:
-  // totalPrice + VAT - discount + shipping
   const finalTotal = totalPrice + totalVat - totalDiscount + 10;
 
   const history = await userHistoryModel.create({

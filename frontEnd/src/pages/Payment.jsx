@@ -1,8 +1,8 @@
-import { useContext, useState } from "react";
-import Nav from "../components/Navigation";
-import { useCart } from "../context/CartContext";
-import SessionContext from "../context/SessionContext";
-import confetti from "canvas-confetti";
+import { useContext, useState } from 'react';
+import Nav from '../components/Navigation';
+import { useCart } from '../context/CartContext';
+import SessionContext from '../context/SessionContext';
+import confetti from 'canvas-confetti';
 import {
   Button,
   Dialog,
@@ -10,10 +10,10 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-} from "@mui/material";
+} from '@mui/material';
 
 export default function PaymentPage() {
-  const { state } = useCart();
+  const { state, dispatch } = useCart();
   const { userData } = useContext(SessionContext);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -31,12 +31,19 @@ export default function PaymentPage() {
     const history = { userId, products };
 
     await fetch(`/server/api/history`, {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify(history),
     });
+    //To clear items in cart after purchases
+    await fetch('/server/api/cart/remove-all', {
+      method: 'DELETE',
+      credentials: 'include',
+    });
+    //To clear cart in front
+    dispatch({ type: 'CLEAR_CART' });
   }
 
   function handleOpen() {
@@ -172,15 +179,24 @@ export default function PaymentPage() {
                     </h2>
                     <div className="space-y-3">
                       <label className="flex items-center space-x-3">
-                        <input type="radio" name="payment" />
+                        <input
+                          type="radio"
+                          name="payment"
+                        />
                         <span>Stripe</span>
                       </label>
                       <label className="flex items-center space-x-3">
-                        <input type="radio" name="payment" />
+                        <input
+                          type="radio"
+                          name="payment"
+                        />
                         <span>PayPal</span>
                       </label>
                       <label className="flex items-center space-x-3">
-                        <input type="radio" name="payment" />
+                        <input
+                          type="radio"
+                          name="payment"
+                        />
                         <span>CASH ON DELIVERY</span>
                       </label>
                     </div>
@@ -199,7 +215,7 @@ export default function PaymentPage() {
                       aria-describedby="alert-dialog-description"
                     >
                       <DialogTitle id="alert-dialog-title">
-                        {"Thanks for shopping with us!"}
+                        {'Thanks for shopping with us!'}
                       </DialogTitle>
                       <DialogContent>
                         <DialogContentText id="alert-dialog-description">

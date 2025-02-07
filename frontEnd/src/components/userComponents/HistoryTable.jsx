@@ -160,10 +160,26 @@ export default function HistoryTable() {
               >
                 Purchased Items
               </Typography>
-              <div>
-                <ul>
+              <div className="px-4 pb-4">
+                <ul className="space-y-4">
                   {productList.map((item, index) => (
-                    <li key={`item-${index}`}>{item}</li>
+                    <li
+                      key={`item-${index}`}
+                      className="flex items-center gap-4 border-b border-gray-100 pb-2"
+                    >
+                      {/* Image container with fixed size */}
+                      <div className="w-16 h-16 flex-shrink-0">
+                        <img
+                          src={`/server/api/upload/image/${item.image}`}
+                          alt={item.name}
+                          className="w-full h-full object-cover rounded"
+                        />
+                      </div>
+                      {/* Product name with some styling */}
+                      <span className="text-gray-800 font-medium">
+                        {item.name}
+                      </span>
+                    </li>
                   ))}
                 </ul>
               </div>
