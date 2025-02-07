@@ -140,7 +140,7 @@ export default function HistoryTable() {
             </IconButton>
           </TableCell>
           <TableCell align="center">{data.id}</TableCell>
-          <TableCell align="center">{totalPrice} €</TableCell>
+          <TableCell align="center">{totalPrice.toFixed(2)} €</TableCell>
           <TableCell align="center">{showDate(createdAt)}</TableCell>
         </TableRow>
         <TableRow>
