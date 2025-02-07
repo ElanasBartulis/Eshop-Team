@@ -58,9 +58,9 @@ function App() {
     }),
     [searchTerm, filteredProducts, isSearching]
   );
-
+  //custom hook to get session data
   useSessionCheck({ setSessionState, setUserData, setIsCheckingSession });
-
+  //For loading screen state
   if (isCheckingSession) {
     return (
       <Backdrop

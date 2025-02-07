@@ -210,9 +210,9 @@ export async function getSessionData(req, res) {
 
     // If we have a valid userId, try to get fresh data
     const freshUserData = await UserModel.findOne({
-      where: { id: req.session.user.id }, // Use user.id instead of userId
+      where: { id: req.session.user.id },
     });
-
+    //with plain : true; We getting plain data object without unesesary wraps
     const userData = freshUserData
       ? freshUserData.get({ plain: true })
       : req.session.user;
