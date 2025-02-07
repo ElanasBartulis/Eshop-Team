@@ -8,9 +8,7 @@ const useSessionCheck = ({
   useEffect(() => {
     async function checkSession() {
       try {
-        const promise = await fetch(
-          '/server/api/users/session'
-        );
+        const promise = await fetch('/server/api/users/session');
         const response = await promise.json();
         if (promise.ok && response.isLogged) {
           setSessionState({ isLogged: true });

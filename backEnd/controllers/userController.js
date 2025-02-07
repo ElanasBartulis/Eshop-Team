@@ -95,9 +95,9 @@ export async function login(req, res) {
     )
       return res.status(400).json({ message: 'Invalid credentials' });
 
-    // Set all user data including id in the user object
+    // Set all user data
     req.session.user = {
-      id: existingUser.id, // Make sure id is set here
+      id: existingUser.id,
       email: existingUser.email,
       firstName: existingUser.firstName,
       lastName: existingUser.lastName,
@@ -109,20 +109,6 @@ export async function login(req, res) {
     };
     req.session.admin = existingUser.admin;
     req.session.isLogged = true;
-
-    // Save session explicitly
-    await new Promise((resolve, reject) => {
-      req.session.save((err) => {
-        if (err) reject(err);
-        resolve();
-      });
-    });
-
-    // Add debug log
-    console.log('Session after login:', {
-      sessionId: req.session.id,
-      user: req.session.user,
-    });
 
     return res
       .status(200)
@@ -210,17 +196,36 @@ export async function updateUserById(req, res) {
       .json({ message: 'Internal server error', error: err.message });
   }
 }
-
+//SESSION CONTROLLER
 export async function getSessionData(req, res) {
   if (!req.session.isLogged) {
     return res.status(401).json({ message: 'Not logged in' });
   }
-  const { user, userId, admin } = req.session;
-  res.status(200).json({
-    message: 'User session data retrieved',
-    user: { id: userId, ...user, admin },
-    isLogged: true,
-  });
+
+  try {
+    // Check if user id is in session
+    if (!req.session.user?.id) {
+      res.status(404).json({ message: 'User is not defined' });
+    }
+
+    // If we have a valid userId, try to get fresh data
+    const freshUserData = await UserModel.findOne({
+      where: { id: req.session.user.id }, // Use user.id instead of userId
+    });
+
+    const userData = freshUserData
+      ? freshUserData.get({ plain: true })
+      : req.session.user;
+
+    res.status(200).json({
+      message: 'User session data retrieved',
+      user: userData,
+      isLogged: true,
+    });
+  } catch (error) {
+    console.log('Error in getSessionData:', error);
+    res.status(500).json({ message: 'Enternal server error' });
+  }
 }
 
 export async function registerAdmin(req, res) {
