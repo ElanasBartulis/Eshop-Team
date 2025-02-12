@@ -100,7 +100,7 @@ const members = [
     name: "Elanas Bartulis",
     title: "Full-stack Web Developer",
     // portfolio: "https://github.com",
-    linkedin: "www.linkedin.com/in/elanas-bartulis",
+    linkedin: "https://www.linkedin.com/in/elanas-bartulis",
     github: "https://github.com/ElanasBartulis",
   },
   {
