@@ -6,6 +6,6 @@ import ratingModel from "../models/ratingModel.js";
 import cartItemModel from "../models/cartItemModel.js";
 import cartModel from "../models/cartModel.js";
 
-await sequelize.sync({ alter: true });
+// await sequelize.sync({ alter: true });
 
 await sequelize.sync();
