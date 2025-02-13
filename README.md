@@ -1,8 +1,8 @@
-# 🛒 eShop Project
+# 🛒 Eshop-Team
 
 ## 📌 Project Overview
 
-The eShop project was developed by a team of students at the Baltic Technology Institute as a final challenge to apply everything we've learned and build something complex. It’s an online eShop where users can browse, purchase products, and interact with their accounts, while admins manage product listings and user data.
+The Eshop-Team project was developed by a team of students at the Baltic Technology Institute as a final challenge to apply everything we've learned and build something complex. It’s an online eShop where users can browse, purchase products, and interact with their accounts, while admins manage product listings and user data.
 
 The main purpose of this eShop was to serve as a comprehensive learning experience for our team. After almost completing our studies, we wanted to build a large-scale application that incorporated features we hadn’t covered in lectures, making it a perfect opportunity to challenge ourselves.
 
