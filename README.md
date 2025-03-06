@@ -1,4 +1,4 @@
-# 🛒 Eshop-Team
+# 🛒 Eshop-Team 
 
 ## 📌 Project Overview
 
